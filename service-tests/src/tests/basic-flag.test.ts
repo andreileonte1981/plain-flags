@@ -42,12 +42,14 @@ describe("Basic flag operations", () => {
 
         assert(myFlag);
 
+        let err;
         try {
             const createDuplicateResponse = await client.post("/api/flags", { name }, token)
         }
         catch(error: any) {
-            assert(error?.status === 304)
+            err = error;
         }
+        assert(err?.status === 304)
     })
 
     test("Archiving a flag excludes it from list of flags", async () => {
