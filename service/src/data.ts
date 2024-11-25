@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "plain-flags.sqlite",
     logging: true,
-    synchronize: true,  // TODO set to false in prod
+    synchronize: (process.env.NODE_ENV !== "production"),
     namingStrategy: new SnakeNamingStrategy(),
     entities: [
         Flag,

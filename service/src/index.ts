@@ -4,8 +4,11 @@ import { flagRoutes } from "./routes/flag.route";
 import { userRoutes } from "./routes/user.route";
 import jwtPlugin from "./plugins/jwtPlugin";
 
-// TODO: set up logger: true for production
-const server = fastify({ logger: { transport: { target: "pino-pretty" } } })
+const server = fastify({
+    logger: (process.env.NODE_ENV === 'production') ?
+        true :
+        { transport: { target: "pino-pretty" } }
+})
 
 async function start() {
     try {
@@ -16,8 +19,7 @@ async function start() {
         server.register(flagRoutes, { prefix: "/api/flags" })
         server.register(userRoutes, { prefix: "/api/users" })
 
-        // TODO: configure port from env
-        await server.listen({ port: 5000, host: "0.0.0.0" })
+        await server.listen({ port: +(process.env.SERVICE_PORT || "5000"), host: "0.0.0.0" })
         server.log.info("listening")
     }
     catch (error) {
