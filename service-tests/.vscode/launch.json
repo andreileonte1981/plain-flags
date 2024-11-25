@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "name": "Debug app",
+      "request": "launch",
+      "program": "bin/index.js",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug current file",
+      "request": "launch",
+      "program": "${file}",
+      "cwd": "${workspaceFolder}",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node",
+      "console": "integratedTerminal"
+    }
+  ]
+}

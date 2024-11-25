@@ -1,0 +1,28 @@
+import { DataSource } from "typeorm"
+import Flag from "./entities/flags/flag"
+import { FastifyBaseLogger } from "fastify"
+import { SnakeNamingStrategy } from "typeorm-naming-strategies"
+import User from "./entities/users/user"
+
+export const AppDataSource = new DataSource({
+    type: "sqlite",
+    database: "plain-flags.sqlite",
+    logging: true,
+    synchronize: true,  // TODO set to false in prod
+    namingStrategy: new SnakeNamingStrategy(),
+    entities: [
+        Flag,
+        User
+    ]
+})
+
+export class Data {
+    static async init(log: FastifyBaseLogger){
+        await AppDataSource.initialize().catch((err) => {
+            log.error(`DB init error`, err)
+            throw err
+        })
+
+        log.info("DB connected")
+    }
+}
