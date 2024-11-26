@@ -3,6 +3,7 @@ import { Data } from "./data";
 import { flagRoutes } from "./routes/flag.route";
 import { userRoutes } from "./routes/user.route";
 import jwtPlugin from "./plugins/jwtPlugin";
+import { sdkRoutes } from "./routes/sdk.route";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === 'production') ?
@@ -16,6 +17,7 @@ async function start() {
 
         server.register(jwtPlugin)
 
+        server.register(sdkRoutes, { prefix: "/api/sdk" })
         server.register(flagRoutes, { prefix: "/api/flags" })
         server.register(userRoutes, { prefix: "/api/users" })
 

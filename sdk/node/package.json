@@ -1,0 +1,27 @@
+{
+  "name": "plain-flags-node-sdk",
+  "version": "1.0.0",
+  "description": "The part of feature flags you embed in your application to tell which features are active and for which users",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -w"
+  },
+  "keywords": [
+    "plain",
+    "feature",
+    "flag",
+    "toggle"
+  ],
+  "author": "Andrei Leonte",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/node": "^22.10.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.8"
+  }
+}
