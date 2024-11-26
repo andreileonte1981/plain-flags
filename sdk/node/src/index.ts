@@ -34,7 +34,10 @@ export default class PlainFlags {
             this.log(`Feature flags HTTP client initialized`)
 
             // TODO: version the library and the service, send library version here to ensure compatibility is at least managed.
-            this.flagStates = (await this.client.get(`${this.serviceUrl}/api/sdk`)).data
+            this.flagStates = (await this.client.get(`/api/sdk`)).data
+
+            this.log(`Feature flags state updated from service`)
+            this.log(this.flagStates)
         }
         catch (error) {
             this.error(`Feature flags initialization error`, error)

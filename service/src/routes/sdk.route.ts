@@ -2,7 +2,10 @@ import { FastifyInstance } from "fastify";
 import Flag from "../entities/flags/flag";
 
 export async function sdkRoutes(server: FastifyInstance) {
-    server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
+    // TODO: pass sdk version from client, do some service version matching in case there are breaking changes between versions.
+
+    // TODO: have an API key to secure this.
+    server.get("", async () => {
         const all = await Flag.findBy({ isArchived: false });
 
         const flagStates: { [flagName: string]: boolean } = {}
