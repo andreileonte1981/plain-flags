@@ -28,9 +28,9 @@ export default class PlainFlags {
         return this.flagStates[flagName] || defaultValue
     }
 
-    async init(pollInterval = 30000) {
+    async init(apiKey: string, pollInterval = 30000) {
         try {
-            this.client = new Client(this.serviceUrl)
+            this.client = new Client(apiKey, this.serviceUrl)
 
             this.log(`Feature flags HTTP client initialized`)
 

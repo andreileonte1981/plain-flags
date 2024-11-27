@@ -4,7 +4,8 @@ export class Client {
     private instance?: Axios.AxiosInstance = undefined;
 
     constructor(
-        private baseurl: string = "http:/127.0.0.1:5000"
+        private apiKey: string,
+        baseurl: string = "http:/127.0.0.1:5000"
     ) {
         try {
             this.instance = axios.create({
@@ -17,6 +18,6 @@ export class Client {
     }
 
     public async get(url: string): Promise<any> {
-        return await this.instance?.get(url)
+        return await this.instance?.get(url, { headers: { "x-api-key": this.apiKey } })
     }
 }
