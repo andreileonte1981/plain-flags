@@ -1,8 +1,9 @@
 import { Client } from "./client/client";
 
 export default class PlainFlags {
+    private interval?: NodeJS.Timeout;
     private client?: Client;
-    private flagStates: {[flagName: string]: boolean} = {};
+    private flagStates: { [flagName: string]: boolean } = {};
 
     /**
      * @param serviceUrl The url for the feature flags REST API
@@ -23,11 +24,11 @@ export default class PlainFlags {
             },
     ) { }
 
-    isOn(flagName: string): boolean {
-        return this.flagStates[flagName] || false
+    isOn(flagName: string, defaultValue: boolean = false): boolean {
+        return this.flagStates[flagName] || defaultValue
     }
 
-    async init() {
+    async init(pollInterval = 30000) {
         try {
             this.client = new Client(this.serviceUrl)
 
@@ -38,21 +39,49 @@ export default class PlainFlags {
 
             this.log(`Feature flags state updated from service`)
             this.log(this.flagStates)
+
+            this.startPolling(pollInterval, this.client);
         }
         catch (error) {
             this.error(`Feature flags initialization error`, error)
         }
     }
 
-    private log(...args: any) {
-        if (this.logCallback) {
-            this.logCallback(args)
+    stopUpdates() {
+        if(this.interval) {
+            clearInterval(this.interval)
         }
     }
 
-    private error(...args: any) {
-        if (this.errorCallback) {
-            this.errorCallback(args)
+    private startPolling(pollInterval: number, client: Client) {
+        this.interval = setInterval(async () => {
+            try {
+                this.flagStates = (await client.get(`/api/sdk`)).data
+            }
+            catch (error) {
+                this.error(
+                    `Had a problem polling for flag states. Next poll in ${pollInterval * 1000} seconds`,
+                    error
+                )
+            }
+        }, pollInterval)
+    }
+
+    private log(...args: any) {
+        try {
+            if (this.logCallback) {
+                this.logCallback(args)
+            }
         }
+        catch (error) { }
+    }
+
+    private error(...args: any) {
+        try {
+            if (this.errorCallback) {
+                this.errorCallback(args)
+            }
+        }
+        catch (error) { }
     }
 }
