@@ -7,18 +7,18 @@ export default class PlainFlags {
 
     /**
      * @param serviceUrl The url for the feature flags REST API
-     * @param logCallback Custom method of your choice to log regular messages. Default console.log. Set to undefined to mute.
-     * @param errorCallback Custom method of your choice to log errors. Default console.error. Set to undefined to mute.
+     * @param logCallback Custom method of your choice to log regular messages. Default console.log. Set to null to mute.
+     * @param errorCallback Custom method of your choice to log errors. Default console.error. Set to null to mute.
      */
     constructor(
         private readonly serviceUrl: string,
 
-        private logCallback: ((...args: any) => void) | undefined =
+        private logCallback: ((...args: any) => void) | null =
             (...args) => {
                 console.log(args)
             },
 
-        private errorCallback: ((...args: any) => void) | undefined =
+        private errorCallback: ((...args: any) => void) | null =
             (...args) => {
                 console.error(args)
             },

@@ -3,7 +3,9 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 
 export default fastifyPlugin(async (server: FastifyInstance, options) => {
-    server.register(fastifyJwt, { secret: process.env.JWT_SIGNING_SECRET || "" })
+    server.register(fastifyJwt, {
+        secret: process.env.JWT_SIGNING_SECRET || ""
+    })
 
     server.decorate("jwtAuth", async (request: FastifyRequest, reply: FastifyReply) => {
         try {

@@ -36,7 +36,7 @@ export async function userRoutes(server: FastifyInstance) {
                 return reply.code(401).send({ error: `Wrong email and/or password` })
             }
 
-            const match = await bcrypt.compare(request.body.password, user.password)
+            const match = await bcrypt.compare(password, user.password)
 
             if (!match) {
                 return reply.code(401).send({ error: `Wrong email and/or password` })

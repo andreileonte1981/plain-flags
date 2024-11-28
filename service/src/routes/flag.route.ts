@@ -1,5 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Flag from "../entities/flags/flag";
+import Recorder from "../logic/flag-history/recorder";
+import User from "../entities/users/user";
 
 export async function flagRoutes(server: FastifyInstance) {
     server.post("", { onRequest: [(server as any).jwtAuth] }, async (
@@ -12,6 +14,10 @@ export async function flagRoutes(server: FastifyInstance) {
 
         try {
             await Flag.insert(flag)
+
+            const user = request.user;
+
+            await Recorder.recordCreation(user as User, flag);
 
             reply.code(201).send(flag)
         }

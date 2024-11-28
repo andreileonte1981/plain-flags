@@ -26,7 +26,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags("http:/127.0.0.1:5000")  // TODO: configure this, use the same url as the client.
+        const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
 
         await sdk.init(process.env.APIKEY || "");
 
@@ -50,7 +50,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags("http:/127.0.0.1:5000")  // TODO: configure this, use the same url as the client.
+        const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
         await sdk.init(process.env.APIKEY || "", 1000);
 
         assert(sdk.isOn(name))
