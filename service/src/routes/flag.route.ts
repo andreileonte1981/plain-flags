@@ -18,15 +18,16 @@ export async function flagRoutes(server: FastifyInstance) {
         try {
             await Flag.insert(flag)
 
-            const user = request.user;
-
-            await Recorder.recordCreation(user as User, flag);
+            // TODO - move recorder error handling inside the recorder.
+            await Recorder.recordCreation(request.user as User, flag).catch((error) => {
+                server.log.error(`Flag was created but the event failed to be recorded.`, error)
+            })
 
             reply.code(201).send(flag)
         }
         catch (error: any) {
             server.log.error(error, `Flag creation error`)
-            reply.code(304).send(error?.message || "Flag creation error");
+            reply.code(304).send(error?.message || "Flag creation error")
         }
     })
 
@@ -59,6 +60,10 @@ export async function flagRoutes(server: FastifyInstance) {
 
         flag.isArchived = true;
 
+        await Recorder.recordArchive(request.user as User, flag).catch((error) => {
+            server.log.error(`Flag was archived but the event failed to be recorded.`, error)
+        })
+
         await flag.save();
 
         reply.code(200).send(flag)
@@ -76,6 +81,11 @@ export async function flagRoutes(server: FastifyInstance) {
 
         if (!flag.isOn) {
             flag.isOn = true;
+
+            await Recorder.recordActivation(request.user as User, flag).catch((error) => {
+                server.log.error(`Flag was turned on but the event failed to be recorded.`, error)
+            });
+
             await flag.save();
         }
         else {
@@ -97,6 +107,11 @@ export async function flagRoutes(server: FastifyInstance) {
 
         if (flag.isOn !== false) {
             flag.isOn = false;
+
+            await Recorder.recordDeactivation(request.user as User, flag).catch((error) => {
+                server.log.error(`Flag was turned off but the event failed to be recorded.`, error)
+            })
+
             await flag.save();
         }
         else {
