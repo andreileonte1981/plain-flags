@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export default class History extends BaseEntity {
@@ -6,6 +6,7 @@ export default class History extends BaseEntity {
     id!: string
 
     @Column()
+    @Index()
     flagId!: string;
 
     @Column()

@@ -4,6 +4,7 @@ import { flagRoutes } from "./routes/flag.route";
 import { userRoutes } from "./routes/user.route";
 import jwtPlugin from "./plugins/jwtPlugin";
 import { sdkRoutes } from "./routes/sdk.route";
+import { historyRoutes } from "./routes/history.route";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === 'production') ?
@@ -20,6 +21,7 @@ async function start() {
         server.register(sdkRoutes, { prefix: "/api/sdk" })
         server.register(flagRoutes, { prefix: "/api/flags" })
         server.register(userRoutes, { prefix: "/api/users" })
+        server.register(historyRoutes, {prefix: "/api/history"})
 
         await server.listen({ port: +(process.env.SERVICE_PORT || "5000"), host: "0.0.0.0" })
         server.log.info("listening")

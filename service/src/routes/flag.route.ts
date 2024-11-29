@@ -4,6 +4,9 @@ import Recorder from "../logic/flag-history/recorder";
 import User from "../entities/users/user";
 
 export async function flagRoutes(server: FastifyInstance) {
+    /**
+     * Create a flag
+     */
     server.post("", { onRequest: [(server as any).jwtAuth] }, async (
         request: FastifyRequest<{ Body: Flag }>,
         reply: FastifyReply
@@ -27,12 +30,19 @@ export async function flagRoutes(server: FastifyInstance) {
         }
     })
 
+    /**
+     * Reply with list of all unarchived flags.
+     */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
         const all = await Flag.findBy({ isArchived: false });
 
         return all;
     })
 
+    /**
+     * Flags are never deleted, to avoid accidental overlapping flag checks in user source code.
+     * They are archived forever and hidden from regular operation, but names are unique even across archived flags.
+     */
     server.post("/archive", { onRequest: [(server as any).jwtAuth] }, async (
         request: FastifyRequest<{ Body: { id: string } }>,
         reply: FastifyReply
