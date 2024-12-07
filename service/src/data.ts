@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm"
-import Flag from "./entities/flag"
+import Flag, { FlagSubscriber } from "./entities/flag"
 import { FastifyBaseLogger } from "fastify"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import User from "./entities/user"
@@ -17,6 +17,9 @@ export const AppDataSource = new DataSource({
         User,
         History,
         Settings
+    ],
+    subscribers: [
+        FlagSubscriber
     ]
 })
 
