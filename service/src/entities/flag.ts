@@ -9,17 +9,23 @@ import {
 @Entity("flag")
 export default class Flag extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    id!: string
 
     @Column({ unique: true })
-    name: string = "";
+    name: string = ""
 
     @Column()
-    isOn: boolean = false;
+    isOn: boolean = false
 
     @Column()
-    isArchived: boolean = false;
+    isArchived: boolean = false
 
     @UpdateDateColumn()
-    updatedAt!: Date;
+    updatedAt!: Date
+
+    stale: boolean = false
+
+    checkStale() {
+        
+    }
 }

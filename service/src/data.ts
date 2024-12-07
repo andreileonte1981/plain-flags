@@ -1,9 +1,10 @@
 import { DataSource } from "typeorm"
-import Flag from "./entities/flags/flag"
+import Flag from "./entities/flag"
 import { FastifyBaseLogger } from "fastify"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
-import User from "./entities/users/user"
-import History from "./entities/history/history"
+import User from "./entities/user"
+import History from "./entities/history"
+import Settings from "./entities/settings"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
@@ -14,7 +15,8 @@ export const AppDataSource = new DataSource({
     entities: [
         Flag,
         User,
-        History
+        History,
+        Settings
     ]
 })
 

@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import User from "../entities/users/user";
+import User from "../entities/user";
 import * as bcrypt from "bcrypt";
 
 export async function userRoutes(server: FastifyInstance) {

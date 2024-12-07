@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import Flag from "../entities/flags/flag";
+import Flag from "../entities/flag";
 import { apiKeyAuth } from "../middleware/api-key.auth";
 
 export async function sdkRoutes(server: FastifyInstance) {

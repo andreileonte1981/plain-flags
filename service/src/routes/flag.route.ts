@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import Flag from "../entities/flags/flag";
+import Flag from "../entities/flag";
 import Recorder from "../logic/flag-history/recorder";
-import User from "../entities/users/user";
+import User from "../entities/user";
 
 export async function flagRoutes(server: FastifyInstance) {
     /**
@@ -35,7 +35,11 @@ export async function flagRoutes(server: FastifyInstance) {
      * Reply with list of all unarchived flags.
      */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
-        const all = await Flag.findBy({ isArchived: false });
+        const all = await Flag.findBy({ isArchived: false })
+
+        for(const flag of all) {
+            flag.checkStale()
+        }
 
         return all;
     })

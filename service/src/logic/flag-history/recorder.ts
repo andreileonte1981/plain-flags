@@ -1,5 +1,5 @@
-import Flag from "../../entities/flags/flag";
-import History from "../../entities/history/history";
+import Flag from "../../entities/flag";
+import History from "../../entities/history";
 
 export default class Recorder {
     static async recordCreation(user: {id: string, email: string}, flag: Flag) {

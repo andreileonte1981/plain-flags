@@ -16,15 +16,23 @@ export class Client {
     }
 
     public async get(url: string, token?: string): Promise<any> {
-        if(token){
-            return await this.instance?.get(url, {headers: {Authorization: `Bearer ${token}`}})
+        if (token) {
+            return await this.instance?.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
         }
         return await this.instance?.get(url)
     }
 
     public async post(url: string, payload: any, token?: string) {
-        if(token) {
-            return await this.instance?.post(url, payload, {headers: {Authorization: `Bearer ${token}`}})
+        if (token) {
+            return await this.instance?.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
         }
 
         return await this.instance?.post(url, payload)
