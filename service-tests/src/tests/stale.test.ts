@@ -5,7 +5,7 @@ import Salt from "../utils/salt";
 import assert from "node:assert";
 
 describe("Stale detection", () => {
-    test("A flag unused for days is stale", async () => {
+    test("A flag unchanged for days is stale", async () => {
         const client = new Client()
 
         await client.post("api/settings/daysOffset", { days: -4 })
