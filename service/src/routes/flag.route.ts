@@ -32,14 +32,17 @@ export async function flagRoutes(server: FastifyInstance) {
     })
 
     /**
-     * Reply with list of all unarchived flags.
+     * Reply with list of all unarchived flags with added computed properties.
      */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
         const all = await Flag.findBy({ isArchived: false })
 
+        const checks = [];
         for(const flag of all) {
-            flag.checkStale()
+            checks.push(flag.checkStale())
         }
+
+        Promise.allSettled(checks)
 
         return all;
     })

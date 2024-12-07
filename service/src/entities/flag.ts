@@ -9,7 +9,7 @@ import {
     UpdateDateColumn,
     UpdateEvent
 } from "typeorm";
-import { TestableTime } from "../utils/time";
+import { TestableTime } from "../utils/testable-time";
 
 @Entity("flag")
 export default class Flag extends BaseEntity {
@@ -30,8 +30,13 @@ export default class Flag extends BaseEntity {
 
     stale: boolean = false
 
-    checkStale() {
-
+    async checkStale() {
+        const daysDifference = (new TestableTime()).daysDifference(
+            new Date(),
+            this.updatedAt
+        )
+        
+        this.stale = daysDifference > +(process.env.STALE_FLAG_DAYS || "")
     }
 }
 
