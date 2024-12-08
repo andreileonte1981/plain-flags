@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Constraint from "../entities/constraint";
 import Flag from "../entities/flag";
+import Flags from "../logic/flag-logic/flags";
 
 export async function constraintRoutes(server: FastifyInstance) {
     /**
@@ -108,6 +109,32 @@ export async function constraintRoutes(server: FastifyInstance) {
             await constraint.save()
 
             reply.code(200).send(input)
+        }
+        catch (error: any) {
+            server.log.error(error, `Constraint unlink error`)
+            reply.code(304).send(error?.message || "Constraint unlink error")
+        }
+    })
+
+    server.post("/delete", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{
+            Body: {
+                id: string
+            }
+        }>,
+        reply: FastifyReply
+    ) => {
+        const { id } = request.body
+
+        try {
+            const constraint = await Constraint.findOne({ loadRelationIds: true, where: { id } })
+            if (!constraint) { throw new Error(`Constraint ${id} not found`) }
+
+            await Flags.checkNoActiveFlagsWithConstraint(constraint)
+
+            await Constraint.remove(constraint)
+
+            reply.code(200).send("Deleted")
         }
         catch (error: any) {
             server.log.error(error, `Constraint unlink error`)

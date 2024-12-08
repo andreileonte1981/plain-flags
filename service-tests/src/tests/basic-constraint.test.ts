@@ -144,4 +144,40 @@ describe("Basic constraint operations", () => {
         assert(myFlag2)
         assert(!myFlag2.constraints[0])
     })
+
+    test("A constraint with no flags linked can be removed", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const description = Salt.uniqued("bar")
+
+        const constraint = {
+            description,
+            key: "userId",
+            commaSeparatedValues: "John001, Steve002"
+        }
+
+        const response = await client.post("/api/constraints", constraint, token)
+
+        assert(response?.status === 201)
+
+        const allResponse = await client.get("/api/constraints", token)
+
+        const constraints: any[] = allResponse.data
+        const myConstraint = constraints.find(f => f.description === description)
+
+        assert(myConstraint)
+
+        const deleteResponse = await client.post("/api/constraints/delete", { id: myConstraint.id }, token)
+
+        assert(deleteResponse?.status === 200)
+
+        const allResponseAfterDelete = await client.get("/api/constraints", token)
+
+        const constraintsAfterDelete: any[] = allResponseAfterDelete.data
+        const deletedConstraint = constraintsAfterDelete.find(f => f.description === description)
+
+        assert(!deletedConstraint)
+    })
 })
