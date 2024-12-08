@@ -55,7 +55,7 @@ export async function flagRoutes(server: FastifyInstance) {
         request: FastifyRequest<{ Body: { id: string } }>,
         reply: FastifyReply
     ) => {
-        const flag = await Flag.findOneBy({ id: request.body.id })
+        const flag = await Flag.findOne({ where: { id: request.body.id }, relations: ["constraints"] })
 
         if (!flag) {
             return reply.code(404).send({ error: `Flag ${request.body.id} not found` })
@@ -64,6 +64,8 @@ export async function flagRoutes(server: FastifyInstance) {
         if (flag.isOn) {
             return reply.code(500).send({ error: `Flag ${request.body.id} is on, cannot archive` })
         }
+
+        flag.unlinkAllConstraints()
 
         flag.isArchived = true;
 
