@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Constraint from "../entities/constraint";
+import Flag from "../entities/flag";
 
 export async function constraintRoutes(server: FastifyInstance) {
     /**
@@ -30,11 +31,11 @@ export async function constraintRoutes(server: FastifyInstance) {
 
             await Constraint.insert(constraint)
 
-            reply.code(201).send(input)
+            reply.code(201).send(constraint)
         }
         catch (error: any) {
-            server.log.error(error, `Flag creation error`)
-            reply.code(304).send(error?.message || "Flag creation error")
+            server.log.error(error, `Constraint creation error`)
+            reply.code(304).send(error?.message || "Constraint creation error")
         }
     })
 
@@ -45,5 +46,40 @@ export async function constraintRoutes(server: FastifyInstance) {
         const all = await Constraint.find()
 
         return all; // TODO: modify the response to have flag ID's instead of the flag objects.
+    })
+
+    server.post("/link", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{
+            Body: {
+                constraintId: string,
+                flagId: string
+            }
+        }>,
+        reply: FastifyReply
+    ) => {
+        const input = request.body
+
+        try {
+            const constraint = await Constraint.findOneBy({ id: input.constraintId })
+            if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
+
+            const flag = await Flag.findOneBy({ id: input.flagId })
+            if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
+
+            if (!flag.constraints) { flag.constraints = [] }
+            flag.constraints.push(constraint)
+
+            if (!constraint.flags) { constraint.flags = [] }
+            constraint.flags.push(flag)
+
+            await flag.save()
+            await constraint.save()
+
+            reply.code(200).send(input)
+        }
+        catch (error: any) {
+            server.log.error(error, `Constraint link error`)
+            reply.code(304).send(error?.message || "Constraint link error")
+        }
     })
 }

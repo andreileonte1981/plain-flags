@@ -8,7 +8,7 @@ export class Client {
         try {
             this.instance = axios.create({
                 baseURL: baseurl,
-                timeout: 2000
+                timeout: 200000
             });
         } catch (error) {
             console.error(error)
