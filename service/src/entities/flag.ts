@@ -5,11 +5,14 @@ import {
     EntitySubscriberInterface,
     EventSubscriber,
     InsertEvent,
+    JoinTable,
+    ManyToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     UpdateEvent
 } from "typeorm";
 import { TestableTime } from "../utils/testable-time";
+import Constraint from "./constraint";
 
 @Entity("flag")
 export default class Flag extends BaseEntity {
@@ -27,6 +30,10 @@ export default class Flag extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt!: Date
+
+    @ManyToMany(() => Constraint, (constraint) => constraint.flags)
+    @JoinTable()
+    constraints!: Constraint[]
 
     stale: boolean = false
 

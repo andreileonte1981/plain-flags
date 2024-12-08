@@ -5,6 +5,7 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import User from "./entities/user"
 import History from "./entities/history"
 import Settings from "./entities/settings"
+import Constraint from "./entities/constraint"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
@@ -16,7 +17,8 @@ export const AppDataSource = new DataSource({
         Flag,
         User,
         History,
-        Settings
+        Settings,
+        Constraint
     ],
     subscribers: [
         FlagSubscriber

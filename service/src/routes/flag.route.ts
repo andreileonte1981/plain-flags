@@ -44,7 +44,7 @@ export async function flagRoutes(server: FastifyInstance) {
 
         Promise.allSettled(checks)
 
-        return all;
+        return all; // TODO: modify the response to have constraint ID's instead of the flag objects.
     })
 
     /**

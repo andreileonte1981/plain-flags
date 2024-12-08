@@ -6,6 +6,7 @@ import jwtPlugin from "./plugins/jwtPlugin";
 import { sdkRoutes } from "./routes/sdk.route";
 import { historyRoutes } from "./routes/history.route";
 import { settingsRoutes } from "./routes/settings.route";
+import { constraintRoutes } from "./routes/constraint.route";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === "production") ?
@@ -21,6 +22,7 @@ async function start() {
 
         server.register(sdkRoutes, { prefix: "/api/sdk" })
         server.register(flagRoutes, { prefix: "/api/flags" })
+        server.register(constraintRoutes, {prefix: "/api/constraints"})
         server.register(userRoutes, { prefix: "/api/users" })
         server.register(historyRoutes, {prefix: "/api/history"})
         server.register(settingsRoutes, {prefix: "/api/settings"})
