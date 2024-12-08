@@ -82,4 +82,36 @@ export async function constraintRoutes(server: FastifyInstance) {
             reply.code(304).send(error?.message || "Constraint link error")
         }
     })
+
+    server.post("/unlink", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{
+            Body: {
+                constraintId: string,
+                flagId: string
+            }
+        }>,
+        reply: FastifyReply
+    ) => {
+        const input = request.body
+
+        try {
+            const constraint = await Constraint.findOne({ loadRelationIds: true, where: { id: input.constraintId } })
+            if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
+
+            const flag = await Flag.findOne({ loadRelationIds: true, where: { id: input.flagId } })
+            if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
+
+            flag.unlinkConstraint(input.constraintId)
+            constraint.unlinkFlag(input.flagId)
+
+            await flag.save()
+            await constraint.save()
+
+            reply.code(200).send(input)
+        }
+        catch (error: any) {
+            server.log.error(error, `Constraint unlink error`)
+            reply.code(304).send(error?.message || "Constraint unlink error")
+        }
+    })
 }

@@ -17,4 +17,8 @@ export default class Constraint extends BaseEntity {
 
     @ManyToMany(() => Flag, (flag) => flag.constraints)
     flags!: Flag[]
+
+    unlinkFlag(id: string) {
+        this.flags = (this.flags as any[]).filter(f => f !== id)
+    }
 }

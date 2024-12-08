@@ -42,8 +42,12 @@ export default class Flag extends BaseEntity {
             new Date(),
             this.updatedAt
         )
-        
+
         this.stale = daysDifference > +(process.env.STALE_FLAG_DAYS || "")
+    }
+
+    unlinkConstraint(id: string) {
+        this.constraints = (this.constraints as any[]).filter(c => c !== id)
     }
 }
 
@@ -56,8 +60,8 @@ export class FlagSubscriber implements EntitySubscriberInterface {
     }
 
     async beforeUpdate(event: UpdateEvent<Flag>) {
-        if(event.entity?.updatedAt) {
-            event.entity.updatedAt = await (new TestableTime()).now()        
+        if (event.entity?.updatedAt) {
+            event.entity.updatedAt = await (new TestableTime()).now()
         }
     }
 }
