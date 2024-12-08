@@ -127,10 +127,10 @@ export async function constraintRoutes(server: FastifyInstance) {
         const { id } = request.body
 
         try {
-            const constraint = await Constraint.findOne({ loadRelationIds: true, where: { id } })
+            const constraint = await Constraint.findOne({ relations: ["flags"], where: { id } })
             if (!constraint) { throw new Error(`Constraint ${id} not found`) }
 
-            await Flags.checkNoActiveFlagsWithConstraint(constraint)
+            Flags.checkNoActiveFlagsWithConstraint(constraint)
 
             await Constraint.remove(constraint)
 

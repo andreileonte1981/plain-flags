@@ -14,7 +14,7 @@ describe("Basic user operations", () => {
         assert(response?.status === 201);
     })
 
-    test("A register user who logs in receives a token", async () => {
+    test("A registered user who logs in receives a token", async () => {
         const client = new Client()
 
         const email = `${Salt.uniqued("mruser")}@mail.com"`

@@ -221,4 +221,47 @@ describe("Basic constraint operations", () => {
         assert(myFlag)
         assert(!myFlag.constraints[0])
     })
+
+    test("Deleting a constraint linked to an activated flag fails", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const description = Salt.uniqued("bar")
+
+        const constraint = {
+            description,
+            key: "userId",
+            commaSeparatedValues: "John001, Steve002"
+        }
+
+        const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
+
+        const flagName = Salt.uniqued("foo")
+
+        const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
+
+        const flagId = flagCreationResponse.data.id
+        const constraintId = constraintCreationResponse.data.id
+
+        const linkResponse = await client.post(
+            "/api/constraints/link",
+            { flagId, constraintId },
+            token
+        )
+
+        const turnOnResponse: any = await client.post("/api/flags/turnon", { id: flagId }, token)
+
+        assert(turnOnResponse?.status === 200)
+
+        let err;
+        try {
+            const deleteResponse = await client.post("/api/constraints/delete", { id: constraintId }, token)
+        }
+        catch (error) {
+            err = error
+        }
+
+        assert(err)
+    })
 })
