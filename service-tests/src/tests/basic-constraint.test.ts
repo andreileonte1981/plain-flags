@@ -180,4 +180,45 @@ describe("Basic constraint operations", () => {
 
         assert(!deletedConstraint)
     })
+
+    test("Deleting a linked constraint unlinks it from the linked flag", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const description = Salt.uniqued("bar")
+
+        const constraint = {
+            description,
+            key: "userId",
+            commaSeparatedValues: "John001, Steve002"
+        }
+
+        const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
+
+        const flagName = Salt.uniqued("foo")
+
+        const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
+
+        const flagId = flagCreationResponse.data.id
+        const constraintId = constraintCreationResponse.data.id
+
+        const linkResponse = await client.post(
+            "/api/constraints/link",
+            { flagId, constraintId },
+            token
+        )
+
+        const deleteResponse = await client.post("/api/constraints/delete", { id: constraintId }, token)
+
+        assert(deleteResponse?.status === 200)
+
+        const allFlagsResponse = await client.get("/api/flags", token)
+
+        const flags: any[] = allFlagsResponse.data
+        const myFlag = flags.find(f => f.id === flagId)
+
+        assert(myFlag)
+        assert(!myFlag.constraints[0])
+    })
 })
