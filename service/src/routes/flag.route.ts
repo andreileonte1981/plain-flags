@@ -35,16 +35,16 @@ export async function flagRoutes(server: FastifyInstance) {
      * Reply with list of all unarchived flags with added computed properties.
      */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
-        const all = await Flag.findBy({ isArchived: false })
+        const all = await Flag.find({ loadRelationIds: true, where: { isArchived: false } })
 
         const checks = [];
-        for(const flag of all) {
+        for (const flag of all) {
             checks.push(flag.checkStale())
         }
 
         Promise.allSettled(checks)
 
-        return all; // TODO: modify the response to have constraint ID's instead of the flag objects.
+        return all;
     })
 
     /**
@@ -61,7 +61,7 @@ export async function flagRoutes(server: FastifyInstance) {
             return reply.code(404).send({ error: `Flag ${request.body.id} not found` })
         }
 
-        if(flag.isOn){
+        if (flag.isOn) {
             return reply.code(500).send({ error: `Flag ${request.body.id} is on, cannot archive` })
         }
 

@@ -60,17 +60,19 @@ describe("Basic constraint operations", () => {
 
         const allConstraintsResponse = await client.get("/api/constraints", token)
 
-        const constraints: { id: string }[] = allConstraintsResponse.data
+        const constraints: any[] = allConstraintsResponse.data
 
         const myConstraint = constraints.find(f => f.id === constraintId)
 
         assert(myConstraint)
+        assert(myConstraint.flags[0] === flagId)
 
         const allFlagsResponse = await client.get("/api/flags", token)
 
-        const flags: { id: string }[] = allFlagsResponse.data
+        const flags: any[] = allFlagsResponse.data
         const myFlag = flags.find(f => f.id === flagId)
 
         assert(myFlag)
+        assert(myFlag.constraints[0] === constraintId)
     })
 })

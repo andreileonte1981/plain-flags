@@ -43,9 +43,9 @@ export async function constraintRoutes(server: FastifyInstance) {
      * Reply with list of all constraints.
      */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
-        const all = await Constraint.find()
+        const all = await Constraint.find({ loadRelationIds: true })
 
-        return all; // TODO: modify the response to have flag ID's instead of the flag objects.
+        return all;
     })
 
     server.post("/link", { onRequest: [(server as any).jwtAuth] }, async (
