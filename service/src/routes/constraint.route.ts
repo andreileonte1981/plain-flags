@@ -61,10 +61,14 @@ export async function constraintRoutes(server: FastifyInstance) {
         const input = request.body
 
         try {
-            const constraint = await Constraint.findOneBy({ id: input.constraintId })
+            const constraint = await Constraint.findOne(
+                { where: { id: input.constraintId }, relations: ["flags"] }
+            )
             if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
 
-            const flag = await Flag.findOneBy({ id: input.flagId })
+            const flag = await Flag.findOne(
+                { where: { id: input.flagId }, relations: ["constraints"] }
+            )
             if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
 
             if (!flag.constraints) { flag.constraints = [] }

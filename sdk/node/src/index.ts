@@ -1,4 +1,5 @@
-import { Client } from "./client/client";
+import { Client } from "./client";
+import Constrainer from "./constrainer";
 import { FlagState } from "./flag-state";
 
 export default class PlainFlags {
@@ -25,17 +26,30 @@ export default class PlainFlags {
             },
     ) { }
 
-    isOn(flagName: string, defaultValue: boolean = false): boolean {
-        if(!this.flagStates[flagName]) {
-            this.error(`Flag name ${flagName} not in local cache`)
-            return defaultValue
+    isOn(
+        flagName: string,
+        defaultValue: boolean = false,
+        context?: { [key: string]: string }
+    ): boolean {
+        /**
+         * Protect all public calls against crashes
+         */
+        try {
+            if (!this.flagStates[flagName]) {
+                this.error(`Flag name ${flagName} not in local cache`)
+                return defaultValue
+            }
+
+            return Constrainer.isTurnedOn(
+                this.flagStates[flagName],
+                context
+            )
         }
+        catch(error) {
+            this.error(`Flag name ${flagName} state query failed`, error)
 
-        return this.isTurnedOn(this.flagStates[flagName], defaultValue)
-    }
-
-    private isTurnedOn(flag: FlagState, defaultValue: boolean): boolean {
-        return flag.isOn || defaultValue
+            return defaultValue;
+        }
     }
 
     async init(apiKey: string, pollInterval = 30000) {
@@ -58,7 +72,7 @@ export default class PlainFlags {
     }
 
     stopUpdates() {
-        if(this.interval) {
+        if (this.interval) {
             clearInterval(this.interval)
         }
     }
