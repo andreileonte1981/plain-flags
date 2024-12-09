@@ -32,7 +32,7 @@ describe("SDK operation", () => {
 
         assert(sdk.isOn(name))
 
-        sdk.stopUpdates();
+        sdk.stopUpdates()
     })
 
     test("The SDK polls for updates at the specified interval", async () => {
@@ -51,7 +51,7 @@ describe("SDK operation", () => {
         assert(turnOnResponse?.status === 200)
 
         const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
-        await sdk.init(process.env.APIKEY || "", 1000);
+        await sdk.init(process.env.APIKEY || "", 1000)
 
         assert(sdk.isOn(name))
 
@@ -61,6 +61,6 @@ describe("SDK operation", () => {
 
         assert(!sdk.isOn(name))
 
-        sdk.stopUpdates();
+        sdk.stopUpdates()
     })
 })

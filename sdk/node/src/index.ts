@@ -1,9 +1,10 @@
 import { Client } from "./client/client";
+import { FlagState } from "./flag-state";
 
 export default class PlainFlags {
     private interval?: NodeJS.Timeout;
     private client?: Client;
-    private flagStates: { [flagName: string]: boolean } = {};
+    private flagStates: { [flagName: string]: FlagState } = {};
 
     /**
      * @param serviceUrl The url for the feature flags REST API
@@ -25,7 +26,16 @@ export default class PlainFlags {
     ) { }
 
     isOn(flagName: string, defaultValue: boolean = false): boolean {
-        return this.flagStates[flagName] || defaultValue
+        if(!this.flagStates[flagName]) {
+            this.error(`Flag name ${flagName} not in local cache`)
+            return defaultValue
+        }
+
+        return this.isTurnedOn(this.flagStates[flagName], defaultValue)
+    }
+
+    private isTurnedOn(flag: FlagState, defaultValue: boolean): boolean {
+        return flag.isOn || defaultValue
     }
 
     async init(apiKey: string, pollInterval = 30000) {
