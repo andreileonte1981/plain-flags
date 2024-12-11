@@ -1,10 +1,12 @@
 import axios from "axios"
+import Config from "../utils/config";
 
 export class Client {
     private instance?: Axios.AxiosInstance = undefined;
 
     constructor() {
-        const baseurl: string = "http:/127.0.0.1:5000"; // TODO - configure it
+        const baseurl = Config.serviceUrl()
+
         try {
             this.instance = axios.create({
                 baseURL: baseurl,

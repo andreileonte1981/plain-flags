@@ -6,6 +6,7 @@ import assert from "node:assert"
 import PlainFlags from "feature-flags-node-sdk"
 import { sleep } from "../utils/sleep"
 import * as upath from "upath"
+import Config from "../utils/config"
 
 const dotenv = require('dotenv');
 dotenv.config({ path: upath.resolve(__dirname, '../../.env') });
@@ -26,7 +27,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
+        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
 
         await sdk.init(process.env.APIKEY || "");
 
@@ -56,7 +57,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
+        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
         await sdk.init(process.env.APIKEY || "", 1000)
 
         try {
@@ -127,7 +128,7 @@ describe("SDK operation", () => {
             token
         )
 
-        const sdk = new PlainFlags("http:/127.0.0.1:5000", null, null)  // TODO: configure this, use the same url as the client.
+        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
         await sdk.init(process.env.APIKEY || "", 1000)
 
         try {
