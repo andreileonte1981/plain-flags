@@ -25,7 +25,7 @@ export default class History extends BaseEntity {
     constraintId?: string
 
     @Column({ nullable: true })
-    context: string = ""
+    constraintInfo?: string
 
     @CreateDateColumn()
     when!: Date;

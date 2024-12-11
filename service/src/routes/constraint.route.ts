@@ -2,6 +2,8 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Constraint from "../entities/constraint";
 import Flag from "../entities/flag";
 import Flags from "../logic/flag-logic/flags";
+import Recorder from "../logic/flag-history/recorder";
+import User from "../entities/user";
 
 export async function constraintRoutes(server: FastifyInstance) {
     /**
@@ -77,6 +79,8 @@ export async function constraintRoutes(server: FastifyInstance) {
             if (!constraint.flags) { constraint.flags = [] }
             constraint.flags.push(flag)
 
+            await Recorder.recordLink(request.user as User, flag, constraint)
+
             await flag.save()
             await constraint.save()
 
@@ -108,6 +112,8 @@ export async function constraintRoutes(server: FastifyInstance) {
 
             flag.unlinkConstraint(input.constraintId)
             constraint.unlinkFlag(input.flagId)
+
+            await Recorder.recordUnlink(request.user as User, flag, constraint)
 
             await flag.save()
             await constraint.save()

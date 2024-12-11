@@ -33,4 +33,50 @@ describe("Flag history", () => {
         assert(historyResponse?.data[2].what === "turnoff")
         assert(historyResponse?.data[3].what === "archive")
     })
+
+    test("Flag constraining, unconstraining are recorded", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client);
+
+        const name = Salt.uniqued("foo")
+
+        const flagCreationResponse: any = await client.post("/api/flags", { name }, token);
+
+        const flagId = flagCreationResponse?.data?.id
+
+        const description = Salt.uniqued("bar")
+
+        const constraint = {
+            description,
+            key: "userId",
+            commaSeparatedValues: "John001, Steve002"
+        }
+
+        const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
+        const constraintId = constraintCreationResponse.data.id
+
+        await client.post(
+            "/api/constraints/link",
+            { flagId, constraintId },
+            token
+        )
+        await client.post(
+            "/api/constraints/unlink",
+            { flagId, constraintId },
+            token
+        )
+
+        const historyResponse: any = await client.post("api/history/flagid", { flagId: flagId }, token)
+
+        assert(historyResponse?.data.length === 3)
+        assert(historyResponse?.data[0].flagId === flagId)
+        assert(historyResponse?.data[0].what === "create")
+        assert(historyResponse?.data[1].what === "link")
+        assert(historyResponse?.data[1].constraintId === constraintId)
+        assert(historyResponse?.data[1].constraintInfo)
+        assert(historyResponse?.data[2].what === "unlink")
+        assert(historyResponse?.data[2].constraintId === constraintId)
+        assert(!historyResponse?.data[2].constraintInfo)
+    })
 })
