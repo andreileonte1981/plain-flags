@@ -7,6 +7,7 @@ import { sdkRoutes } from "./routes/sdk.route";
 import { historyRoutes } from "./routes/history.route";
 import { settingsRoutes } from "./routes/settings.route";
 import { constraintRoutes } from "./routes/constraint.route";
+import cors from "@fastify/cors"
 
 const server = fastify({
     logger: (process.env.NODE_ENV === "production") ?
@@ -19,6 +20,8 @@ async function start() {
         await Data.init(server.log)
 
         server.register(jwtPlugin)
+
+        server.register(cors, {})
 
         server.register(sdkRoutes, { prefix: "/api/sdk" })
         server.register(flagRoutes, { prefix: "/api/flags" })

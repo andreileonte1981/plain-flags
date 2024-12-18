@@ -10,6 +10,10 @@ export async function userRoutes(server: FastifyInstance) {
         const user = request.body;
 
         try {
+            if(! user.email.trim().length ||! user.password.trim().length) {
+                throw new Error("User registration error - invalid username & password");
+            }
+
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(user.password, salt)
 
