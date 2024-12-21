@@ -10,11 +10,11 @@ export async function userRoutes(server: FastifyInstance) {
         const user = request.body;
 
         try {
-            if(! user.email.trim().length ||! user.password.trim().length) {
+            if (!user.email.trim().length || !user.password.trim().length) {
                 throw new Error("User registration error - invalid username & password");
             }
 
-            const salt = await bcrypt.genSalt(10);
+            const salt = await bcrypt.genSalt(10)
             user.password = await bcrypt.hash(user.password, salt)
 
             await User.insert(user)
@@ -23,7 +23,7 @@ export async function userRoutes(server: FastifyInstance) {
         }
         catch (error: any) {
             server.log.error(error, `User registration error`)
-            reply.code(304).send(error?.message || "User registration error");
+            reply.code(304).send({ error, customError: error.message || "User registration error" });
         }
     })
 
