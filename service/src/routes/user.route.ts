@@ -9,6 +9,7 @@ export async function userRoutes(server: FastifyInstance) {
     ) => {
         const user = request.body;
 
+        // TODO: find user and throw explicit error if email not unique, don't rely on DB error.
         if (!user.email.trim().length || !user.password.trim().length) {
             throw new Error("User registration error - invalid username and/or password");
         }
