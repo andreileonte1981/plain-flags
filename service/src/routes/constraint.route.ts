@@ -22,24 +22,18 @@ export async function constraintRoutes(server: FastifyInstance) {
         const input = request.body
 
         if (!input.key || input.key.trim().length === 0) {
-            reply.code(304).send({ error: "Constraint key can't be empty" })
+            throw new Error("Constraint key can't be empty")
         }
 
-        try {
-            const constraint: Constraint = new Constraint()
+        const constraint: Constraint = new Constraint()
 
-            constraint.description = input.description
-            constraint.key = input.key
-            constraint.values = input.commaSeparatedValues.split(",").map(s => s.trim())
+        constraint.description = input.description
+        constraint.key = input.key
+        constraint.values = input.commaSeparatedValues.split(",").map(s => s.trim())
 
-            await Constraint.insert(constraint)
+        await Constraint.insert(constraint)
 
-            reply.code(201).send(constraint)
-        }
-        catch (error: any) {
-            server.log.error(error, `Constraint creation error`)
-            reply.code(304).send(error?.message || "Constraint creation error")
-        }
+        reply.code(201).send(constraint)
     })
 
     /**
@@ -62,34 +56,28 @@ export async function constraintRoutes(server: FastifyInstance) {
     ) => {
         const input = request.body
 
-        try {
-            const constraint = await Constraint.findOne(
-                { where: { id: input.constraintId }, relations: ["flags"] }
-            )
-            if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
+        const constraint = await Constraint.findOne(
+            { where: { id: input.constraintId }, relations: ["flags"] }
+        )
+        if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
 
-            const flag = await Flag.findOne(
-                { where: { id: input.flagId }, relations: ["constraints"] }
-            )
-            if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
+        const flag = await Flag.findOne(
+            { where: { id: input.flagId }, relations: ["constraints"] }
+        )
+        if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
 
-            if (!flag.constraints) { flag.constraints = [] }
-            flag.constraints.push(constraint)
+        if (!flag.constraints) { flag.constraints = [] }
+        flag.constraints.push(constraint)
 
-            if (!constraint.flags) { constraint.flags = [] }
-            constraint.flags.push(flag)
+        if (!constraint.flags) { constraint.flags = [] }
+        constraint.flags.push(flag)
 
-            await Recorder.recordLink(request.user as User, flag, constraint)
+        await Recorder.recordLink(request.user as User, flag, constraint)
 
-            await flag.save()
-            await constraint.save()
+        await flag.save()
+        await constraint.save()
 
-            reply.code(200).send(input)
-        }
-        catch (error: any) {
-            server.log.error(error, `Constraint link error`)
-            reply.code(304).send(error?.message || "Constraint link error")
-        }
+        reply.code(200).send(input)
     })
 
     server.post("/unlink", { onRequest: [(server as any).jwtAuth] }, async (
@@ -103,27 +91,21 @@ export async function constraintRoutes(server: FastifyInstance) {
     ) => {
         const input = request.body
 
-        try {
-            const constraint = await Constraint.findOne({ loadRelationIds: true, where: { id: input.constraintId } })
-            if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
+        const constraint = await Constraint.findOne({ loadRelationIds: true, where: { id: input.constraintId } })
+        if (!constraint) { throw new Error(`Constraint ${input.constraintId} not found`) }
 
-            const flag = await Flag.findOne({ loadRelationIds: true, where: { id: input.flagId } })
-            if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
+        const flag = await Flag.findOne({ loadRelationIds: true, where: { id: input.flagId } })
+        if (!flag) { throw new Error(`Flag ${input.flagId} not found`) }
 
-            flag.unlinkConstraint(input.constraintId)
-            constraint.unlinkFlag(input.flagId)
+        flag.unlinkConstraint(input.constraintId)
+        constraint.unlinkFlag(input.flagId)
 
-            await Recorder.recordUnlink(request.user as User, flag, constraint)
+        await Recorder.recordUnlink(request.user as User, flag, constraint)
 
-            await flag.save()
-            await constraint.save()
+        await flag.save()
+        await constraint.save()
 
-            reply.code(200).send(input)
-        }
-        catch (error: any) {
-            server.log.error(error, `Constraint unlink error`)
-            reply.code(304).send(error?.message || "Constraint unlink error")
-        }
+        reply.code(200).send(input)
     })
 
     server.post("/delete", { onRequest: [(server as any).jwtAuth] }, async (
@@ -136,19 +118,13 @@ export async function constraintRoutes(server: FastifyInstance) {
     ) => {
         const { id } = request.body
 
-        try {
-            const constraint = await Constraint.findOne({ relations: ["flags"], where: { id } })
-            if (!constraint) { throw new Error(`Constraint ${id} not found`) }
+        const constraint = await Constraint.findOne({ relations: ["flags"], where: { id } })
+        if (!constraint) { throw new Error(`Constraint ${id} not found`) }
 
-            Flags.checkNoActiveFlagsWithConstraint(constraint)
+        Flags.checkNoActiveFlagsWithConstraint(constraint)
 
-            await Constraint.remove(constraint)
+        await Constraint.remove(constraint)
 
-            reply.code(200).send("Deleted")
-        }
-        catch (error: any) {
-            server.log.error(error, `Constraint unlink error`)
-            reply.code(304).send(error?.message || "Constraint unlink error")
-        }
+        reply.code(200).send("Deleted")
     })
 }

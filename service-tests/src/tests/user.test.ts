@@ -24,10 +24,26 @@ describe("Basic user operations", () => {
 
         assert(registerResponse?.status === 201);
 
-        const loginResponse: any = await client.post("api/users/login", { email, password})
+        const loginResponse: any = await client.post("api/users/login", { email, password })
 
         const token = loginResponse?.data?.token;
 
         assert(token)
+    })
+
+    test("Empty user name or password on registration is invalid", async () => {
+        const client = new Client()
+
+        const email = ``
+
+        let error: any
+
+        try {
+            const response = await client.post("/api/users", { email, password: "" })
+        }
+        catch (e) { error = e }
+
+        assert(error)
+        assert(error.response.data.message.includes("invalid username"))
     })
 })

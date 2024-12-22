@@ -16,10 +16,10 @@ export default function Register() {
       if (response.status === 201) {
         navigate("../login");
       }
-    } catch (error) {
+    } catch (error: any) {
       debugger;
       console.debug(error);
-      alert(error || "Registration error");
+      alert(error.response?.data?.message || "Registration error");
     }
   };
 

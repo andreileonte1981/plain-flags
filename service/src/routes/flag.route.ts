@@ -15,20 +15,14 @@ export async function flagRoutes(server: FastifyInstance) {
         flag.isOn = false;
         flag.isArchived = false;
 
-        try {
-            await Flag.insert(flag)
+        // TODO: check uniqueness specifically with a find and throw a readable error on duplicates.
+        await Flag.insert(flag)
 
-            // TODO - move recorder error handling inside the recorder.
-            await Recorder.recordCreation(request.user as User, flag).catch((error) => {
-                server.log.error(`Flag was created but the event failed to be recorded.`, error)
-            })
+        await Recorder.recordCreation(request.user as User, flag).catch((error) => {
+            server.log.error(`Flag was created but the event failed to be recorded.`, error)
+        })
 
-            reply.code(201).send(flag)
-        }
-        catch (error: any) {
-            server.log.error(error, `Flag creation error`)
-            reply.code(304).send(error?.message || "Flag creation error")
-        }
+        reply.code(201).send(flag)
     })
 
     /**
@@ -58,11 +52,11 @@ export async function flagRoutes(server: FastifyInstance) {
         const flag = await Flag.findOne({ where: { id: request.body.id }, relations: ["constraints"] })
 
         if (!flag) {
-            return reply.code(404).send({ error: `Flag ${request.body.id} not found` })
+            throw new Error(`Flag ${request.body.id} not found`)
         }
 
         if (flag.isOn) {
-            return reply.code(500).send({ error: `Flag ${request.body.id} is on, cannot archive` })
+            throw new Error(`Flag ${request.body.id} is on, cannot archive`)
         }
 
         flag.unlinkAllConstraints()
@@ -85,7 +79,7 @@ export async function flagRoutes(server: FastifyInstance) {
         const flag = await Flag.findOneBy({ id: request.body.id })
 
         if (!flag) {
-            return reply.code(404).send({ error: `Flag ${request.body.id} not found` })
+            throw new Error(`Flag ${request.body.id} not found`)
         }
 
         if (!flag.isOn) {
@@ -111,7 +105,7 @@ export async function flagRoutes(server: FastifyInstance) {
         const flag = await Flag.findOneBy({ id: request.body.id })
 
         if (!flag) {
-            return reply.code(404).send({ error: `Flag ${request.body.id} not found` })
+            throw new Error(`Flag ${request.body.id} not found`)
         }
 
         if (flag.isOn !== false) {

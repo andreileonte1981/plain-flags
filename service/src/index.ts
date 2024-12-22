@@ -1,4 +1,4 @@
-import { fastify } from "fastify";
+import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { Data } from "./data";
 import { flagRoutes } from "./routes/flag.route";
 import { userRoutes } from "./routes/user.route";
@@ -19,16 +19,23 @@ async function start() {
     try {
         await Data.init(server.log)
 
+        server.setErrorHandler((error: any, request: FastifyRequest, reply: FastifyReply) => {
+            server.log.error(error)
+            reply.status(500).send({
+                message: error.message,
+            })
+        })
+
         server.register(jwtPlugin)
 
         server.register(cors, {})
 
         server.register(sdkRoutes, { prefix: "/api/sdk" })
         server.register(flagRoutes, { prefix: "/api/flags" })
-        server.register(constraintRoutes, {prefix: "/api/constraints"})
+        server.register(constraintRoutes, { prefix: "/api/constraints" })
         server.register(userRoutes, { prefix: "/api/users" })
-        server.register(historyRoutes, {prefix: "/api/history"})
-        server.register(settingsRoutes, {prefix: "/api/settings"})
+        server.register(historyRoutes, { prefix: "/api/history" })
+        server.register(settingsRoutes, { prefix: "/api/settings" })
 
         await server.listen({ port: +(process.env.SERVICE_PORT || "5000"), host: "0.0.0.0" })
         server.log.info("listening")

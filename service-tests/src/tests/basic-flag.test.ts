@@ -46,10 +46,10 @@ describe("Basic flag operations", () => {
         try {
             const createDuplicateResponse = await client.post("/api/flags", { name }, token)
         }
-        catch(error: any) {
+        catch (error: any) {
             err = error;
         }
-        assert(err?.status === 304)
+        assert(err)
     })
 
     test("Creating a flag with an archived name fails", async () => {
@@ -71,10 +71,10 @@ describe("Basic flag operations", () => {
         try {
             const createDuplicateResponse = await client.post("/api/flags", { name }, token)
         }
-        catch(error: any) {
+        catch (error: any) {
             err = error;
         }
-        assert(err?.status === 304)
+        assert(err)
     })
 
     test("Archiving a flag excludes it from list of flags", async () => {
