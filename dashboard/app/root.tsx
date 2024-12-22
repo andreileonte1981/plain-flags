@@ -9,6 +9,9 @@ import {
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
+import { ModalContext } from "./context/modalContext";
+import { useState } from "react";
+import Modal from "./components/modal";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,7 +46,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("Harrow (-_-)");
+
+  // TODO see if it makes sense to use portal for the modal, after I style it and add an overlay.
+  return (
+    <ModalContext.Provider value={{ isOpen, setIsOpen, message, setMessage }}>
+      <>
+        <Outlet />
+        <div id="main"></div>
+        <Modal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          message={message}
+          setMessage={setMessage}
+        ></Modal>
+      </>
+    </ModalContext.Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

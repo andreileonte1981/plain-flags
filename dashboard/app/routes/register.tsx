@@ -1,9 +1,13 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import { ModalContext } from "~/context/modalContext";
 
 export default function Register() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const { isOpen, setIsOpen, message, setMessage } = useContext(ModalContext);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,8 +21,11 @@ export default function Register() {
         navigate("../login");
       }
     } catch (error: any) {
-      debugger;
-      alert(error.response?.data?.message || "Registration error");
+      // debugger;
+
+      // TODO: try to write a utility that makes this available in one line, including the useContext garbage above
+      setMessage(error.response?.data?.message || "Registration error");
+      setIsOpen(true);
     }
   };
 

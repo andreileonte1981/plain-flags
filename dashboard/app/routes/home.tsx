@@ -15,9 +15,5 @@ export async function loader({}) {
 }
 
 export default function Home() {
-  return (
-    <>
-      <FlagList />
-    </>
-  );
+  return <FlagList />;
 }
