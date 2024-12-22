@@ -18,7 +18,6 @@ export default function Register() {
       }
     } catch (error: any) {
       debugger;
-      console.debug(error);
       alert(error.response?.data?.message || "Registration error");
     }
   };
