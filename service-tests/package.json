@@ -4,6 +4,7 @@
   "description": "Tests for flag service",
   "scripts": {
     "build": "tsc -w",
+    "slowtest": "node --test --test-concurrency=1",
     "test": "node --test"
   },
   "author": "Andrei Leonte",

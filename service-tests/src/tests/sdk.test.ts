@@ -17,7 +17,7 @@ describe("SDK operation", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("stateflag")
+        const name = Salt.uniqued("test-sd-o")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -47,7 +47,7 @@ describe("SDK operation", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("stateflag")
+        const name = Salt.uniqued("test-s-po")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -81,7 +81,7 @@ describe("SDK operation", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const flagName = Salt.uniqued("stateflag")
+        const flagName = Salt.uniqued("test-s-cx")
 
         const createFlagResponse: any = await client.post("/api/flags", { name: flagName }, token)
 
@@ -92,7 +92,7 @@ describe("SDK operation", () => {
         assert(turnOnResponse?.status === 200)
 
         const userConstraint = {
-            description: Salt.uniqued("user"),
+            description: Salt.uniqued("test-s-cx"),
             key: "user",
             commaSeparatedValues: "John, Steve"
         }
@@ -105,7 +105,7 @@ describe("SDK operation", () => {
         const userConstraintId = createUserConstraintResponse.data.id
 
         const brandConstraint = {
-            description: Salt.uniqued("user"),
+            description: Salt.uniqued("test-s-cx"),
             key: "brand",
             commaSeparatedValues: "Initech, Acme"
         }

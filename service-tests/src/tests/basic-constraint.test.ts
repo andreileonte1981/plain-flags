@@ -10,7 +10,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-crea")
 
         const constraint = {
             description,
@@ -35,7 +35,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-link")
 
         const constraint = {
             description,
@@ -45,7 +45,7 @@ describe("Basic constraint operations", () => {
 
         const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
 
-        const flagName = Salt.uniqued("foo")
+        const flagName = Salt.uniqued("test-link")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
 
@@ -81,7 +81,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-ulnk")
 
         const constraint = {
             description,
@@ -91,7 +91,7 @@ describe("Basic constraint operations", () => {
 
         const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
 
-        const flagName = Salt.uniqued("foo")
+        const flagName = Salt.uniqued("test-ulnk")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
 
@@ -150,7 +150,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-remv")
 
         const constraint = {
             description,
@@ -186,7 +186,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-d-ul")
 
         const constraint = {
             description,
@@ -196,7 +196,7 @@ describe("Basic constraint operations", () => {
 
         const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
 
-        const flagName = Salt.uniqued("foo")
+        const flagName = Salt.uniqued("test-d-ul")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
 
@@ -227,7 +227,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-l-ac")
 
         const constraint = {
             description,
@@ -237,7 +237,7 @@ describe("Basic constraint operations", () => {
 
         const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
 
-        const flagName = Salt.uniqued("foo")
+        const flagName = Salt.uniqued("test-l-ac")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
 
@@ -270,7 +270,7 @@ describe("Basic constraint operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-c-ar")
 
         const constraint = {
             description,
@@ -280,7 +280,7 @@ describe("Basic constraint operations", () => {
 
         const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
 
-        const flagName = Salt.uniqued("foo")
+        const flagName = Salt.uniqued("test-c-ar")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
 

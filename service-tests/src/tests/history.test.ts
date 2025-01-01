@@ -10,7 +10,7 @@ describe("Flag history", () => {
 
         const token = await tokenForLoggedInUser(client);
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-h-ba")
 
         const creationResponse: any = await client.post("/api/flags", { name }, token);
 
@@ -39,13 +39,13 @@ describe("Flag history", () => {
 
         const token = await tokenForLoggedInUser(client);
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-h-co")
 
         const flagCreationResponse: any = await client.post("/api/flags", { name }, token);
 
         const flagId = flagCreationResponse?.data?.id
 
-        const description = Salt.uniqued("bar")
+        const description = Salt.uniqued("test-h-co")
 
         const constraint = {
             description,

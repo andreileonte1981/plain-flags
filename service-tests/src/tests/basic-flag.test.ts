@@ -10,7 +10,7 @@ describe("Basic flag operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-crea")
 
         const response = await client.post("/api/flags", { name }, token)
 
@@ -29,7 +29,7 @@ describe("Basic flag operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-dupl")
 
         const response = await client.post("/api/flags", { name }, token)
 
@@ -57,7 +57,7 @@ describe("Basic flag operations", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-d-arc")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -81,7 +81,7 @@ describe("Basic flag operations", () => {
         const client = new Client()
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("arc")
+        const name = Salt.uniqued("test-arch")
 
         const response: any = await client.post("/api/flags", { name }, token)
 

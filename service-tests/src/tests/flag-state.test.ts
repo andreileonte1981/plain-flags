@@ -10,7 +10,7 @@ describe("Flag state", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("stateflag")
+        const name = Salt.uniqued("test-s-on")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -34,7 +34,7 @@ describe("Flag state", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("stateflag")
+        const name = Salt.uniqued("test-s-of")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -70,7 +70,7 @@ describe("Flag state", () => {
 
         const token = await tokenForLoggedInUser(client)
 
-        const name = Salt.uniqued("stateflag")
+        const name = Salt.uniqued("test-ar-o")
 
         const response: any = await client.post("/api/flags", { name }, token)
 
@@ -82,7 +82,7 @@ describe("Flag state", () => {
         try {
             await client.post("/api/flags/archive", { id: response?.data?.id }, token)
         }
-        catch(error: any) {
+        catch (error: any) {
             err = error
         }
 

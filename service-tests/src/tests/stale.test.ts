@@ -12,7 +12,7 @@ describe("Stale detection", () => {
 
         const token = await tokenForLoggedInUser(client);
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-stal")
 
         const createResponse: any = await client.post("/api/flags", { name }, token)
 
@@ -51,7 +51,7 @@ describe("Stale detection", () => {
 
         const token = await tokenForLoggedInUser(client);
 
-        const name = Salt.uniqued("foo")
+        const name = Salt.uniqued("test-nsta")
 
         const createResponse: any = await client.post("/api/flags", { name }, token)
 
