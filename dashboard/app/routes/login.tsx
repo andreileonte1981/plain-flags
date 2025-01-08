@@ -23,7 +23,7 @@ export default function Login() {
         navigate("..");
       }
     } catch (error: any) {
-      debugger;
+      // debugger;
 
       setMessage(error.response?.data?.message || "Login error");
       setIsOpen(true);
