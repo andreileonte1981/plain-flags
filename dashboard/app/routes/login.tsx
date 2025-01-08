@@ -38,7 +38,7 @@ export default function Login() {
     <>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">
-          <input type="text" name="email" onChange={handleChange} />
+          <input type="email" name="email" onChange={handleChange} />
         </label>
         <label htmlFor="password">
           <input type="password" name="password" onChange={handleChange} />

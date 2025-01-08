@@ -35,17 +35,23 @@ export default function Register() {
 
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
-      <label htmlFor="email">
-        <input type="text" name="email" onChange={handleChange} />
-      </label>
-      <label htmlFor="password">
-        <input
-          type="password"
-          name="password"
-          autoComplete="off"
-          onChange={handleChange}
-        />
-      </label>
+      <label htmlFor="email">email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        onChange={handleChange}
+        required
+      />
+      <label htmlFor="password">password</label>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        autoComplete="off"
+        onChange={handleChange}
+        required
+      />
       <button type="submit">Register</button>
     </form>
   );

@@ -5,7 +5,7 @@ function flagListItems(flagData?: Flag[]) {
     return <h1>loading...</h1>;
   }
   return flagData.map((f) => (
-    <li>
+    <li key={f.id}>
       <h1>{f.id}</h1>
       <h1>{f.name}</h1>
       <h1>{f.isOn ? "on" : "off"}</h1>
@@ -17,8 +17,10 @@ function flagListItems(flagData?: Flag[]) {
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   return (
     <>
-      <h1>Flags</h1>
-      <ul>{flagListItems(props.flags)}</ul>
+      <div>
+        <h1>Flags</h1>
+        <ul>{flagListItems(props.flags)}</ul>
+      </div>
     </>
   );
 }
