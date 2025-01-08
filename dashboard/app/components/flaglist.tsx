@@ -1,4 +1,4 @@
-import type { Flag } from "~/flags/flag";
+import type { Flag } from "~/domain/flag";
 
 function flagListItems(flagData?: Flag[]) {
   if (!flagData) {
@@ -16,11 +16,9 @@ function flagListItems(flagData?: Flag[]) {
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   return (
-    <>
-      <div>
-        <h1>Flags</h1>
-        <ul>{flagListItems(props.flags)}</ul>
-      </div>
-    </>
+    <div>
+      <h1>Flags</h1>
+      <ul>{flagListItems(props.flags)}</ul>
+    </div>
   );
 }

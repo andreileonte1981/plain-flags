@@ -2,7 +2,7 @@ import FlagList from "~/components/flaglist";
 import type { Route } from "./+types/home";
 import { redirect } from "react-router";
 import axios from "axios";
-import type { Flag } from "~/flags/flag";
+import type { Flag } from "~/domain/flag";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,7 +14,7 @@ export function meta({}: Route.MetaArgs) {
 export async function clientLoader({}) {
   // TODO: check logged in; wrap all routes except login and register in a component that redirects to login
   if (!localStorage.getItem("jwt")) {
-    return redirect("login");
+    return redirect("/login");
   }
   const url = "http://127.0.0.1:5000/api/flags";
   const token = localStorage.getItem("jwt");
