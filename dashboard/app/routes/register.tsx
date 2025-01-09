@@ -6,7 +6,7 @@ import { ModalContext } from "~/context/modalContext";
 export default function Register() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const { isOpen, setIsOpen, message, setMessage } = useContext(ModalContext);
+  const { showMessage } = useContext(ModalContext);
 
   const navigate = useNavigate();
 
@@ -23,9 +23,7 @@ export default function Register() {
     } catch (error: any) {
       // debugger;
 
-      // TODO: try to write a utility that makes this available in one line, including the useContext garbage above
-      setMessage(error.response?.data?.message || "Registration error");
-      setIsOpen(true);
+      showMessage(error.response?.data?.message || "Registration error");
     }
   };
 

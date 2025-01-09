@@ -20,7 +20,7 @@ export default function MenuItem(props: {
     <div className={c}>
       <Link
         to={props.linkto}
-        className="flex-auto font-semibold text-gray-500 text-right"
+        className="flex-auto font-semibold text-gray-500 text-right hover:text-red-500"
       >
         {props.text}
       </Link>

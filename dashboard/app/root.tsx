@@ -49,9 +49,14 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("Harrow (-_-)");
 
+  function showMessage(s: string) {
+    setMessage(s);
+    setIsOpen(true);
+  }
+
   // TODO see if it makes sense to use portal for the modal, after I style it and add an overlay.
   return (
-    <ModalContext.Provider value={{ isOpen, setIsOpen, message, setMessage }}>
+    <ModalContext.Provider value={{ showMessage }}>
       <>
         <Outlet />
         <div id="main"></div>

@@ -22,7 +22,7 @@ export default function Modal(props: {
             {props.message}
           </h1>
           <button
-            className="bg-gray-500 rounded px-4 py-2 text-white font-semibold text-lg"
+            className="bg-gray-500 rounded px-4 hover:px-3 py-2 text-white font-semibold text-lg hover:text-xl"
             onClick={() => {
               props.setIsOpen(false);
             }}

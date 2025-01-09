@@ -4,14 +4,21 @@ import MenuItem from "~/components/menuitem";
 import FlagIcon from "~/components/flagIcon";
 import HandIcon from "~/components/handIcon";
 import LogoutButton from "~/components/logoutButton";
+import { useContext, useState } from "react";
+import { ModalContext } from "~/context/modalContext";
+import YesNo from "~/components/yesno";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { showMessage } = useContext(ModalContext);
 
-  function handleLogout() {
+  function logout() {
     localStorage.setItem("jwt", "");
+    showMessage("You were logged out");
     return navigate("/");
   }
+
+  const [logoutYNOpen, setLogoutYNOpen] = useState(false);
 
   return (
     <div className="flex items-stretch w-full min-h-screen">
@@ -43,7 +50,20 @@ export default function Dashboard() {
               </MenuItem>
             </div>
 
-            <LogoutButton handleLogout={handleLogout} />
+            <div className="mb-20">
+              <YesNo
+                question="Logout: are you sure?"
+                onYes={logout}
+                isOpen={logoutYNOpen}
+                hide={() => {
+                  setLogoutYNOpen(false);
+                }}
+              >
+                <LogoutButton
+                  handleLogout={() => setLogoutYNOpen(!logoutYNOpen)}
+                />
+              </YesNo>
+            </div>
           </div>
         </div>
       </div>

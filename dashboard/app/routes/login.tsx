@@ -6,7 +6,7 @@ import { ModalContext } from "~/context/modalContext";
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const { isOpen, setIsOpen, message, setMessage } = useContext(ModalContext);
+  const { showMessage } = useContext(ModalContext);
 
   const navigate = useNavigate();
 
@@ -25,8 +25,7 @@ export default function Login() {
     } catch (error: any) {
       // debugger;
 
-      setMessage(error.response?.data?.message || "Login error");
-      setIsOpen(true);
+      showMessage(error.response?.data?.message || "Login error");
     }
   };
 
