@@ -34,17 +34,50 @@ export default function Login() {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">
-          <input type="email" name="email" onChange={handleChange} />
-        </label>
-        <label htmlFor="password">
-          <input type="password" name="password" onChange={handleChange} />
-        </label>
-        <button type="submit">Log in</button>
-      </form>
-      <Link to="/register">Register</Link>
-    </>
+    <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
+      <div className="flex flex-col items-center min-h-52 bg-gray-100 rounded p-4 mb-40">
+        <h1 className="my-3 font-bold uppercase text-gray-500">Plain Flags</h1>
+        <div className="h-1 w-full rounded bg-black/5 m-2"></div>
+        <h1 className="text-xs mb-3 text-gray-400">welcome, please log in</h1>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
+          <input
+            className="my-2 p-2 text-gray-600"
+            type="email"
+            name="email"
+            placeholder="email"
+            onChange={handleChange}
+          />
+          <input
+            className="my-2 p-2 text-gray-600"
+            type="password"
+            name="password"
+            placeholder="password"
+            onChange={handleChange}
+          />
+          <button
+            className="flex justify-center items-center m-3 p-3 pl-10 border hover:text-white hover:bg-gray-500 border-gray-500 rounded font-bold text-gray-500"
+            type="submit"
+          >
+            Log in
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="size-4 mx-1"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2 8c0 .414.336.75.75.75h8.69l-1.22 1.22a.75.75 0 1 0 1.06 1.06l2.10-2.5a.75.75 0 0 0 0-1.06l-2.10-2.5a.75.75 0 1 0-1.06 1.06l1.22 1.22H2.75A.75.75 0 0 0 2 8Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </form>
+        <div className="h-1 w-full rounded bg-black/5 m-2"></div>
+        <Link className="text-red-600 hover:underline" to="/register">
+          Register
+        </Link>
+      </div>
+    </div>
   );
 }
