@@ -32,7 +32,7 @@ export default function Dashboard() {
           </div>
 
           {/* separator */}
-          <div className="w-48 ml-2 h-1 bg-gray-400 rounded"></div>
+          <div className="w-48 ml-2 h-1 bg-slate-500/25 rounded"></div>
 
           {/* nav area */}
           <div className="h-full flex flex-col justify-between">
