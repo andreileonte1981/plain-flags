@@ -38,12 +38,20 @@ export default function Dashboard() {
           <div className="h-full flex flex-col justify-between">
             {/* nav links */}
             <div className="pt-2 flex flex-col items-stretch">
-              <MenuItem text="Flags" linkto="/">
+              <MenuItem
+                text="Flags"
+                linkto="/"
+                tooltip="Control your features here"
+              >
                 <div className="text-green-600">
                   <FlagIcon />
                 </div>
               </MenuItem>
-              <MenuItem text="Constraints" linkto="/constraints">
+              <MenuItem
+                text="Constraints"
+                linkto="/constraints"
+                tooltip="Customise access to your features here"
+              >
                 <div className="text-red-900">
                   <HandIcon />
                 </div>

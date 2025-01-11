@@ -5,13 +5,14 @@ export default function MenuItem(props: {
   children: ReactNode;
   text: string;
   linkto: string;
+  tooltip: string;
 }) {
   const path = useLocation();
 
   const isOnCurrent = path.pathname === props.linkto;
 
   const c =
-    `flex items-center justify-center m-1 hover:bg-gray-100 hover: bg-opacity-5 w-auto` +
+    `group flex items-center justify-center m-1 hover:bg-gray-100 hover: bg-opacity-5 w-auto` +
     ` border-r-4 ${isOnCurrent ? "border-gray-800" : ""} ${
       isOnCurrent ? "" : "border-opacity-0 border-transparent"
     }`;
@@ -25,6 +26,9 @@ export default function MenuItem(props: {
         {props.text}
       </Link>
       <div className="ml-2 mr-2 flex-none">{props.children}</div>
+      <div className="absolute invisible group-hover:visible w-52 p-2 bg-black/90 rounded left-full text-white text-sm font-bold">
+        {props.tooltip}
+      </div>
     </div>
   );
 }
