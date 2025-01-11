@@ -1,4 +1,4 @@
-import FlagList from "~/components/flaglist";
+import FlagList from "~/components/flag/flaglist";
 import type { Route } from "./+types/home";
 import { redirect } from "react-router";
 import axios from "axios";

@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router";
 import MenuItem from "~/components/menuitem";
 
-import FlagIcon from "~/components/flagIcon";
-import HandIcon from "~/components/handIcon";
+import FlagIcon from "~/components/icons/flagIcon";
+import HandIcon from "~/components/icons/handIcon";
 import LogoutButton from "~/components/logoutButton";
 import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
@@ -22,7 +22,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex items-stretch w-full min-h-screen">
-      <div className="flex-none w-52 m-0 bg-gray-50 shadow">
+      <div className="flex-none w-52 m-0 bg-gray-50 shadow z-10">
         <div className="fixed w-52 h-full left-0 right-0">
           {/* title/logo */}
           <div>

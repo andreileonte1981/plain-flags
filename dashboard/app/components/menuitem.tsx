@@ -12,7 +12,7 @@ export default function MenuItem(props: {
   const isOnCurrent = path.pathname === props.linkto;
 
   const c =
-    `group flex items-center justify-center m-1 hover:bg-gray-100 hover: bg-opacity-5 w-auto` +
+    `group flex items-center justify-center m-1 hover:bg-opacity-5 w-auto` +
     ` border-r-4 ${isOnCurrent ? "border-gray-800" : ""} ${
       isOnCurrent ? "" : "border-opacity-0 border-transparent"
     }`;
