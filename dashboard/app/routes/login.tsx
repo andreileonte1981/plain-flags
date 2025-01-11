@@ -2,13 +2,18 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ModalContext } from "~/context/modalContext";
+import useQueryParams from "~/hooks/useQueryParams";
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-
   const { showMessage } = useContext(ModalContext);
 
   const navigate = useNavigate();
+  const queryParams = useQueryParams();
+
+  const [formData, setFormData] = useState({
+    email: queryParams.email || "",
+    password: "",
+  });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,6 +51,8 @@ export default function Login() {
             name="email"
             placeholder="email"
             onChange={handleChange}
+            required
+            defaultValue={queryParams.email}
           />
           <input
             className="my-2 p-2 text-gray-600"
@@ -53,6 +60,7 @@ export default function Login() {
             name="password"
             placeholder="password"
             onChange={handleChange}
+            required
           />
           <button
             className="flex justify-center items-center m-3 p-3 pl-10 border hover:text-white hover:bg-gray-500 border-gray-500 rounded font-bold text-gray-500"
@@ -74,7 +82,10 @@ export default function Login() {
           </button>
         </form>
         <div className="h-1 w-full rounded bg-black/5 m-2"></div>
-        <Link className="text-red-600 hover:underline" to="/register">
+        <Link
+          className="text-red-700 hover:underline hover:text-red-600"
+          to="/register"
+        >
           Register
         </Link>
       </div>

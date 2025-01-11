@@ -4,6 +4,7 @@ export default function Modal(props: {
   message: string;
   setMessage: (val: string) => void;
 }) {
+  // TODO: add a possible icon, caller may decide between success, error, info, warning by selecting an icon component.
   return (
     props.isOpen && (
       <div
@@ -13,12 +14,12 @@ export default function Modal(props: {
         }}
       >
         <div
-          className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 w-1/2 h-1/3"
+          className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 w-1/2 h-1/4"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          <h1 className="text-center text-lg p-5 text-gray-600">
+          <h1 className="text-center text-lg p-5 font-semibold text-gray-600">
             {props.message}
           </h1>
           <button
