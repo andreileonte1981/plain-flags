@@ -3,4 +3,5 @@ export interface Flag {
     name: string;
     isOn: boolean;
     stale: boolean;
+    constraints: string[];
 }

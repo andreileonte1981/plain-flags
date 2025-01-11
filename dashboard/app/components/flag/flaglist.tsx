@@ -4,7 +4,7 @@ import FlagListItems from "./flagListItems";
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   return (
     <div className="mx-2 flex flex-col">
-      <div className="sticky top-0 flex justify-between items-center border-b-4 py-2 bg-white z-0">
+      <div className="sticky top-0 flex justify-between items-center border-b-4 py-2 bg-white z-10">
         <div className="flex flex-wrap items-center text-gray-600 font-semibold border-r-2 px-3">
           <label htmlFor="nameFilter" className="m-2">
             Name
