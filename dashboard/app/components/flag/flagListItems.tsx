@@ -3,7 +3,11 @@ import FlagCard from "./flagCard";
 
 export default function FlagListItems(flagData?: Flag[]) {
   if (!flagData?.length) {
-    return <h1>loading...</h1>;
+    return (
+      <div className="flex items-center justify-center">
+        <h1 className="font-semibold text-lg my-10">No flags</h1>
+      </div>
+    );
   }
   return flagData.map((f) => (
     <li key={f.id}>

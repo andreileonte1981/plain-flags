@@ -58,7 +58,7 @@ export default function FlagCard(props: {
           <Badge
             text="!! stale !!"
             color="#aaaa00"
-            tooltip="This feature flag state was not changed for a long time. Consider making the changes it enables permanent, and archiving it."
+            tooltip="This feature flag's state was not changed for a long time. Consider making the changes it enables permanent, and archiving it."
           >
             <ClockIcon />
           </Badge>

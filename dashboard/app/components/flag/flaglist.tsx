@@ -1,7 +1,20 @@
 import type { Flag } from "~/domain/flag";
 import FlagListItems from "./flagListItems";
+import { useState } from "react";
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {
+  const [filters, setFilters] = useState({
+    name: "",
+    constraint: "",
+    stale: false,
+    active: false,
+  });
+
+  const flags = props.flags
+    ?.filter((f) => f.name.indexOf(filters.name) >= 0)
+    .filter((f) => (filters.stale ? f.stale : true))
+    .filter((f) => (filters.active ? f.isOn : true));
+
   return (
     <div className="mx-2 flex flex-col">
       <div className="sticky top-0 flex justify-between items-center border-b-4 py-2 bg-white z-10">
@@ -13,6 +26,9 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
               name="nameFilter"
               type="text"
               className="ml-2 border rounded p-2"
+              onChange={(e) => {
+                setFilters({ ...filters, name: e.target.value });
+              }}
             />
           </label>
           <label htmlFor="constraintFilter" className="m-2">
@@ -32,6 +48,9 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 name="staleFilter"
                 type="checkbox"
                 className="ml-2 border rounded"
+                onChange={(e) => {
+                  setFilters({ ...filters, stale: e.target.checked });
+                }}
               />
             </label>
             <label htmlFor="activeFilter" className="m-2">
@@ -41,6 +60,9 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 name="activeFilter"
                 type="checkbox"
                 className="ml-2 border rounded"
+                onChange={(e) => {
+                  setFilters({ ...filters, active: e.target.checked });
+                }}
               />
             </label>
           </div>
@@ -64,7 +86,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
           Create flag
         </button>
       </div>
-      <ul className="flex flex-col">{FlagListItems(props.flags)}</ul>
+      <ul className="flex flex-col w-full h-full">{FlagListItems(flags)}</ul>
     </div>
   );
 }
