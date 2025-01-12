@@ -37,22 +37,38 @@ export default function FlagCard(props: {
       </div>
       <div className="flex">
         {props.isOn && (
-          <Badge text="on" color="green">
+          <Badge
+            text="on"
+            color="green"
+            tooltip="To turn this feature off, go to its page via the link to the right."
+          >
             <FlagIcon />
           </Badge>
         )}
         {!props.isOn && (
-          <Badge text="off" color="gray">
+          <Badge
+            text="off"
+            color="gray"
+            tooltip="To turn this feature on, go to its page via the link to the right."
+          >
             <FlagOutlineIcon />
           </Badge>
         )}
         {props.stale === true && (
-          <Badge text="!! stale !!" color="#aaaa00">
+          <Badge
+            text="!! stale !!"
+            color="#aaaa00"
+            tooltip="This feature flag state was not changed for a long time. Consider making the changes it enables permanent, and archiving it."
+          >
             <ClockIcon />
           </Badge>
         )}
         {props.constraints.length > 0 && (
-          <Badge text="constrained" color="magenta">
+          <Badge
+            text="constrained"
+            color="magenta"
+            tooltip="This feature is available only in limited conditions."
+          >
             <HandIcon />
           </Badge>
         )}
