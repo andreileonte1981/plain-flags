@@ -18,7 +18,7 @@ export default function FlagCard(props: {
         <h1 className="my-2 font-bold">{props.name}</h1>
         <Link
           to="#"
-          className="text-red-600 hover:underline font-semibold flex items-center"
+          className="relative group text-red-600 hover:underline font-semibold flex items-center"
         >
           {props.id}
           <svg
@@ -33,6 +33,9 @@ export default function FlagCard(props: {
               clipRule="evenodd"
             />
           </svg>
+          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-50">
+            Flag details
+          </div>
         </Link>
       </div>
       <div className="flex">
@@ -40,7 +43,7 @@ export default function FlagCard(props: {
           <Badge
             text="on"
             color="green"
-            tooltip="To turn this feature off, go to its page via the link to the right."
+            tooltip="To turn this feature off, go to its details page via the link to the right."
           >
             <FlagIcon />
           </Badge>
@@ -49,7 +52,7 @@ export default function FlagCard(props: {
           <Badge
             text="off"
             color="gray"
-            tooltip="To turn this feature on, go to its page via the link to the right."
+            tooltip="To turn this feature on, go to its details page via the link to the right."
           >
             <FlagOutlineIcon />
           </Badge>
