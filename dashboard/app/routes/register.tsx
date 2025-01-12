@@ -45,7 +45,7 @@ export default function Register() {
           autoComplete="off"
         >
           <input
-            className="my-2 p-2 text-gray-600"
+            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
             type="email"
             id="email"
             name="email"
@@ -54,7 +54,7 @@ export default function Register() {
             required
           />
           <input
-            className="my-2 p-2 text-gray-600"
+            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
             type="password"
             name="password"
             id="password"

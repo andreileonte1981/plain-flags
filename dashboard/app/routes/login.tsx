@@ -46,7 +46,7 @@ export default function Login() {
         <h1 className="text-xs mb-3 text-gray-400">welcome, please log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <input
-            className="my-2 p-2 text-gray-600"
+            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="email"
             name="email"
             placeholder="email"
@@ -55,7 +55,7 @@ export default function Login() {
             defaultValue={queryParams.email}
           />
           <input
-            className="my-2 p-2 text-gray-600"
+            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="password"
             name="password"
             placeholder="password"
