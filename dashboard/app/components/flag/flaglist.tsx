@@ -1,6 +1,7 @@
 import type { Flag } from "~/domain/flag";
 import FlagListItems from "./flagListItems";
 import { useState } from "react";
+import FlagFilters from "./flagFilters";
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   const [filters, setFilters] = useState({
@@ -15,76 +16,37 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
     .filter((f) => (filters.stale ? f.stale : true))
     .filter((f) => (filters.active ? f.isOn : true));
 
+  const [isCreateOpen, setCreateOpen] = useState(false);
+
   return (
     <div className="mx-2 flex flex-col">
-      <div className="sticky top-0 flex justify-between items-center border-b-4 py-2 bg-white z-10">
-        <div className="flex flex-wrap items-center text-gray-600 font-semibold border-r-2 px-3">
-          <label htmlFor="nameFilter" className="m-2">
-            Name
-            <input
-              id="nameFilter"
-              name="nameFilter"
-              type="text"
-              className="ml-2 border rounded p-2 focus:ring-0 focus:border-current"
-              onChange={(e) => {
-                setFilters({ ...filters, name: e.target.value });
-              }}
-            />
-          </label>
-          <label htmlFor="constraintFilter" className="m-2">
-            Constraint
-            <input
-              id="constraintFilter"
-              name="constraintFilter"
-              type="text"
-              className="ml-2 border rounded p-2 focus:ring-0 focus:border-current"
-            />
-          </label>
-          <div>
-            <label htmlFor="staleFilter" className="m-2">
-              Stale
-              <input
-                id="staleFilter"
-                name="staleFilter"
-                type="checkbox"
-                className="ml-2 border rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
-                onChange={(e) => {
-                  setFilters({ ...filters, stale: e.target.checked });
-                }}
-              />
-            </label>
-            <label htmlFor="activeFilter" className="m-2">
-              Active
-              <input
-                id="activeFilter"
-                name="activeFilter"
-                type="checkbox"
-                className="ml-2 border rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
-                onChange={(e) => {
-                  setFilters({ ...filters, active: e.target.checked });
-                }}
-              />
-            </label>
-          </div>
-        </div>
-
-        <button className="bg-green-900 text-white font-bold uppercase text-sm m-3 p-3 px-5 cursor-pointer hover:bg-green-600 active:bg-green-700 rounded flex-none flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6 mr-2"
+      <div className="sticky top-0 z-10 bg-white">
+        <div className="flex justify-between items-center border-b-4 py-2 ">
+          <FlagFilters setFilters={setFilters} filters={filters} />
+          <button
+            className="bg-green-900 text-white font-bold uppercase text-sm m-3 p-3 px-5 cursor-pointer hover:bg-green-600 active:bg-green-700 rounded flex-none flex items-center"
+            onClick={() => {
+              setCreateOpen(!isCreateOpen);
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-            />
-          </svg>
-          Create flag
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6 mr-2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            Create flag
+          </button>
+        </div>
+        {isCreateOpen && <div className="border-b-4">Create flag panel</div>}
       </div>
       <ul className="flex flex-col w-full h-full">{FlagListItems(flags)}</ul>
     </div>
