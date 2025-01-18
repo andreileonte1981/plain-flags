@@ -68,7 +68,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
           </div>
         </div>
 
-        <button className="bg-green-900 text-white font-bold uppercase text-sm m-3 p-3 px-5 cursor-pointer hover:bg-green-600 rounded flex-none flex items-center">
+        <button className="bg-green-900 text-white font-bold uppercase text-sm m-3 p-3 px-5 cursor-pointer hover:bg-green-600 active:bg-green-700 rounded flex-none flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

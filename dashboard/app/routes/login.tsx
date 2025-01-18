@@ -63,7 +63,7 @@ export default function Login() {
             required
           />
           <button
-            className="flex justify-center items-center m-3 p-3 pl-10 border hover:text-white hover:bg-gray-500 border-gray-500 rounded font-bold text-gray-500"
+            className="flex justify-center items-center m-3 p-3 pl-10 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
           >
             Log in
