@@ -12,13 +12,13 @@ export default function YesNo(props: {
       {props.isOpen && (
         <div>
           <div
-            className="z-10 absolute w-screen h-screen top-0 left-0 bg-black/5"
+            className="z-10 absolute w-screen h-screen top-0 left-0 bg-black/20"
             onClick={() => props.hide()}
           >
             {/*full screen background to click on to dismiss*/}
           </div>
 
-          <div className="flex flex-col border rounded shadow m-1 p-2 items-center z-20 bg-white">
+          <div className="relative flex flex-col border rounded shadow m-1 p-2 items-center z-20 bg-white">
             <div className="text-gray-700 font-semibold z-20">
               {props.question}
             </div>

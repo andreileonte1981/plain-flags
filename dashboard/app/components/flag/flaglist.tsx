@@ -4,6 +4,7 @@ import { useState } from "react";
 import FlagFilters from "./flagFilters";
 import GreenPlusButton from "../greenPlusButton";
 import CancelButton from "../cancelButton";
+import YesNo from "../yesno";
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   const [filters, setFilters] = useState({
@@ -21,6 +22,8 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
   const [isCreateOpen, setCreateOpen] = useState(false);
 
   const [newFlagName, setNewFlagName] = useState("");
+
+  const [createFlagYNOpen, setCreateFlagYNOpen] = useState(false);
 
   return (
     <div className="mx-2 flex flex-col">
@@ -49,7 +52,19 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
               />
             </label>
 
-            <GreenPlusButton onClick={() => {}} text="Create" />
+            <YesNo
+              question={`Create new flag '${newFlagName}'?`}
+              onYes={() => {}}
+              isOpen={createFlagYNOpen}
+              hide={() => {
+                setCreateFlagYNOpen(false);
+              }}
+            >
+              <GreenPlusButton
+                onClick={() => setCreateFlagYNOpen(true)}
+                text="Create"
+              />
+            </YesNo>
 
             <CancelButton
               onClick={() => {
