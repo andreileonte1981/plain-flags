@@ -5,6 +5,7 @@ import FlagFilters from "./flagFilters";
 import GreenPlusButton from "../greenPlusButton";
 import CancelButton from "../cancelButton";
 import YesNo from "../yesno";
+import LocalError from "../localError";
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {
   const [filters, setFilters] = useState({
@@ -43,6 +44,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
           <GreenPlusButton
             onClick={() => {
               setCreateOpen(!isCreateOpen);
+              setNewFlagError("");
             }}
             text="Create new flag"
           ></GreenPlusButton>
@@ -64,25 +66,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                   }}
                 />
               </label>
-              {newFlagError && (
-                <div className="w-full rounded p-2 mx-2 text-center bg-red-300/30 text-red-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="size-6 inline-block mr-2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-                    />
-                  </svg>
-                  {newFlagError}
-                </div>
-              )}
+              <LocalError error={newFlagError} />
             </div>
             <YesNo
               question={`Create new flag '${newFlagName}'?`}
@@ -97,6 +81,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 <CancelButton
                   onClick={() => {
                     setCreateOpen(false);
+                    setNewFlagError("");
                   }}
                   text="Cancel"
                 />
