@@ -25,9 +25,11 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
 
   const [createFlagYNOpen, setCreateFlagYNOpen] = useState(false);
 
+  const [newFlagError, setNewFlagError] = useState("");
+
   function onCreate() {
     if (!newFlagName) {
-      alert("New flag name required");
+      setNewFlagError("New flag name required");
       return;
     }
     setCreateFlagYNOpen(true);
@@ -47,20 +49,41 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
         </div>
         {isCreateOpen && (
           <div className="flex items-center flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
-            <label htmlFor="newFlagName" className="m-2 flex-1">
-              New flag name
-              <input
-                id="newFlagName"
-                name="newFlagName"
-                type="text"
-                className="ml-2 border rounded p-2 w-auto focus:ring-0 focus:border-current"
-                defaultValue={newFlagName}
-                onChange={(e) => {
-                  setNewFlagName(e.target.value);
-                }}
-              />
-            </label>
-
+            <div className="flex flex-col items-end">
+              <label htmlFor="newFlagName" className="m-2 flex-1">
+                New flag name
+                <input
+                  id="newFlagName"
+                  name="newFlagName"
+                  type="text"
+                  className="ml-2 border rounded p-2 w-auto focus:ring-0 focus:border-current"
+                  defaultValue={newFlagName}
+                  onChange={(e) => {
+                    setNewFlagError("");
+                    setNewFlagName(e.target.value);
+                  }}
+                />
+              </label>
+              {newFlagError && (
+                <div className="w-full rounded p-2 mx-2 text-center bg-red-300/30 text-red-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6 inline-block mr-2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    />
+                  </svg>
+                  {newFlagError}
+                </div>
+              )}
+            </div>
             <YesNo
               question={`Create new flag '${newFlagName}'?`}
               onYes={() => {}}
