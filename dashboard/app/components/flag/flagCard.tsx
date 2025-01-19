@@ -70,7 +70,7 @@ export default function FlagCard(props: {
           <Badge
             text="constrained"
             color="magenta"
-            tooltip="This feature is available only in limited conditions."
+            tooltip="This feature is available only to some users."
           >
             <HandIcon />
           </Badge>

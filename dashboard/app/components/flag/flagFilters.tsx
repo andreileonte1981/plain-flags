@@ -10,7 +10,7 @@ export default function FlagFilters(props: {
           id="nameFilter"
           name="nameFilter"
           type="text"
-          className="ml-2 border rounded p-2 focus:ring-0 focus:border-current"
+          className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
           onChange={(e) => {
             props.setFilters({ ...props.filters, name: e.target.value });
           }}
@@ -22,7 +22,7 @@ export default function FlagFilters(props: {
           id="constraintFilter"
           name="constraintFilter"
           type="text"
-          className="ml-2 border rounded p-2 focus:ring-0 focus:border-current"
+          className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
         />
       </label>
       <div>
@@ -32,7 +32,7 @@ export default function FlagFilters(props: {
             id="staleFilter"
             name="staleFilter"
             type="checkbox"
-            className="ml-2 border rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
+            className="ml-2 border-2 rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
             onChange={(e) => {
               props.setFilters({ ...props.filters, stale: e.target.checked });
             }}
@@ -44,7 +44,7 @@ export default function FlagFilters(props: {
             id="activeFilter"
             name="activeFilter"
             type="checkbox"
-            className="ml-2 border rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
+            className="ml-2 border-2 rounded checked:bg-black focus:checked:bg-black hover:checked:bg-black focus:ring-0"
             onChange={(e) => {
               props.setFilters({ ...props.filters, active: e.target.checked });
             }}
