@@ -4,7 +4,7 @@ export default function CancelButton(props: {
 }) {
   return (
     <button
-      className="bg-red-950 text-white font-bold uppercase text-sm m-3 p-3 px-5 cursor-pointer hover:bg-red-600 active:bg-red-700 rounded flex-none flex items-center"
+      className="bg-red-950 text-white font-bold uppercase text-sm h-12 m-3 p-3 px-5 cursor-pointer hover:bg-red-600 active:bg-red-700 rounded flex-none flex items-center"
       onClick={() => props.onClick()}
     >
       <svg

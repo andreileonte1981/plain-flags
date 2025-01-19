@@ -48,7 +48,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
           ></GreenPlusButton>
         </div>
         {isCreateOpen && (
-          <div className="flex items-center flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
+          <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
             <div className="flex flex-col items-end">
               <label htmlFor="newFlagName" className="m-2 flex-1">
                 New flag name
@@ -92,15 +92,16 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 setCreateFlagYNOpen(false);
               }}
             >
-              <GreenPlusButton onClick={onCreate} text="Create" />
+              <div className="flex items-center justify-between">
+                <GreenPlusButton onClick={onCreate} text="Create" />
+                <CancelButton
+                  onClick={() => {
+                    setCreateOpen(false);
+                  }}
+                  text="Cancel"
+                />
+              </div>
             </YesNo>
-
-            <CancelButton
-              onClick={() => {
-                setCreateOpen(false);
-              }}
-              text="Cancel"
-            />
           </div>
         )}
       </div>
