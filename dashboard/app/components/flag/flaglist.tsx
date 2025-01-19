@@ -25,6 +25,14 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
 
   const [createFlagYNOpen, setCreateFlagYNOpen] = useState(false);
 
+  function onCreate() {
+    if (!newFlagName) {
+      alert("New flag name required");
+      return;
+    }
+    setCreateFlagYNOpen(true);
+  }
+
   return (
     <div className="mx-2 flex flex-col">
       <div className="sticky top-0 z-10 bg-white">
@@ -38,7 +46,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
           ></GreenPlusButton>
         </div>
         {isCreateOpen && (
-          <div className="flex items-center flex-wrap font-semibold text-gray-600 border-b-4 py-4 px-3">
+          <div className="flex items-center flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
             <label htmlFor="newFlagName" className="m-2 flex-1">
               New flag name
               <input
@@ -46,6 +54,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 name="newFlagName"
                 type="text"
                 className="ml-2 border rounded p-2 w-auto focus:ring-0 focus:border-current"
+                defaultValue={newFlagName}
                 onChange={(e) => {
                   setNewFlagName(e.target.value);
                 }}
@@ -60,10 +69,7 @@ export default function FlagList(props: { flags: Flag[] | undefined }) {
                 setCreateFlagYNOpen(false);
               }}
             >
-              <GreenPlusButton
-                onClick={() => setCreateFlagYNOpen(true)}
-                text="Create"
-              />
+              <GreenPlusButton onClick={onCreate} text="Create" />
             </YesNo>
 
             <CancelButton

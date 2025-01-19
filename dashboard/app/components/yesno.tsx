@@ -18,7 +18,7 @@ export default function YesNo(props: {
             {/*full screen background to click on to dismiss*/}
           </div>
 
-          <div className="relative flex flex-col border rounded shadow m-1 p-2 items-center z-20 bg-white">
+          <div className="relative flex flex-col border-2 border-gray-400 rounded shadow-inner m-1 p-2 items-center z-20 bg-white">
             <div className="text-gray-700 font-semibold z-20">
               {props.question}
             </div>
@@ -43,7 +43,7 @@ export default function YesNo(props: {
           </div>
         </div>
       )}
-      {!props.isOpen && props.children}
+      {!props.isOpen && <div className="py-4">{props.children}</div>}
     </div>
   );
 }
