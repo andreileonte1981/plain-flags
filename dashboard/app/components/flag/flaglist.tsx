@@ -2,7 +2,7 @@ import type { Flag } from "~/domain/flag";
 import FlagListItems from "./flagListItems";
 import { useState } from "react";
 import FlagFilters from "./flagFilters";
-import GreenPlusButton from "../greenPlusButton";
+import GreenPlusButton from "../reusables/greenPlusButton";
 import CreateFlagPanel from "./createFlagPanel";
 
 export default function FlagList(props: { flags: Flag[] | undefined }) {

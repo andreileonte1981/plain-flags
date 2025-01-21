@@ -11,7 +11,7 @@ import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { ModalContext } from "./context/modalContext";
 import { useState } from "react";
-import Modal from "./components/modal";
+import Modal from "./components/reusables/modal";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

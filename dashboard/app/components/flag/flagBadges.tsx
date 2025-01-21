@@ -1,4 +1,4 @@
-import Badge from "../badge";
+import Badge from "../reusables/badge";
 import ClockIcon from "../icons/clockIcon";
 import FlagIcon from "../icons/flagIcon";
 import FlagOutlineIcon from "../icons/flagOutlineIcon";

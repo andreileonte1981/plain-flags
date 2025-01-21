@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import CancelButton from "../cancelButton";
-import GreenPlusButton from "../greenPlusButton";
-import LocalError from "../localError";
-import YesNo from "../yesno";
+import CancelButton from "../reusables/cancelButton";
+import GreenPlusButton from "../reusables/greenPlusButton";
+import LocalError from "../reusables/localError";
+import YesNo from "../reusables/yesno";
 import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
 

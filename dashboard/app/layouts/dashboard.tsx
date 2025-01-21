@@ -1,12 +1,12 @@
 import { Outlet, useNavigate } from "react-router";
-import MenuItem from "~/components/menuitem";
+import MenuItem from "~/components/reusables/menuitem";
 
 import FlagIcon from "~/components/icons/flagIcon";
 import HandIcon from "~/components/icons/handIcon";
-import LogoutButton from "~/components/logoutButton";
+import LogoutButton from "~/components/reusables/logoutButton";
 import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
-import YesNo from "~/components/yesno";
+import YesNo from "~/components/reusables/yesno";
 
 export default function Dashboard() {
   const navigate = useNavigate();

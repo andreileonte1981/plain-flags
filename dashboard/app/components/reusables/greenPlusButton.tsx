@@ -1,4 +1,4 @@
-import PlusIcon from "./icons/plusIcon";
+import PlusIcon from "../icons/plusIcon";
 
 export default function GreenPlusButton(props: {
   onClick: Function;

@@ -1,4 +1,4 @@
-import LogoutIcon from "./icons/logoutIcon";
+import LogoutIcon from "../icons/logoutIcon";
 
 export default function LogoutButton(props: { handleLogout: () => void }) {
   return (

@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import TrashIcon from "../icons/trashIcon";
-import YesNo from "../yesno";
+import YesNo from "../reusables/yesno";
 import { useState } from "react";
 import FlagBadges from "./flagBadges";
 import LinkIcon from "../icons/linkIcon";
