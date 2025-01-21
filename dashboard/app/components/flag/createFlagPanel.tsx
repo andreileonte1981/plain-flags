@@ -66,6 +66,7 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
         </label>
         <LocalError error={newFlagError} />
       </div>
+
       <YesNo
         question={`Create new flag '${newFlagName}'?`}
         onYes={() => {

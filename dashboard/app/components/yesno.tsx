@@ -31,6 +31,7 @@ export default function YesNo(props: {
               >
                 Yes
               </div>
+
               <div
                 className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-red-900 border-2 cursor-pointer hover:shadow-inner hover:border-red-700 active:bg-gray-200"
                 onClick={() => props.hide()}
@@ -41,6 +42,7 @@ export default function YesNo(props: {
           </div>
         </div>
       )}
+
       {!props.isOpen && <div className="py-4">{props.children}</div>}
     </div>
   );

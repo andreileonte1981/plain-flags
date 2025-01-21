@@ -16,6 +16,7 @@ export default function FlagFilters(props: {
           }}
         />
       </label>
+
       <label htmlFor="constraintFilter" className="m-2">
         Constraint
         <input
@@ -25,6 +26,7 @@ export default function FlagFilters(props: {
           className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
         />
       </label>
+
       <div>
         <label htmlFor="staleFilter" className="m-2">
           Stale
@@ -38,6 +40,7 @@ export default function FlagFilters(props: {
             }}
           />
         </label>
+
         <label htmlFor="activeFilter" className="m-2">
           Active
           <input

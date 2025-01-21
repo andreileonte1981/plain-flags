@@ -12,7 +12,6 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({}) {
-  // TODO: check logged in; wrap all routes except login and register in a component that redirects to login
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");
   }
