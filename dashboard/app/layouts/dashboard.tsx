@@ -67,6 +67,9 @@ export default function Dashboard() {
                   setLogoutYNOpen(false);
                 }}
               >
+                {/* separator */}
+                <div className="w-48 ml-2 mb-2 h-1 bg-slate-500/25 rounded"></div>
+
                 <LogoutButton
                   handleLogout={() => setLogoutYNOpen(!logoutYNOpen)}
                 />
