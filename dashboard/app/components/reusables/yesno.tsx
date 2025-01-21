@@ -6,11 +6,12 @@ export default function YesNo(props: {
   onYes: Function;
   isOpen: boolean;
   hide: Function;
+  id?: string;
 }) {
   return (
     <div>
       {props.isOpen && (
-        <div>
+        <div id={props.id}>
           <div
             className="z-40 fixed w-screen h-screen top-0 left-0 bg-black/20"
             onClick={() => props.hide()}

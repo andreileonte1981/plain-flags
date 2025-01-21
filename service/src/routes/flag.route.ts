@@ -59,6 +59,10 @@ export async function flagRoutes(server: FastifyInstance) {
             throw new Error(`Flag ${request.body.id} is on, cannot archive`)
         }
 
+        if (flag.isArchived) {
+            throw new Error(`Flag ${request.body.id} is already archived`)
+        }
+
         flag.unlinkAllConstraints()
 
         flag.isArchived = true;
