@@ -8,7 +8,7 @@ export default function Badge(props: {
 }) {
   return (
     <div
-      className="group relative flex items-center px-1 border-2 rounded-full m-1"
+      className="group relative flex items-center h-6 px-1 border-2 rounded-full m-1"
       style={{
         borderColor: props.color,
         color: props.color,

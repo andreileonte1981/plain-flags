@@ -4,6 +4,9 @@ import FlagIcon from "../icons/flagIcon";
 import HandIcon from "../icons/handIcon";
 import ClockIcon from "../icons/clockIcon";
 import FlagOutlineIcon from "../icons/flagOutlineIcon";
+import TrashIcon from "../icons/trashIcon";
+import YesNo from "../yesno";
+import { useState } from "react";
 
 export default function FlagCard(props: {
   id: string;
@@ -12,7 +15,9 @@ export default function FlagCard(props: {
   stale: boolean;
   constraints: string[];
 }) {
-  function handleArchive() {}
+  const [archiveYNOpen, setArchiveYNOpen] = useState(false);
+
+  function archiveFlag() {}
 
   return (
     <div className="border rounded border-gray-300 shadow m-2 p-2 text-gray-500">
@@ -40,7 +45,7 @@ export default function FlagCard(props: {
           </div>
         </Link>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-end">
         <div className="flex">
           {props.isOn && (
             <Badge
@@ -79,10 +84,23 @@ export default function FlagCard(props: {
             </Badge>
           )}
         </div>
-        {/* TODO: icon, wrap with yesno. */}
-        <div className="border-2 rounded p-1 font-bold" onClick={handleArchive}>
-          Archive
-        </div>
+        <YesNo
+          question={`Archive '${props.name}'?`}
+          onYes={() => {
+            archiveFlag();
+          }}
+          isOpen={archiveYNOpen}
+          hide={() => {
+            setArchiveYNOpen(false);
+          }}
+        >
+          <div
+            className="border-2 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+            onClick={() => setArchiveYNOpen(true)}
+          >
+            <TrashIcon />
+          </div>
+        </YesNo>
       </div>
     </div>
   );
