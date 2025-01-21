@@ -12,6 +12,8 @@ export default function FlagCard(props: {
   stale: boolean;
   constraints: string[];
 }) {
+  function handleArchive() {}
+
   return (
     <div className="border rounded border-gray-300 shadow m-2 p-2 text-gray-500">
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
@@ -33,48 +35,54 @@ export default function FlagCard(props: {
               clipRule="evenodd"
             />
           </svg>
-          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-50">
+          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-40">
             Flag details
           </div>
         </Link>
       </div>
-      <div className="flex">
-        {props.isOn && (
-          <Badge
-            text="on"
-            color="green"
-            tooltip="To turn this feature off, go to its details page via the link to the right."
-          >
-            <FlagIcon />
-          </Badge>
-        )}
-        {!props.isOn && (
-          <Badge
-            text="off"
-            color="gray"
-            tooltip="To turn this feature on, go to its details page via the link to the right."
-          >
-            <FlagOutlineIcon />
-          </Badge>
-        )}
-        {props.stale === true && (
-          <Badge
-            text="!! stale !!"
-            color="#aaaa00"
-            tooltip="This feature flag's state was not changed for a long time. Consider making the changes it enables permanent, and archiving it."
-          >
-            <ClockIcon />
-          </Badge>
-        )}
-        {props.constraints.length > 0 && (
-          <Badge
-            text="constrained"
-            color="magenta"
-            tooltip="This feature is available only to some users."
-          >
-            <HandIcon />
-          </Badge>
-        )}
+      <div className="flex justify-between">
+        <div className="flex">
+          {props.isOn && (
+            <Badge
+              text="on"
+              color="green"
+              tooltip="To turn this feature off, go to its details page via the link to the right."
+            >
+              <FlagIcon />
+            </Badge>
+          )}
+          {!props.isOn && (
+            <Badge
+              text="off"
+              color="gray"
+              tooltip="To turn this feature on, go to its details page via the link to the right."
+            >
+              <FlagOutlineIcon />
+            </Badge>
+          )}
+          {props.stale === true && (
+            <Badge
+              text="!! stale !!"
+              color="#aaaa00"
+              tooltip="This feature flag's state was not changed for a long time. Consider making the changes it enables permanent, and archiving it."
+            >
+              <ClockIcon />
+            </Badge>
+          )}
+          {props.constraints.length > 0 && (
+            <Badge
+              text="constrained"
+              color="magenta"
+              tooltip="This feature is available only to some users."
+            >
+              <HandIcon />
+            </Badge>
+          )}
+        </div>
+        {/* TODO: icon, wrap with yesno. */}
+        <div className="border-2 rounded p-1 font-bold" onClick={handleArchive}>
+          Archive
+        </div>
       </div>
     </div>
   );

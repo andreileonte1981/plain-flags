@@ -8,7 +8,7 @@ export default function Modal(props: {
   return (
     props.isOpen && (
       <div
-        className="absolute flex items-center justify-center top-0 h-screen w-screen bg-black/80"
+        className="fixed flex items-center justify-center top-0 h-screen w-screen z-50 bg-black/80"
         onClick={(e) => {
           props.setIsOpen(false);
         }}
