@@ -5,6 +5,7 @@ import LocalError from "../reusables/localError";
 import YesNo from "../reusables/yesno";
 import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
+import { useRevalidator } from "react-router";
 
 export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [newFlagName, setNewFlagName] = useState("");
@@ -12,6 +13,8 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [createFlagYNOpen, setCreateFlagYNOpen] = useState(false);
 
   const [newFlagError, setNewFlagError] = useState("");
+
+  const revalidator = useRevalidator();
 
   function onCreate() {
     if (!newFlagName) {
@@ -39,6 +42,19 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
 
       if (response.status === 201) {
         showMessage("Flag created.");
+
+        await revalidator.revalidate();
+
+        setTimeout(() => {
+          const id = `flagcard_${response.data.id}`;
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({
+              block: "nearest",
+              behavior: "smooth",
+            });
+          }
+        }, 100);
       }
     } catch (error: any) {
       // debugger;

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useRevalidator } from "react-router";
 import TrashIcon from "../icons/trashIcon";
 import YesNo from "../reusables/yesno";
 import { useContext, useState } from "react";
@@ -21,6 +21,8 @@ export default function FlagCard(props: {
 
   const { showMessage } = useContext(ModalContext);
 
+  const revalidator = useRevalidator();
+
   async function archiveFlag() {
     try {
       const url = "http://127.0.0.1:5000/api/flags/archive";
@@ -41,6 +43,8 @@ export default function FlagCard(props: {
       if (response.status === 200) {
         setArchiveWaitOpen(false);
 
+        revalidator.revalidate();
+
         showMessage("Flag archived.");
       }
     } catch (error: any) {
@@ -52,7 +56,10 @@ export default function FlagCard(props: {
   }
 
   return (
-    <div className="border-2 rounded border-gray-300 m-2 p-2 text-gray-500">
+    <div
+      id={`flagcard_${props.id}`}
+      className="border-2 rounded border-gray-300 m-2 p-2 text-gray-500"
+    >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
         <h1 className="my-2 font-bold">{props.name}</h1>
         <Link
@@ -94,7 +101,6 @@ export default function FlagCard(props: {
 
                 setTimeout(() => {
                   const element = document.getElementById(ynElementId);
-                  console.debug(element?.id);
                   if (element) {
                     element.scrollIntoView({
                       block: "nearest",
