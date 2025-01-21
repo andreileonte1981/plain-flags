@@ -6,7 +6,8 @@ export default function FlagOutlineIcon() {
       viewBox="0 0 24 24"
       strokeWidth="4"
       stroke="currentColor"
-      className="size-4"
+      className="size-3"
+      transform="rotate(60)"
     >
       <path
         strokeLinecap="round"
