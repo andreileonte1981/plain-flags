@@ -25,7 +25,7 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem("jwt", response.data.token);
 
-        navigate("..");
+        navigate("/flags");
       }
     } catch (error: any) {
       // debugger;

@@ -53,7 +53,7 @@ export default function FlagCard(props: {
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
         <h1 className="my-2 font-bold">{props.name}</h1>
         <Link
-          to={`flag/${props.id}`}
+          to={`./${props.id}`}
           className="relative group text-red-600 hover:underline font-semibold flex items-center"
         >
           {props.id}

@@ -9,7 +9,7 @@ export default function MenuItem(props: {
 }) {
   const path = useLocation();
 
-  const isOnCurrent = path.pathname === props.linkto;
+  const isOnCurrent = path.pathname.indexOf(props.linkto) >= 0;
 
   const c =
     `group flex items-center justify-center m-1 hover:bg-opacity-5 w-auto` +

@@ -19,7 +19,7 @@ export default function Register() {
 
       if (response.status === 201) {
         showMessage("User created.");
-        navigate(`../login?email=${formData.email}`);
+        navigate(`/login?email=${formData.email}`);
       }
     } catch (error: any) {
       // debugger;

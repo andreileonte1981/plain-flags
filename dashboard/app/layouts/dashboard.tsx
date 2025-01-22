@@ -15,7 +15,7 @@ export default function Dashboard() {
   function logout() {
     localStorage.setItem("jwt", "");
     showMessage("You were logged out");
-    return navigate("/");
+    return navigate("/login");
   }
 
   const [logoutYNOpen, setLogoutYNOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function Dashboard() {
             <div className="pt-2 flex flex-col items-stretch">
               <MenuItem
                 text="Flags"
-                linkto="/"
+                linkto="/flags"
                 tooltip="Control your features here"
               >
                 <div className="text-green-600">
