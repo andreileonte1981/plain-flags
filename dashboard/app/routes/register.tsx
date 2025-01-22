@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 
 export default function Register() {
@@ -14,8 +15,7 @@ export default function Register() {
     event.preventDefault();
 
     try {
-      const url = "http://127.0.0.1:5000/api/users";
-      const response = await axios.post(url, formData);
+      const response = await Client.post("users", formData);
 
       if (response.status === 201) {
         showMessage("User created.");

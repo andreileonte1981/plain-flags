@@ -6,6 +6,7 @@ import YesNo from "../reusables/yesno";
 import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
+import Client from "~/client/client";
 
 export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [newFlagName, setNewFlagName] = useState("");
@@ -27,18 +28,7 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
 
   const onCreateYes = async () => {
     try {
-      const url = "http://127.0.0.1:5000/api/flags";
-      const token = localStorage.getItem("jwt");
-
-      const response = await axios.post(
-        url,
-        { name: newFlagName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await Client.post("flags", { name: newFlagName });
 
       if (response.status === 201) {
         showMessage("Flag created.");

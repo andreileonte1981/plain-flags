@@ -6,6 +6,7 @@ import FlagBadges from "./flagBadges";
 import LinkIcon from "../icons/linkIcon";
 import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
+import Client from "~/client/client";
 
 export default function FlagCard(props: {
   id: string;
@@ -25,20 +26,9 @@ export default function FlagCard(props: {
 
   async function archiveFlag() {
     try {
-      const url = "http://127.0.0.1:5000/api/flags/archive";
-      const token = localStorage.getItem("jwt");
-
       setArchiveWaitOpen(true);
 
-      const response = await axios.post(
-        url,
-        { id: props.id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await Client.post("flags/archive", { id: props.id });
 
       if (response.status === 200) {
         setArchiveWaitOpen(false);
@@ -51,7 +41,7 @@ export default function FlagCard(props: {
       // debugger;
       setArchiveWaitOpen(false);
 
-      showMessage(error.response?.data?.message || "Flag creation error");
+      showMessage(error.response?.data?.message || "Flag archive error");
     }
   }
 
@@ -63,7 +53,7 @@ export default function FlagCard(props: {
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
         <h1 className="my-2 font-bold">{props.name}</h1>
         <Link
-          to="#"
+          to={`flag/${props.id}`}
           className="relative group text-red-600 hover:underline font-semibold flex items-center"
         >
           {props.id}

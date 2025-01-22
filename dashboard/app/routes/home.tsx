@@ -3,6 +3,7 @@ import type { Route } from "./+types/home";
 import { redirect } from "react-router";
 import axios from "axios";
 import type { Flag } from "~/domain/flag";
+import Client from "~/client/client";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,13 +16,8 @@ export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");
   }
-  const url = "http://127.0.0.1:5000/api/flags";
-  const token = localStorage.getItem("jwt");
-  const response = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+
+  const response = await Client.get("flags");
 
   return response.data;
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 import useQueryParams from "~/hooks/useQueryParams";
 
@@ -19,8 +20,7 @@ export default function Login() {
     event.preventDefault();
 
     try {
-      const url = "http://127.0.0.1:5000/api/users/login";
-      const response = await axios.post(url, formData);
+      const response = await Client.post("users/login", formData);
 
       if (response.status === 200) {
         localStorage.setItem("jwt", response.data.token);
