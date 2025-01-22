@@ -41,6 +41,19 @@ export async function flagRoutes(server: FastifyInstance) {
         return all;
     })
 
+    server.get(
+        "/:flagId",
+        { onRequest: [(server as any).jwtAuth] },
+        async (request, reply) => {
+            const flagDetails = await Flag.findOne({
+                relations: ["constraints"],
+                where: { id: (request as any)?.params?.flagId }
+            })
+
+            return flagDetails
+        }
+    )
+
     /**
      * Flags are never deleted, to avoid accidental overlapping flag checks in user source code.
      * They are archived forever and hidden from regular operation, but names are unique even across archived flags.
