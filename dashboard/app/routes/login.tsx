@@ -63,27 +63,15 @@ export default function Login() {
             required
           />
           <button
-            className="flex justify-center items-center m-3 p-3 pl-10 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
+            className="flex justify-center items-center m-3 p-3 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
           >
             Log in
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="size-4 mx-1"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M2 8c0 .414.336.75.75.75h8.69l-1.22 1.22a.75.75 0 1 0 1.06 1.06l2.10-2.5a.75.75 0 0 0 0-1.06l-2.10-2.5a.75.75 0 1 0-1.06 1.06l1.22 1.22H2.75A.75.75 0 0 0 2 8Z"
-                clip-rule="evenodd"
-              />
-            </svg>
           </button>
         </form>
         <div className="h-1 w-full rounded bg-black/5 m-2"></div>
         <Link
-          className="text-red-700 hover:underline hover:text-red-600"
+          className="text-red-700 text-sm font-semibold hover:underline hover:text-red-600"
           to="/register"
         >
           Register

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 
@@ -70,6 +70,12 @@ export default function Register() {
             Register
           </button>
         </form>
+        <Link
+          className="mt-4 text-xs text-gray-500 font-semibold hover:text-red-600"
+          to="/login"
+        >
+          back to login
+        </Link>
       </div>
     </div>
   );
