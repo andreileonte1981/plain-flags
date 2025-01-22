@@ -24,7 +24,7 @@ describe("Flag history", () => {
         await client.post("/api/flags/turnoff", { id }, token)
         await client.post("/api/flags/archive", { id }, token)
 
-        const historyResponse: any = await client.post("api/history/flagid", { flagId: id }, token)
+        const historyResponse: any = await client.post("api/history", { flagId: id }, token)
 
         assert(historyResponse?.data.length === 4)
         assert(historyResponse?.data[0].flagId === id)
@@ -67,7 +67,7 @@ describe("Flag history", () => {
             token
         )
 
-        const historyResponse: any = await client.post("api/history/flagid", { flagId: flagId }, token)
+        const historyResponse: any = await client.post("api/history", { flagId: flagId }, token)
 
         assert(historyResponse?.data.length === 3)
         assert(historyResponse?.data[0].flagId === flagId)

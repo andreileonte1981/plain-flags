@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import History from "../entities/history";
 
 export async function historyRoutes(server: FastifyInstance) {
-    server.post("/flagid", { onRequest: [(server as any).jwtAuth] }, async (
+    server.post("", { onRequest: [(server as any).jwtAuth] }, async (
         request: FastifyRequest<{ Body: { flagId: string } }>,
         reply: FastifyReply
     ) => {
