@@ -29,13 +29,11 @@ export default function FlagCard(props: {
 
       const response = await Client.post("flags/archive", { id: props.id });
 
-      if (response.status === 200) {
-        setArchiveWaitOpen(false);
+      setArchiveWaitOpen(false);
 
-        revalidator.revalidate();
+      revalidator.revalidate();
 
-        showMessage("Flag archived.");
-      }
+      showMessage("Flag archived.");
     } catch (error: any) {
       // debugger;
       setArchiveWaitOpen(false);

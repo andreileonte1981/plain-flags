@@ -34,11 +34,9 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
       const response = await Client.post("flags/turnoff", { id: details.id });
 
-      if (response.status === 200) {
-        setTurnOnOffWaitOpen(false);
+      setTurnOnOffWaitOpen(false);
 
-        revalidator.revalidate();
-      }
+      revalidator.revalidate();
     } catch (error: any) {
       // debugger;
       setTurnOnOffWaitOpen(false);
@@ -53,11 +51,9 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
       const response = await Client.post("flags/turnon", { id: details.id });
 
-      if (response.status === 200) {
-        setTurnOnOffWaitOpen(false);
+      setTurnOnOffWaitOpen(false);
 
-        revalidator.revalidate();
-      }
+      revalidator.revalidate();
     } catch (error: any) {
       // debugger;
       setTurnOnOffWaitOpen(false);

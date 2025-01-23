@@ -29,22 +29,20 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
     try {
       const response = await Client.post("flags", { name: newFlagName });
 
-      if (response.status === 201) {
-        showMessage("Flag created.");
+      showMessage("Flag created.");
 
-        await revalidator.revalidate();
+      await revalidator.revalidate();
 
-        setTimeout(() => {
-          const id = `flagcard_${response.data.id}`;
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView({
-              block: "nearest",
-              behavior: "smooth",
-            });
-          }
-        }, 100);
-      }
+      setTimeout(() => {
+        const id = `flagcard_${response.data.id}`;
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({
+            block: "nearest",
+            behavior: "smooth",
+          });
+        }
+      }, 100);
     } catch (error: any) {
       // debugger;
 
