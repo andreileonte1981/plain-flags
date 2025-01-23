@@ -4,15 +4,23 @@ import FlagBadges from "./components/flagBadges";
 import { Link } from "react-router";
 import BackIcon from "~/components/icons/backIcon";
 import ButtonTurnOnOff from "./components/buttonTurnOnOff";
+import HistoryItem from "./components/historyItem";
+import ClockIcon from "~/components/icons/clockIcon";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
-  const response = await Client.get(`flags/${params.flagId}`);
+  const detailsReq = Client.get(`flags/${params.flagId}`);
+  const historyReq = Client.post("history", { flagId: params.flagId });
 
-  return response.data;
+  const [detailsResp, historyResp] = await Promise.all([
+    detailsReq,
+    historyReq,
+  ]);
+
+  return { details: detailsResp.data, history: historyResp.data };
 }
 
 export default function Component({ loaderData }: Route.ComponentProps) {
-  const details: any = loaderData;
+  const { details, history }: any = loaderData;
 
   if (!details) {
     return <div>Error loading details</div>;
@@ -41,6 +49,25 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           constraints={details.constraints}
           showTips={false}
         />
+      </div>
+
+      <div>
+        <div className="flex gap-1 items-center m-2 font-bold border-b-2">
+          <ClockIcon />
+          Feature History
+        </div>
+        <ul>
+          {history.map((h: any, i: number) => (
+            <li key={i} className="border-b-2 my-1 mx-2 text-sm">
+              <HistoryItem
+                userEmail={h.userEmail}
+                what={h.what}
+                when={h.when}
+                constraintInfo={h.constraintInfo}
+              />
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

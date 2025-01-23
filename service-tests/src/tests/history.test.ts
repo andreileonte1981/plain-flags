@@ -27,7 +27,6 @@ describe("Flag history", () => {
         const historyResponse: any = await client.post("api/history", { flagId: id }, token)
 
         assert(historyResponse?.data.length === 4)
-        assert(historyResponse?.data[0].flagId === id)
         assert(historyResponse?.data[0].what === "create")
         assert(historyResponse?.data[1].what === "turnon")
         assert(historyResponse?.data[2].what === "turnoff")
@@ -70,13 +69,10 @@ describe("Flag history", () => {
         const historyResponse: any = await client.post("api/history", { flagId: flagId }, token)
 
         assert(historyResponse?.data.length === 3)
-        assert(historyResponse?.data[0].flagId === flagId)
         assert(historyResponse?.data[0].what === "create")
         assert(historyResponse?.data[1].what === "link")
-        assert(historyResponse?.data[1].constraintId === constraintId)
         assert(historyResponse?.data[1].constraintInfo)
         assert(historyResponse?.data[2].what === "unlink")
-        assert(historyResponse?.data[2].constraintId === constraintId)
-        assert(!historyResponse?.data[2].constraintInfo)
+        assert(historyResponse?.data[2].constraintInfo)
     })
 })

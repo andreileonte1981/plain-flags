@@ -30,6 +30,7 @@ export default class Recorder {
         h.userEmail = user.email
         h.what = "unlink"
         h.constraintId = constraint.id;
+        h.constraintInfo = `${constraint.description}|${constraint.key}|${constraint.values.join(",")}`
 
         await h.save()
     }

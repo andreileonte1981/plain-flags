@@ -7,7 +7,7 @@ describe("Basic user operations", () => {
     test("A user may register", async () => {
         const client = new Client()
 
-        const email = `${Salt.uniqued("mruser")}@mail.com"`
+        const email = `${Salt.uniqued("mruser")}@mail.com`
 
         const response = await client.post("/api/users", { email, password: "pass01" });
 

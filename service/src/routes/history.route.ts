@@ -10,6 +10,15 @@ export async function historyRoutes(server: FastifyInstance) {
 
         const allEntriesForFlag = await History.findBy({ flagId })
 
-        reply.code(200).send(allEntriesForFlag)
+        const details = allEntriesForFlag.map(entry => {
+            return {
+                userEmail: entry.userEmail,
+                what: entry.what,
+                when: entry.when,
+                constraintInfo: entry.constraintInfo
+            }
+        })
+
+        reply.code(200).send(details)
     })
 }
