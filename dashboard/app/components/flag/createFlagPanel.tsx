@@ -3,7 +3,6 @@ import CancelButton from "../reusables/cancelButton";
 import GreenPlusButton from "../reusables/greenPlusButton";
 import LocalError from "../reusables/localError";
 import YesNo from "../reusables/yesno";
-import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";

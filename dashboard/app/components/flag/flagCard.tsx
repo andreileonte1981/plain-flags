@@ -4,7 +4,6 @@ import YesNo from "../reusables/yesno";
 import { useContext, useState } from "react";
 import FlagBadges from "./flagBadges";
 import LinkIcon from "../icons/linkIcon";
-import axios from "axios";
 import { ModalContext } from "~/context/modalContext";
 import Client from "~/client/client";
 
