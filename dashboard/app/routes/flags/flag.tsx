@@ -43,7 +43,26 @@ export default function Component({ loaderData }: Route.ComponentProps) {
       // debugger;
       setTurnOnOffWaitOpen(false);
 
-      showMessage(error.response?.data?.message || "Flag archive error");
+      showMessage(error.response?.data?.message || "Error turning feature off");
+    }
+  }
+
+  async function turnOn() {
+    try {
+      setTurnOnOffWaitOpen(true);
+
+      const response = await Client.post("flags/turnon", { id: details.id });
+
+      if (response.status === 200) {
+        setTurnOnOffWaitOpen(false);
+
+        revalidator.revalidate();
+      }
+    } catch (error: any) {
+      // debugger;
+      setTurnOnOffWaitOpen(false);
+
+      showMessage(error.response?.data?.message || "Error turning feature on");
     }
   }
 
@@ -77,6 +96,26 @@ export default function Component({ loaderData }: Route.ComponentProps) {
                   onClick={() => setYnOpen(true)}
                 >
                   Turn off
+                </button>
+              )}
+            </YesNo>
+          )}
+          {!details.isOn && (
+            <YesNo
+              question="Turn feature on : are you sure?"
+              onYes={() => {
+                turnOn();
+              }}
+              isOpen={ynOpen}
+              hide={() => setYnOpen(false)}
+            >
+              {turnOnOffWaitOpen && <div>Turning on</div>}
+              {!turnOnOffWaitOpen && (
+                <button
+                  className="rounded bg-green-600 text-white m-2 px-2 py-1 hover:bg-green-400"
+                  onClick={() => setYnOpen(true)}
+                >
+                  Turn on
                 </button>
               )}
             </YesNo>
