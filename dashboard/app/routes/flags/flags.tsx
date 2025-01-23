@@ -1,8 +1,8 @@
-import FlagList from "~/components/flag/flaglist";
 import { redirect } from "react-router";
 import type { Flag } from "~/domain/flag";
 import Client from "~/client/client";
-import type { Route } from "../+types/root";
+import type { Route } from "../../+types/root";
+import FlagList from "./components/flaglist";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {

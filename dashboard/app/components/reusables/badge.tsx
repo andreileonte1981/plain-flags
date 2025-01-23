@@ -17,9 +17,11 @@ export default function Badge(props: {
       <p className="pr-1 font-bold text-sm">{props.text}</p>
       {props.children}
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-current opacity-10 rounded-full"></div>
-      <div className="absolute invisible group-hover:visible w-96 p-2 my-1 bg-black/90 rounded bottom-full text-white text-sm font-bold">
-        {props.tooltip}
-      </div>
+      {props.tooltip && (
+        <div className="absolute invisible group-hover:visible w-96 p-2 my-1 bg-black/90 rounded bottom-full text-white text-sm font-bold">
+          {props.tooltip}
+        </div>
+      )}
     </div>
   );
 }

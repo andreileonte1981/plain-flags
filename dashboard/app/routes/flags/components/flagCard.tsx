@@ -1,11 +1,11 @@
 import { Link, useRevalidator } from "react-router";
-import TrashIcon from "../icons/trashIcon";
-import YesNo from "../reusables/yesno";
 import { useContext, useState } from "react";
 import FlagBadges from "./flagBadges";
-import LinkIcon from "../icons/linkIcon";
 import { ModalContext } from "~/context/modalContext";
 import Client from "~/client/client";
+import LinkIcon from "~/components/icons/linkIcon";
+import YesNo from "~/components/reusables/yesno";
+import TrashIcon from "~/components/icons/trashIcon";
 
 export default function FlagCard(props: {
   id: string;
@@ -68,6 +68,7 @@ export default function FlagCard(props: {
           isOn={props.isOn}
           stale={props.stale}
           constraints={props.constraints}
+          showTips={true}
         />
 
         <YesNo

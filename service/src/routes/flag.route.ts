@@ -41,6 +41,9 @@ export async function flagRoutes(server: FastifyInstance) {
         return all;
     })
 
+    /**
+     * Details for a single flag
+     */
     server.get(
         "/:flagId",
         { onRequest: [(server as any).jwtAuth] },
@@ -49,6 +52,8 @@ export async function flagRoutes(server: FastifyInstance) {
                 relations: ["constraints"],
                 where: { id: (request as any)?.params?.flagId }
             })
+
+            await flagDetails?.checkStale()
 
             return flagDetails
         }
