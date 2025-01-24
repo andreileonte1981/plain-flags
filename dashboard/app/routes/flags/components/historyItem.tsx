@@ -11,9 +11,9 @@ export default function HistoryItem(props: {
       case "archive":
         return <span className="text-red-950">archived the feature </span>;
       case "turnon":
-        return <span className="text-green-700">turned the feature on</span>;
+        return <span className="text-green-700">turned the feature on </span>;
       case "turnoff":
-        return <span className="text-red-800">turned the feature off</span>;
+        return <span className="text-red-800">turned the feature off </span>;
       case "link":
         return (
           <span style={{ color: "magenta" }}>constrained the feature to </span>
@@ -30,7 +30,7 @@ export default function HistoryItem(props: {
     <p>
       <span>{props.userEmail} </span>
       {whatHeDid(props.what)}
-      <span>{props.constraintInfo}</span>
+      <span>{props.constraintInfo} </span>
       at <span className="font-extrabold">{props.when}</span>
     </p>
   );
