@@ -21,6 +21,10 @@ export async function clientLoader({}) {
 export default function Component({ loaderData }: Route.ComponentProps) {
   const unfilteredFlags: Flag[] | undefined = loaderData as Flag[] | undefined;
 
+  if (!unfilteredFlags) {
+    return <div>Loading...</div>;
+  }
+
   const [filters, setFilters] = useState({
     name: "",
     constraint: "",

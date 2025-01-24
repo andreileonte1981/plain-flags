@@ -7,6 +7,7 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Activate your features in production" },
   ];
 }
+
 export async function clientLoader({}) {
   return redirect("/flags");
 }
