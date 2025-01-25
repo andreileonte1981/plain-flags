@@ -22,7 +22,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex items-stretch w-full min-h-screen">
-      <div className="flex-none w-52 m-0 bg-gray-50 shadow z-20">
+      <div className="flex-none w-52 m-0 border-r-4 z-20">
         <div className="fixed w-52 h-full left-0 right-0">
           {/* title/logo */}
           <div>
@@ -52,7 +52,7 @@ export default function Dashboard() {
                 linkto="/constraints"
                 tooltip="Customise access to your features here"
               >
-                <div className="text-red-900">
+                <div className="text-magenta-500">
                   <HandIcon />
                 </div>
               </MenuItem>

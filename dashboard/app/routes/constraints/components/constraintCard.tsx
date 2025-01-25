@@ -3,6 +3,7 @@ import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
 import FlagIcon from "~/components/icons/flagIcon";
 import FlagOutlineIcon from "~/components/icons/flagOutlineIcon";
+import HandIcon from "~/components/icons/handIcon";
 import LinkIcon from "~/components/icons/linkIcon";
 import TrashIcon from "~/components/icons/trashIcon";
 import Badge from "~/components/reusables/badge";
@@ -50,10 +51,13 @@ export default function ConstraintCard(props: {
   return (
     <div
       id={`constraintcard_${props.id}`}
-      className="border-2 rounded border-gray-300 m-2 p-2 text-gray-500 font-semibold"
+      className="border-4 rounded-lg border-gray-300 mx-2 p-2 my-4 text-gray-500 font-semibold"
     >
       <div className="flex justify-between my-2 border-b">
-        <div className="font-bold text-gray-700">{props.description}</div>
+        <div className="flex items-center gap-2">
+          <HandIcon />
+          <div className="font-bold text-gray-700">{props.description}</div>
+        </div>
         <div className="text-xs text-gray-400">id: {props.id}</div>
       </div>
 
@@ -110,7 +114,7 @@ export default function ConstraintCard(props: {
       </div>
 
       {props.flags.length > 0 && (
-        <div className="border-2 border-purple-200 rounded p-2 mt-2">
+        <div className="bg-gray-500/5 shadow rounded p-2 mt-2">
           <div className="m-2">Flags constrained:</div>
 
           <ul>

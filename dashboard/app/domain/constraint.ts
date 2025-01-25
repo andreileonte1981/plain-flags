@@ -1,3 +1,5 @@
+import type { Flag } from "./flag"
+
 export default class Constraint {
     id!: string
 
@@ -7,5 +9,5 @@ export default class Constraint {
 
     values: string[] = []
 
-    flags!: string[]
+    flags!: Flag[]
 }

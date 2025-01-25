@@ -16,7 +16,7 @@ export default function HistoryItem(props: {
         return <span className="text-red-800">turned the feature off </span>;
       case "link":
         return (
-          <span style={{ color: "magenta" }}>constrained the feature to </span>
+          <span className="text-magenta">constrained the feature to </span>
         );
       case "unlink":
         return (

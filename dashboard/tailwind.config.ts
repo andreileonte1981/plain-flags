@@ -16,6 +16,10 @@ export default {
           '"Noto Color Emoji"',
         ],
       },
+      colors: {
+        magenta: '#ff00ff', // Hex code for magenta
+        'magenta-500': '#880088', // Hex code for magenta
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],
