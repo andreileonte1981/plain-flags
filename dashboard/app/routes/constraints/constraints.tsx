@@ -24,20 +24,35 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
 
   const [filters, setFilters] = useState({
     description: "",
+    key: "",
+    value: "",
   });
 
-  const filteredConstraints = constraints.filter(
-    (c) => c.description.indexOf(filters.description) >= 0
-  );
-
-  if (filteredConstraints.length === 0) {
-    return <div>No constraints</div>;
-  }
+  const filteredConstraints = constraints
+    .filter(
+      (c) =>
+        c.description
+          .toLowerCase()
+          .indexOf(filters.description.toLowerCase()) >= 0
+    )
+    .filter((c) => c.key.toLowerCase().indexOf(filters.key.toLowerCase()) >= 0)
+    .filter((c) =>
+      c.values.some(
+        (v) => v.toLowerCase().indexOf(filters.value.toLowerCase()) >= 0
+      )
+    );
 
   return (
     <div>
-      <ConstraintFilters filters={filters} setFilters={setFilters} />
+      <div className="sticky top-0 z-10 bg-white border-b-4 mx-2">
+        <ConstraintFilters filters={filters} setFilters={setFilters} />
+      </div>
       <div>
+        {!filteredConstraints.length && (
+          <div className="text-center my-5 text-gray-400">
+            No constraints found
+          </div>
+        )}
         <ul>
           {filteredConstraints.map((c) => (
             <li className="m-2" key={c.id}>

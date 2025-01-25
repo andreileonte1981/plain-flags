@@ -3,7 +3,7 @@ export default function ConstraintFilters(props: {
   filters: any;
 }) {
   return (
-    <div className="flex flex-wrap items-center text-gray-600 font-semibold border-r-2 px-3">
+    <div className="flex flex-col items-end text-gray-600 font-semibold border-r-2 px-3">
       <label htmlFor="descriptionFilter" className="m-2">
         Description
         <input
@@ -13,6 +13,30 @@ export default function ConstraintFilters(props: {
           className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
           onChange={(e) => {
             props.setFilters({ ...props.filters, description: e.target.value });
+          }}
+        />
+      </label>
+      <label htmlFor="keyFilter" className="m-2">
+        What for
+        <input
+          id="keyFilter"
+          name="keyFilter"
+          type="text"
+          className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
+          onChange={(e) => {
+            props.setFilters({ ...props.filters, key: e.target.value });
+          }}
+        />
+      </label>
+      <label htmlFor="valueFilter" className="m-2">
+        Who/which for
+        <input
+          id="valueFilter"
+          name="valueFilter"
+          type="text"
+          className="ml-2 border-2 rounded p-2 focus:ring-0 focus:border-current"
+          onChange={(e) => {
+            props.setFilters({ ...props.filters, value: e.target.value });
           }}
         />
       </label>

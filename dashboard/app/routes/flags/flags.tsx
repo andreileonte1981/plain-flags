@@ -33,7 +33,9 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   });
 
   const flags = unfilteredFlags
-    ?.filter((f) => f.name.indexOf(filters.name) >= 0)
+    ?.filter(
+      (f) => f.name.toLowerCase().indexOf(filters.name.toLowerCase()) >= 0
+    )
     .filter((f) => (filters.stale ? f.stale : true))
     .filter((f) => (filters.active ? f.isOn : true));
 
