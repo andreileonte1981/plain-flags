@@ -5,6 +5,8 @@ import type Constraint from "~/domain/constraint";
 import ConstraintCard from "./components/constraintCard";
 import ConstraintFilters from "./components/constraintFilters";
 import { useState } from "react";
+import GreenPlusButton from "~/components/reusables/greenPlusButton";
+import CreateConstraintPanel from "./components/createConstraintPanel";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -41,18 +43,32 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
         (v) => v.toLowerCase().indexOf(filters.value.toLowerCase()) >= 0
       )
     );
+  const [isCreateOpen, setCreateOpen] = useState(false);
 
   return (
     <div>
-      <div className="sticky top-0 z-10 bg-white border-b-4 mx-2">
-        <ConstraintFilters filters={filters} setFilters={setFilters} />
+      <div className="sticky top-0 z-10 bg-white mx-2">
+        <div className="flex flex-wrap justify-between items-center border-b-4">
+          <ConstraintFilters filters={filters} setFilters={setFilters} />
+          <GreenPlusButton
+            onClick={() => {
+              setCreateOpen(!isCreateOpen);
+            }}
+            text="Create new constraint"
+          ></GreenPlusButton>
+        </div>
+        {isCreateOpen && (
+          <CreateConstraintPanel setCreateOpen={setCreateOpen} />
+        )}
       </div>
+
       <div>
         {!filteredConstraints.length && (
           <div className="text-center my-5 text-gray-400">
             No constraints found
           </div>
         )}
+
         <ul>
           {filteredConstraints.map((c) => (
             <li className="m-2" key={c.id}>

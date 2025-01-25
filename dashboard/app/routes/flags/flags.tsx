@@ -53,6 +53,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
             text="Create new flag"
           ></GreenPlusButton>
         </div>
+
         {isCreateOpen && <CreateFlagPanel setCreateOpen={setCreateOpen} />}
       </div>
       <ul className="flex flex-col w-full h-full">{FlagListItems(flags)}</ul>

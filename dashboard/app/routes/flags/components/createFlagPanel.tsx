@@ -10,7 +10,7 @@ import CancelButton from "~/components/reusables/cancelButton";
 export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [newFlagName, setNewFlagName] = useState("");
 
-  const [createFlagYNOpen, setCreateFlagYNOpen] = useState(false);
+  const [ynOpen, setYNOpen] = useState(false);
 
   const [newFlagError, setNewFlagError] = useState("");
 
@@ -21,7 +21,7 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
       setNewFlagError("New flag name required");
       return;
     }
-    setCreateFlagYNOpen(true);
+    setYNOpen(true);
   }
   const { showMessage } = useContext(ModalContext);
 
@@ -75,9 +75,9 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
         onYes={() => {
           onCreateYes();
         }}
-        isOpen={createFlagYNOpen}
+        isOpen={ynOpen}
         hide={() => {
-          setCreateFlagYNOpen(false);
+          setYNOpen(false);
         }}
       >
         <div className="flex items-center justify-between">
