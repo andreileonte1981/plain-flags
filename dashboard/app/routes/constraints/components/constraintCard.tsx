@@ -1,16 +1,21 @@
 import { useContext, useState } from "react";
-import { useRevalidator } from "react-router";
+import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
+import FlagIcon from "~/components/icons/flagIcon";
+import FlagOutlineIcon from "~/components/icons/flagOutlineIcon";
+import LinkIcon from "~/components/icons/linkIcon";
 import TrashIcon from "~/components/icons/trashIcon";
+import Badge from "~/components/reusables/badge";
 import YesNo from "~/components/reusables/yesno";
 import { ModalContext } from "~/context/modalContext";
+import type { Flag } from "~/domain/flag";
 
 export default function ConstraintCard(props: {
   id: string;
   description: string;
   constraintkey: string;
   values: string[];
-  flags: string[];
+  flags: Flag[];
 }) {
   const [deleteYNOpen, setDeleteYNOpen] = useState(false);
   const ynElementId = `yn${props.id}`;
@@ -109,11 +114,31 @@ export default function ConstraintCard(props: {
           <div className="m-2">Flags constrained:</div>
 
           <ul>
-            {props.flags.map((f) => (
-              <li key={f} className="m-2">
-                {f}
-              </li>
-            ))}
+            {props.flags.map((f) => {
+              const cn = `m-2 ${f.isOn ? "text-green-700" : "text-gray-600"}`;
+              return (
+                <li key={f.id} className={cn}>
+                  <Link
+                    className="group flex items-center gap-1 hover:text-red-600"
+                    to={`/flags/${f.id}`}
+                  >
+                    <LinkIcon />
+                    <div className="group-hover:underline">{f.name}</div>
+                    {f.isOn && (
+                      <Badge text="on" color="green" tooltip="">
+                        <FlagIcon />
+                      </Badge>
+                    )}
+
+                    {!f.isOn && (
+                      <Badge text="off" color="gray" tooltip="">
+                        <FlagOutlineIcon />
+                      </Badge>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}

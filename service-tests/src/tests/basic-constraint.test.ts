@@ -65,7 +65,7 @@ describe("Basic constraint operations", () => {
         const myConstraint = constraints.find(f => f.id === constraintId)
 
         assert(myConstraint)
-        assert(myConstraint.flags[0] === flagId)
+        assert(myConstraint.flags[0].id === flagId)
 
         const allFlagsResponse = await client.get("/api/flags", token)
 
@@ -111,7 +111,7 @@ describe("Basic constraint operations", () => {
         const myConstraint = constraints.find(f => f.id === constraintId)
 
         assert(myConstraint)
-        assert(myConstraint.flags[0] === flagId)
+        assert(myConstraint.flags[0].id === flagId)
 
         const allFlagsResponse = await client.get("/api/flags", token)
 
