@@ -114,7 +114,7 @@ export default function ConstraintCard(props: {
       </div>
 
       {props.flags.length > 0 && (
-        <div className="bg-gray-500/5 shadow rounded p-2 mt-2">
+        <div className="bg-gray-500/5 shadow-inner rounded p-2 mt-2">
           <div className="m-2">Flags constrained:</div>
 
           <ul>
