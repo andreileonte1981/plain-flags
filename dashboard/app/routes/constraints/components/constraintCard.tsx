@@ -120,8 +120,10 @@ export default function ConstraintCard(props: {
           ) : (
             <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 -my-3 font-bold cursor-not-allowed">
               <TrashIcon />
-              <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-48 text-white text-sm font-bold z-40">
+              <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold z-40">
                 Constrains active flags, can't delete.
+                <br />
+                Unlink constraint from flag first
               </div>
             </div>
           )}

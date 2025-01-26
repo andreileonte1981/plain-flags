@@ -1,7 +1,7 @@
 export default function LocalError(props: { error: string }) {
   return (
     props.error && (
-      <div className="w-full rounded p-2 mx-2 text-center bg-red-300/30 text-red-600">
+      <div className="w-full rounded px-2 text-center bg-red-300/30 text-red-600">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

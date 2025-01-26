@@ -52,22 +52,24 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
 
   return (
     <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
-      <div className="flex flex-col items-end">
-        <label htmlFor="newFlagName" className="m-2 flex-1">
+      <div className="flex flex-col items-end m-2">
+        <label htmlFor="newFlagName" className="flex items-center gap-1 flex-1">
           New flag name
-          <input
-            id="newFlagName"
-            name="newFlagName"
-            type="text"
-            className="ml-2 border-2 rounded p-2 w-auto focus:ring-0 focus:border-current"
-            defaultValue={newFlagName}
-            onChange={(e) => {
-              setNewFlagError("");
-              setNewFlagName(e.target.value);
-            }}
-          />
+          <div>
+            <input
+              id="newFlagName"
+              name="newFlagName"
+              type="text"
+              className="border-2 rounded p-2 w-auto focus:ring-0 focus:border-current"
+              defaultValue={newFlagName}
+              onChange={(e) => {
+                setNewFlagError("");
+                setNewFlagName(e.target.value);
+              }}
+            />
+            <LocalError error={newFlagError} />
+          </div>
         </label>
-        <LocalError error={newFlagError} />
       </div>
 
       <YesNo
