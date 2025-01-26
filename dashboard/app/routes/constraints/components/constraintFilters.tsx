@@ -12,12 +12,14 @@ export default function ConstraintFilters(props: {
         }}
         placeholder="Description"
       />
+
       <FilterEdit
         onChange={(e) => {
           props.setFilters({ ...props.filters, key: e.target.value });
         }}
         placeholder="What for"
       />
+
       <FilterEdit
         onChange={(e) => {
           props.setFilters({ ...props.filters, value: e.target.value });

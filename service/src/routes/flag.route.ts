@@ -29,7 +29,7 @@ export async function flagRoutes(server: FastifyInstance) {
      * Reply with list of all unarchived flags with added computed properties.
      */
     server.get("", { onRequest: [(server as any).jwtAuth] }, async () => {
-        const all = await Flag.find({ loadRelationIds: true, where: { isArchived: false } })
+        const all = await Flag.find({ relations: ["constraints"], where: { isArchived: false } })
 
         const checks = [];
         for (const flag of all) {
@@ -38,7 +38,20 @@ export async function flagRoutes(server: FastifyInstance) {
 
         Promise.allSettled(checks)
 
-        return all;
+        return all.map((flag) => {
+            return {
+                ...flag,
+                constraints: flag.constraints.map((constraint) => {
+                    return {
+                        description: constraint.description,
+                        key: constraint.key,
+                        values: constraint.values,
+                        flags: undefined
+                    }
+                }),
+                updatedAt: undefined
+            }
+        });
     })
 
     /**

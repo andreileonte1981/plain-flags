@@ -3,11 +3,12 @@ import FlagIcon from "~/components/icons/flagIcon";
 import FlagOutlineIcon from "~/components/icons/flagOutlineIcon";
 import HandIcon from "~/components/icons/handIcon";
 import Badge from "~/components/reusables/badge";
+import type Constraint from "~/domain/constraint";
 
 export default function FlagBadges(props: {
   isOn: boolean;
   stale: boolean;
-  constraints: string[];
+  constraints: Constraint[];
   showTips: boolean;
 }) {
   return (
@@ -60,7 +61,7 @@ export default function FlagBadges(props: {
           color="magenta"
           tooltip={
             props.showTips
-              ? "This feature is available only to some users."
+              ? "This feature is available only to some users, see below."
               : ""
           }
         >

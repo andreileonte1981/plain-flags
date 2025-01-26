@@ -73,7 +73,7 @@ describe("Basic constraint operations", () => {
         const myFlag = flags.find(f => f.id === flagId)
 
         assert(myFlag)
-        assert(myFlag.constraints[0] === constraintId)
+        assert(myFlag.constraints[0].description === description)
     })
 
     test("A constraint can be unlinked from a flag", async () => {
@@ -119,7 +119,7 @@ describe("Basic constraint operations", () => {
         const myFlag = flags.find(f => f.id === flagId)
 
         assert(myFlag)
-        assert(myFlag.constraints[0] === constraintId)
+        assert(myFlag.constraints[0].description === description)
 
         const unlinkResponse = await client.post(
             "/api/constraints/unlink",

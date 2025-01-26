@@ -6,13 +6,15 @@ import Client from "~/client/client";
 import LinkIcon from "~/components/icons/linkIcon";
 import YesNo from "~/components/reusables/yesno";
 import TrashIcon from "~/components/icons/trashIcon";
+import type Constraint from "~/domain/constraint";
+import HandIcon from "~/components/icons/handIcon";
 
 export default function FlagCard(props: {
   id: string;
   name: string;
   isOn: boolean;
   stale: boolean;
-  constraints: string[];
+  constraints: Constraint[];
 }) {
   const [archiveYNOpen, setArchiveYNOpen] = useState(false);
   const ynElementId = `yn${props.id}`;
@@ -103,6 +105,33 @@ export default function FlagCard(props: {
           )}
         </YesNo>
       </div>
+
+      {props.constraints.length > 0 && (
+        <div className="mt-2 font-semibold">
+          <ul className="border-2 rounded border-magenta/15 p-2 space-y-2">
+            {props.constraints.map((constraint, index) => (
+              <li
+                className="first:border-none border-t-2 border-magenta/15 pt-1 first:pt-0"
+                key={index}
+              >
+                <div className="flex items-center gap-1 mb-2 text-magenta-500">
+                  <HandIcon />
+                  <h1>{constraint.description}</h1>
+                </div>
+                <h1>
+                  For: <span className="font-bold">{constraint.key}</span>
+                </h1>
+                <h1>
+                  Named:{" "}
+                  <span className="font-bold">
+                    {constraint.values.join(", ")}
+                  </span>
+                </h1>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

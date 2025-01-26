@@ -55,7 +55,7 @@ export default function ConstraintCard(props: {
   return (
     <div
       id={`constraintcard_${props.id}`}
-      className="border-4 rounded-lg border-gray-300 mx-2 p-2 my-4 text-gray-500 font-semibold"
+      className="border-4 rounded-lg border-magenta/15 mx-2 p-2 my-4 text-gray-500 font-semibold"
     >
       <div className="flex justify-between my-2 border-b">
         <div className="flex items-center gap-2">
