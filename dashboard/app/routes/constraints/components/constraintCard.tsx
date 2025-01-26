@@ -48,6 +48,10 @@ export default function ConstraintCard(props: {
     }
   }
 
+  function mayDelete(): boolean {
+    return !props.flags.some((f) => f.isOn);
+  }
+
   return (
     <div
       id={`constraintcard_${props.id}`}
@@ -89,25 +93,36 @@ export default function ConstraintCard(props: {
           }}
           id={ynElementId}
         >
-          {deleteWaitOpen && <div>Deleting...</div>}
-          {!deleteWaitOpen && (
-            <div
-              className="border-2 border-gray-500 rounded p-1 -my-3 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-              onClick={() => {
-                setDeleteYNOpen(true);
+          {mayDelete() ? (
+            <>
+              {deleteWaitOpen && <div>Deleting...</div>}
+              {!deleteWaitOpen && (
+                <div
+                  className="border-2 border-gray-500 rounded p-1 -my-3 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                  onClick={() => {
+                    setDeleteYNOpen(true);
 
-                setTimeout(() => {
-                  const element = document.getElementById(ynElementId);
-                  if (element) {
-                    element.scrollIntoView({
-                      block: "nearest",
-                      behavior: "smooth",
-                    });
-                  }
-                }, 0);
-              }}
-            >
+                    setTimeout(() => {
+                      const element = document.getElementById(ynElementId);
+                      if (element) {
+                        element.scrollIntoView({
+                          block: "nearest",
+                          behavior: "smooth",
+                        });
+                      }
+                    }, 0);
+                  }}
+                >
+                  <TrashIcon />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 -my-3 font-bold cursor-not-allowed">
               <TrashIcon />
+              <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-48 text-white text-sm font-bold z-40">
+                Constrains active flags, can't delete.
+              </div>
             </div>
           )}
         </YesNo>
