@@ -6,25 +6,37 @@ import BackIcon from "~/components/icons/backIcon";
 import ButtonTurnOnOff from "./components/buttonTurnOnOff";
 import HistoryItem from "./components/historyItem";
 import ClockIcon from "~/components/icons/clockIcon";
+import type Constraint from "~/domain/constraint";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const detailsReq = Client.get(`flags/${params.flagId}`);
   const historyReq = Client.post("history", { flagId: params.flagId });
+  const constraintsReq = Client.get("constraints");
 
-  const [detailsResp, historyResp] = await Promise.all([
+  const [detailsResp, historyResp, constraintsResp] = await Promise.all([
     detailsReq,
     historyReq,
+    constraintsReq,
   ]);
 
-  return { details: detailsResp.data, history: historyResp.data };
+  return {
+    details: detailsResp.data,
+    history: historyResp.data,
+    availableConstraints: constraintsResp.data,
+  };
 }
 
 export default function Component({ loaderData }: Route.ComponentProps) {
-  const { details, history }: any = loaderData;
+  const { details, history, availableConstraints }: any = loaderData;
 
   if (!details) {
     return <div>Error loading details</div>;
   }
+
+  const linkableConstraints = availableConstraints.filter(
+    (c: Constraint) =>
+      !details.constraints.some((c2: Constraint) => c2.id === c.id)
+  );
 
   return (
     <div className="text-gray-500 font-semibold">
@@ -39,16 +51,40 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
         <div className="m-2 text-lg font-bold">{details.name}</div>
 
+        <div className="flex items-center justify-center pb-2 m-2">
+          <FlagBadges
+            isOn={details.isOn}
+            stale={details.stale}
+            constraints={details.constraints}
+            showTips={false}
+          />
+        </div>
+
         <ButtonTurnOnOff details={details} />
       </div>
 
-      <div className="flex items-center justify-center border-b-4 pb-2 m-2">
-        <FlagBadges
-          isOn={details.isOn}
-          stale={details.stale}
-          constraints={details.constraints}
-          showTips={false}
-        />
+      <div className="flex gap-1 m-2 border-b-4">
+        <div className="w-1/2 text-center border-r-2">
+          <h1>Available constraints</h1>
+          <ul>
+            {linkableConstraints.map((c: Constraint) => (
+              <li key={`available_${c.id}`}>
+                <h1>{c.description}</h1>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="w-1/2 text-center">
+          Applied constraints
+          <ul>
+            {details.constraints.map((c: Constraint) => (
+              <li key={`applied_${c.id}`}>
+                <h1>{c.description}</h1>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div>
