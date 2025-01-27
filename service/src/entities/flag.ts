@@ -47,7 +47,7 @@ export default class Flag extends BaseEntity {
     }
 
     unlinkConstraint(id: string) {
-        this.constraints = (this.constraints as any[]).filter(c => c !== id)
+        this.constraints = (this.constraints as any[]).filter(c => c.id !== id)
     }
 
     unlinkAllConstraints() {

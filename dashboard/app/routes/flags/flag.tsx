@@ -7,6 +7,7 @@ import ButtonTurnOnOff from "./components/buttonTurnOnOff";
 import HistoryItem from "./components/historyItem";
 import ClockIcon from "~/components/icons/clockIcon";
 import type Constraint from "~/domain/constraint";
+import ConstraintSection from "./components/constraintSection";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const detailsReq = Client.get(`flags/${params.flagId}`);
@@ -63,29 +64,11 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         <ButtonTurnOnOff details={details} />
       </div>
 
-      <div className="flex gap-1 m-2 border-b-4">
-        <div className="w-1/2 text-center border-r-2">
-          <h1>Available constraints</h1>
-          <ul>
-            {linkableConstraints.map((c: Constraint) => (
-              <li key={`available_${c.id}`}>
-                <h1>{c.description}</h1>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="w-1/2 text-center">
-          Applied constraints
-          <ul>
-            {details.constraints.map((c: Constraint) => (
-              <li key={`applied_${c.id}`}>
-                <h1>{c.description}</h1>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ConstraintSection
+        linkableConstraints={linkableConstraints}
+        linkedConstraints={details.constraints}
+        flagId={details.id}
+      />
 
       <div>
         <div className="flex gap-1 items-center m-2 font-bold border-b-2">
