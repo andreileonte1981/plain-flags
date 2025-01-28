@@ -8,6 +8,9 @@ import YesNo from "~/components/reusables/yesno";
 import TrashIcon from "~/components/icons/trashIcon";
 import type Constraint from "~/domain/constraint";
 import HandIcon from "~/components/icons/handIcon";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
+import FlagIcon from "~/components/icons/flagIcon";
+import scrollToFlag from "../scrollToFlag";
 
 export default function FlagCard(props: {
   id: string;
@@ -44,13 +47,26 @@ export default function FlagCard(props: {
     }
   }
 
+  const flagId = `flagcard_${props.id}`;
+  const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+  const cn = `rounded border-2 m-2 p-2 text-gray-500 ${
+    flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
+  }`;
+
   return (
     <div
-      id={`flagcard_${props.id}`}
-      className="border-2 rounded border-gray-300 m-2 p-2 text-gray-500"
+      id={flagId}
+      className={cn}
+      onClick={() => {
+        setCurrentFlag(flagId);
+        scrollToFlag(props.id);
+      }}
     >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
-        <h1 className="my-2 font-bold">{props.name}</h1>
+        <h1 className="my-2 font-bold text-gray-700 text-lg flex items-center gap-1">
+          {flagId === currentFlag && <FlagIcon />}
+          {props.name}
+        </h1>
         <Link
           to={`./${props.id}`}
           className="relative group text-red-600 hover:underline font-semibold flex items-center"

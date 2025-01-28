@@ -12,6 +12,7 @@ import stylesheet from "./app.css?url";
 import { ModalContext } from "./context/modalContext";
 import { useState } from "react";
 import Modal from "./components/reusables/modal";
+import { CurrentFlagContext } from "./context/currentFlagContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,6 +48,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentFlag, setCurrentFlag] = useState("");
+
   const [message, setMessage] = useState("Harrow (-_-)");
 
   function showMessage(s: string) {
@@ -57,16 +60,19 @@ export default function App() {
   // TODO see if it makes sense to use portal for the modal, after I style it and add an overlay.
   return (
     <ModalContext.Provider value={{ showMessage }}>
-      <>
-        <Outlet />
-        <div id="main"></div>
-        <Modal
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          message={message}
-          setMessage={setMessage}
-        ></Modal>
-      </>
+      <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
+        {" "}
+        <>
+          <Outlet />
+          <div id="main"></div>
+          <Modal
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            message={message}
+            setMessage={setMessage}
+          ></Modal>
+        </>
+      </CurrentFlagContext.Provider>
     </ModalContext.Provider>
   );
 }

@@ -2,8 +2,6 @@ import type Constraint from "~/domain/constraint";
 import LinkableConstraint from "./constraintCards/linkableConstraint";
 import AppliedConstraint from "./constraintCards/appliedConstraint";
 import { useState } from "react";
-import ExpandIcon from "~/components/icons/expandIcon";
-import CollapseIcon from "~/components/icons/collapseIcon";
 import Expand from "~/components/reusables/expand";
 
 export default function ConstraintSection(props: {

@@ -6,6 +6,8 @@ import LocalError from "~/components/reusables/localError";
 import YesNo from "~/components/reusables/yesno";
 import GreenPlusButton from "~/components/reusables/greenPlusButton";
 import CancelButton from "~/components/reusables/cancelButton";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
+import scrollToFlag from "../scrollToFlag";
 
 export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [newFlagName, setNewFlagName] = useState("");
@@ -25,6 +27,8 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   }
   const { showMessage } = useContext(ModalContext);
 
+  const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+
   const onCreateYes = async () => {
     try {
       const response = await Client.post("flags", { name: newFlagName });
@@ -34,14 +38,9 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
       await revalidator.revalidate();
 
       setTimeout(() => {
-        const id = `flagcard_${response.data.id}`;
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({
-            block: "nearest",
-            behavior: "smooth",
-          });
-        }
+        setCurrentFlag(`flagcard_${response.data.id}`);
+        scrollToFlag(response.data.id);
+        props.setCreateOpen(false);
       }, 100);
     } catch (error: any) {
       // debugger;

@@ -1,3 +1,5 @@
+import type Constraint from "./constraint";
+
 export interface Flag {
     id: string;
 
@@ -7,5 +9,5 @@ export interface Flag {
 
     stale: boolean;
 
-    constraints: string[];
+    constraints: Constraint[];
 }

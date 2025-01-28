@@ -38,7 +38,7 @@ export default function LinkableConstraint(props: {
   }
 
   return (
-    <div className="flex justify-between items-center border-2 rounded text-left p-2">
+    <div className="flex justify-between flex-wrap items-center border-2 rounded text-left p-2">
       <div>
         <h1>{props.c.description}</h1>
         <h1>For: {props.c.key}</h1>

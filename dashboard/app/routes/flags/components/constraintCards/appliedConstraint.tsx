@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import LinkIcon from "~/components/icons/linkIcon";
 import UnlinkIcon from "~/components/icons/unlinkIcon";
 import YesNo from "~/components/reusables/yesno";
 import { ModalContext } from "~/context/modalContext";
@@ -39,7 +38,7 @@ export default function AppliedConstraint(props: {
   }
 
   return (
-    <div className="flex justify-between items-center border-2 rounded p-2">
+    <div className="flex flex-wrap justify-between items-center border-2 rounded p-2">
       <YesNo
         question={`Remove '${props.c.description}' from this feature?`}
         onYes={() => {
