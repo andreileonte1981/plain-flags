@@ -4,9 +4,11 @@ import type { Route } from "../../+types/root";
 import type Constraint from "~/domain/constraint";
 import ConstraintCard from "./components/constraintCard";
 import ConstraintFilters from "./components/constraintFilters";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GreenPlusButton from "~/components/reusables/greenPlusButton";
 import CreateConstraintPanel from "./components/createConstraintPanel";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
+import scrollToElement from "~/utils/scrollToElement";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -44,6 +46,14 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
       )
     );
   const [isCreateOpen, setCreateOpen] = useState(false);
+
+  const { currentConstraint, setCurrentConstraint } = useContext(
+    CurrentConstraintContext
+  );
+
+  useEffect(() => {
+    scrollToElement(`constraintcard_${currentConstraint}`, "instant");
+  }, []);
 
   return (
     <div>

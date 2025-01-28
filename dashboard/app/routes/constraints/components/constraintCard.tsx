@@ -59,7 +59,7 @@ export default function ConstraintCard(props: {
 
   const className = `border-4 rounded-lg mx-2 p-2 my-4 text-gray-500 font-semibold ${
     currentConstraint === props.id
-      ? "border-magenta/30"
+      ? "border-magenta/50"
       : "border-magenta/15 bg-gray-200/25"
   }`;
 

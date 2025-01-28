@@ -11,6 +11,7 @@ import HandIcon from "~/components/icons/handIcon";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import FlagIcon from "~/components/icons/flagIcon";
 import scrollToElement from "../../../utils/scrollToElement";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 
 export default function FlagCard(props: {
   id: string;
@@ -56,6 +57,10 @@ export default function FlagCard(props: {
   const cn = `rounded border-2 m-2 p-2 text-gray-500 scroll-mt-48 ${
     flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
   }`;
+
+  const { currentConstraint, setCurrentConstraint } = useContext(
+    CurrentConstraintContext
+  );
 
   return (
     <div
@@ -135,10 +140,14 @@ export default function FlagCard(props: {
                 className="first:border-none border-t-2 border-magenta/15 pt-1 first:pt-0"
                 key={index}
               >
-                <div className="flex items-center gap-1 mb-2 text-magenta-500">
+                <Link
+                  to={`/constraints`}
+                  onClick={() => setCurrentConstraint(constraint.id)}
+                  className="inline-flex items-center gap-1 mb-2 text-magenta-500 hover:underline"
+                >
                   <HandIcon />
                   <h1>{constraint.description}</h1>
-                </div>
+                </Link>
 
                 <h1>
                   For: <span className="font-bold">{constraint.key}</span>

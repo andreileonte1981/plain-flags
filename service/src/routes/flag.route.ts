@@ -43,10 +43,10 @@ export async function flagRoutes(server: FastifyInstance) {
                 ...flag,
                 constraints: flag.constraints.map((constraint) => {
                     return {
+                        id: constraint.id,
                         description: constraint.description,
                         key: constraint.key,
-                        values: constraint.values,
-                        flags: undefined
+                        values: constraint.values
                     }
                 }),
                 updatedAt: undefined
