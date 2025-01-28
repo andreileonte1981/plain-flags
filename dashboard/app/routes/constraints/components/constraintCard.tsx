@@ -110,7 +110,7 @@ export default function ConstraintCard(props: {
               {deleteWaitOpen && <div>Deleting...</div>}
               {!deleteWaitOpen && (
                 <div
-                  className="border-2 border-gray-500 rounded p-1 -my-3 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                  className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
                   onClick={() => {
                     setDeleteYNOpen(true);
 
@@ -130,7 +130,7 @@ export default function ConstraintCard(props: {
               )}
             </>
           ) : (
-            <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 -my-3 font-bold cursor-not-allowed">
+            <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 font-bold cursor-not-allowed">
               <TrashIcon />
 
               <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold z-40">
@@ -153,7 +153,7 @@ export default function ConstraintCard(props: {
               return (
                 <li key={f.id} className={cn}>
                   <Link
-                    className="group flex items-center gap-1 hover:text-red-600"
+                    className="group inline-flex items-center gap-1 hover:text-red-600"
                     to={`/flags/${f.id}`}
                   >
                     <LinkIcon />

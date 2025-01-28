@@ -106,7 +106,7 @@ export default function FlagCard(props: {
           {archiveWaitOpen && <div>Archiving...</div>}
           {!archiveWaitOpen && (
             <div
-              className="border-2 border-gray-500 rounded p-1 -my-3 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+              className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
               onClick={() => {
                 setArchiveYNOpen(true);
 
