@@ -13,6 +13,7 @@ import { ModalContext } from "./context/modalContext";
 import { useState } from "react";
 import Modal from "./components/reusables/modal";
 import { CurrentFlagContext } from "./context/currentFlagContext";
+import { CurrentConstraintContext } from "./context/currentConstraintContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -49,6 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
+  const [currentConstraint, setCurrentConstraint] = useState("");
 
   const [message, setMessage] = useState("Harrow (-_-)");
 
@@ -61,17 +63,20 @@ export default function App() {
   return (
     <ModalContext.Provider value={{ showMessage }}>
       <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
-        {" "}
-        <>
-          <Outlet />
-          <div id="main"></div>
-          <Modal
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            message={message}
-            setMessage={setMessage}
-          ></Modal>
-        </>
+        <CurrentConstraintContext.Provider
+          value={{ currentConstraint, setCurrentConstraint }}
+        >
+          <>
+            <Outlet />
+            <div id="main"></div>
+            <Modal
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              message={message}
+              setMessage={setMessage}
+            ></Modal>
+          </>
+        </CurrentConstraintContext.Provider>
       </CurrentFlagContext.Provider>
     </ModalContext.Provider>
   );

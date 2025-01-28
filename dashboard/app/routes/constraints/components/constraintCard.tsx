@@ -8,6 +8,7 @@ import LinkIcon from "~/components/icons/linkIcon";
 import TrashIcon from "~/components/icons/trashIcon";
 import Badge from "~/components/reusables/badge";
 import YesNo from "~/components/reusables/yesno";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type { Flag } from "~/domain/flag";
 
@@ -52,10 +53,21 @@ export default function ConstraintCard(props: {
     return !props.flags.some((f) => f.isOn);
   }
 
+  const { currentConstraint, setCurrentConstraint } = useContext(
+    CurrentConstraintContext
+  );
+
+  const className = `border-4 rounded-lg mx-2 p-2 my-4 text-gray-500 font-semibold ${
+    currentConstraint === props.id
+      ? "border-magenta/30"
+      : "border-magenta/15 bg-gray-200/25"
+  }`;
+
   return (
     <div
       id={`constraintcard_${props.id}`}
-      className="border-4 rounded-lg border-magenta/15 mx-2 p-2 my-4 text-gray-500 font-semibold"
+      className={className}
+      onClick={() => setCurrentConstraint(props.id)}
     >
       <div className="flex justify-between my-2 border-b">
         <div className="flex items-center gap-2">
@@ -120,6 +132,7 @@ export default function ConstraintCard(props: {
           ) : (
             <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 -my-3 font-bold cursor-not-allowed">
               <TrashIcon />
+
               <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold z-40">
                 Constrains active flags, can't delete.
                 <br />
