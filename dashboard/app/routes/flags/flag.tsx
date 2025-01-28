@@ -8,6 +8,8 @@ import HistoryItem from "./components/historyItem";
 import ClockIcon from "~/components/icons/clockIcon";
 import type Constraint from "~/domain/constraint";
 import ConstraintSection from "./components/constraintSection";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { useContext, useEffect } from "react";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const detailsReq = Client.get(`flags/${params.flagId}`);
@@ -29,6 +31,12 @@ export async function clientLoader({ params }: Route.LoaderArgs) {
 
 export default function Component({ loaderData }: Route.ComponentProps) {
   const { details, history, availableConstraints }: any = loaderData;
+
+  const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+
+  useEffect(() => {
+    setCurrentFlag(`flagcard_${details.id}`);
+  }, []);
 
   if (!details) {
     return <div>Error loading details</div>;

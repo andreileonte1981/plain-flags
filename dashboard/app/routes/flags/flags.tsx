@@ -2,11 +2,13 @@ import { redirect } from "react-router";
 import type { Flag } from "~/domain/flag";
 import Client from "~/client/client";
 import type { Route } from "../../+types/root";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FlagFilters from "./components/flagFilters";
 import GreenPlusButton from "~/components/reusables/greenPlusButton";
 import CreateFlagPanel from "./components/createFlagPanel";
 import FlagListItems from "./components/flagListItems";
+import scrollToFlag from "./scrollToFlag";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -40,6 +42,11 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     .filter((f) => (filters.active ? f.isOn : true));
 
   const [isCreateOpen, setCreateOpen] = useState(false);
+
+  const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+  useEffect(() => {
+    scrollToFlag(currentFlag, "instant");
+  }, []);
 
   return (
     <div className="mx-2 flex flex-col">

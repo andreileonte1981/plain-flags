@@ -39,7 +39,7 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
 
       setTimeout(() => {
         setCurrentFlag(`flagcard_${response.data.id}`);
-        scrollToFlag(response.data.id);
+        scrollToFlag(`flagcard_${response.data.id}`);
         props.setCreateOpen(false);
       }, 100);
     } catch (error: any) {

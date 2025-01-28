@@ -36,6 +36,8 @@ export default function FlagCard(props: {
 
       setArchiveWaitOpen(false);
 
+      setCurrentFlag("");
+
       revalidator.revalidate();
 
       showMessage("Flag archived.");
@@ -48,7 +50,9 @@ export default function FlagCard(props: {
   }
 
   const flagId = `flagcard_${props.id}`;
+
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+
   const cn = `rounded border-2 m-2 p-2 text-gray-500 ${
     flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
   }`;
@@ -59,7 +63,7 @@ export default function FlagCard(props: {
       className={cn}
       onClick={() => {
         setCurrentFlag(flagId);
-        scrollToFlag(props.id);
+        scrollToFlag(`flagcard_${props.id}`);
       }}
     >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
@@ -67,6 +71,7 @@ export default function FlagCard(props: {
           {flagId === currentFlag && <FlagIcon />}
           {props.name}
         </h1>
+
         <Link
           to={`./${props.id}`}
           className="relative group text-red-600 hover:underline font-semibold flex items-center"
@@ -134,9 +139,11 @@ export default function FlagCard(props: {
                   <HandIcon />
                   <h1>{constraint.description}</h1>
                 </div>
+
                 <h1>
                   For: <span className="font-bold">{constraint.key}</span>
                 </h1>
+
                 <h1>
                   Named:{" "}
                   <span className="font-bold">
