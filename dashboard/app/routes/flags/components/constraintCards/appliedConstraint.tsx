@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
-import { useRevalidator } from "react-router";
+import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
 import UnlinkIcon from "~/components/icons/unlinkIcon";
 import YesNo from "~/components/reusables/yesno";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";
 
@@ -37,6 +38,10 @@ export default function AppliedConstraint(props: {
     }
   }
 
+  const { currentConstraint, setCurrentConstraint } = useContext(
+    CurrentConstraintContext
+  );
+
   return (
     <div className="flex flex-wrap justify-between items-center border-2 rounded p-2">
       <YesNo
@@ -60,7 +65,15 @@ export default function AppliedConstraint(props: {
       </YesNo>
 
       <div className="text-right">
-        <h1>{props.c.description}</h1>
+        <Link
+          to="/constraints"
+          onClick={() => {
+            setCurrentConstraint(props.c.id);
+          }}
+          className="text-magenta-500 hover:underline"
+        >
+          {props.c.description}
+        </Link>
         <h1>For: {props.c.key}</h1>
         <h1>Named: {props.c.values.join(", ")}</h1>
       </div>
