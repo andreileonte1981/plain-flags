@@ -10,7 +10,7 @@ import type Constraint from "~/domain/constraint";
 import HandIcon from "~/components/icons/handIcon";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import FlagIcon from "~/components/icons/flagIcon";
-import scrollToFlag from "../scrollToFlag";
+import scrollToElement from "../../../utils/scrollToElement";
 
 export default function FlagCard(props: {
   id: string;
@@ -53,7 +53,7 @@ export default function FlagCard(props: {
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
 
-  const cn = `rounded border-2 m-2 p-2 text-gray-500 ${
+  const cn = `rounded border-2 m-2 p-2 text-gray-500 scroll-mt-48 ${
     flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
   }`;
 
@@ -63,7 +63,7 @@ export default function FlagCard(props: {
       className={cn}
       onClick={() => {
         setCurrentFlag(flagId);
-        scrollToFlag(`flagcard_${props.id}`);
+        scrollToElement(`flagcard_${props.id}`);
       }}
     >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">

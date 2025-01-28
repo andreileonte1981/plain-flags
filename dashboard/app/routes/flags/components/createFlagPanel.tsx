@@ -7,7 +7,7 @@ import YesNo from "~/components/reusables/yesno";
 import GreenPlusButton from "~/components/reusables/greenPlusButton";
 import CancelButton from "~/components/reusables/cancelButton";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
-import scrollToFlag from "../scrollToFlag";
+import scrollToElement from "../../../utils/scrollToElement";
 
 export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
   const [newFlagName, setNewFlagName] = useState("");
@@ -39,7 +39,7 @@ export default function CreateFlagPanel(props: { setCreateOpen: Function }) {
 
       setTimeout(() => {
         setCurrentFlag(`flagcard_${response.data.id}`);
-        scrollToFlag(`flagcard_${response.data.id}`);
+        scrollToElement(`flagcard_${response.data.id}`);
         props.setCreateOpen(false);
       }, 100);
     } catch (error: any) {

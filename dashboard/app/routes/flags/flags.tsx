@@ -7,7 +7,7 @@ import FlagFilters from "./components/flagFilters";
 import GreenPlusButton from "~/components/reusables/greenPlusButton";
 import CreateFlagPanel from "./components/createFlagPanel";
 import FlagListItems from "./components/flagListItems";
-import scrollToFlag from "./scrollToFlag";
+import scrollToElement from "../../utils/scrollToElement";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 
 export async function clientLoader({}) {
@@ -45,7 +45,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
   useEffect(() => {
-    scrollToFlag(currentFlag, "instant");
+    scrollToElement(currentFlag, "instant");
   }, []);
 
   return (
