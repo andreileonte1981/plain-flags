@@ -62,7 +62,7 @@ export default function ButtonTurnOnOff(props: { details: any }) {
           {turnOnOffWaitOpen && <div>Turning off</div>}
           {!turnOnOffWaitOpen && (
             <button
-              className="rounded bg-red-600 text-white m-2 px-2 py-1 hover:bg-red-400"
+              className="rounded bg-red-600 text-white mx-2 px-2 py-1 hover:bg-red-400"
               onClick={() => setYnOpen(true)}
             >
               Turn off
@@ -82,7 +82,7 @@ export default function ButtonTurnOnOff(props: { details: any }) {
           {turnOnOffWaitOpen && <div>Turning on</div>}
           {!turnOnOffWaitOpen && (
             <button
-              className="rounded bg-green-600 text-white m-2 px-2 py-1 hover:bg-green-400"
+              className="rounded bg-green-600 text-white mx-2 px-2 py-1 hover:bg-green-400"
               onClick={() => setYnOpen(true)}
             >
               Turn on

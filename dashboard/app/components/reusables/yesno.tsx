@@ -44,7 +44,7 @@ export default function YesNo(props: {
         </div>
       )}
 
-      {!props.isOpen && <div className="py-4">{props.children}</div>}
+      {!props.isOpen && <div>{props.children}</div>}
     </div>
   );
 }
