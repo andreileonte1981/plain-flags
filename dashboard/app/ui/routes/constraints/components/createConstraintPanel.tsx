@@ -2,10 +2,10 @@ import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import YesNo from "~/components/reusables/yesno";
-import GreenPlusButton from "~/components/reusables/greenPlusButton";
-import CancelButton from "~/components/reusables/cancelButton";
-import LocalError from "~/components/reusables/localError";
+import YesNo from "~/ui/components/reusables/yesno";
+import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
+import CancelButton from "~/ui/components/reusables/cancelButton";
+import LocalError from "~/ui/components/reusables/localError";
 
 export default function CreateConstraintPanel(props: {
   setCreateOpen: Function;

@@ -1,16 +1,17 @@
 import { useContext, useState } from "react";
 import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
-import FlagIcon from "~/components/icons/flagIcon";
-import FlagOutlineIcon from "~/components/icons/flagOutlineIcon";
-import HandIcon from "~/components/icons/handIcon";
-import LinkIcon from "~/components/icons/linkIcon";
-import TrashIcon from "~/components/icons/trashIcon";
-import Badge from "~/components/reusables/badge";
-import YesNo from "~/components/reusables/yesno";
+import FlagIcon from "~/ui/components/icons/flagIcon";
+import FlagOutlineIcon from "~/ui/components/icons/flagOutlineIcon";
+import HandIcon from "~/ui/components/icons/handIcon";
+import LinkIcon from "~/ui/components/icons/linkIcon";
+import TrashIcon from "~/ui/components/icons/trashIcon";
+import Badge from "~/ui/components/reusables/badge";
+import YesNo from "~/ui/components/reusables/yesno";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type { Flag } from "~/domain/flag";
+import scrollToElement from "~/utils/scrollToElement";
 
 export default function ConstraintCard(props: {
   id: string;
@@ -67,7 +68,10 @@ export default function ConstraintCard(props: {
     <div
       id={`constraintcard_${props.id}`}
       className={className}
-      onClick={() => setCurrentConstraint(props.id)}
+      onClick={() => {
+        setCurrentConstraint(props.id);
+        scrollToElement(`constraintcard_${props.id}`);
+      }}
     >
       <div className="flex justify-between my-2 border-b">
         <div className="flex items-center gap-2">

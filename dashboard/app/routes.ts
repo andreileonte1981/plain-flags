@@ -1,12 +1,12 @@
 import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
 
 export default [
-    index("./routes/index.tsx"),
-    layout("./layouts/dashboard.tsx", [
-        route("flags", "routes/flags/flags.tsx"),
-        route("constraints", "./routes/constraints/constraints.tsx"),
-        route("flags/:flagId", "./routes/flags/flag.tsx")
+    index("ui/routes/index.tsx"),
+    layout("ui/layouts/dashboard.tsx", [
+        route("flags", "ui/routes/flags/flags.tsx"),
+        route("constraints", "ui/routes/constraints/constraints.tsx"),
+        route("flags/:flagId", "ui/routes/flags/flag.tsx")
     ]),
-    route("login", "./routes/login.tsx"),
-    route("register", "./routes/register.tsx")
+    route("login", "ui/routes/login.tsx"),
+    route("register", "ui/routes/register.tsx")
 ] satisfies RouteConfig;

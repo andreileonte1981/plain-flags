@@ -3,14 +3,14 @@ import { useContext, useState } from "react";
 import FlagBadges from "./flagBadges";
 import { ModalContext } from "~/context/modalContext";
 import Client from "~/client/client";
-import LinkIcon from "~/components/icons/linkIcon";
-import YesNo from "~/components/reusables/yesno";
-import TrashIcon from "~/components/icons/trashIcon";
+import LinkIcon from "~/ui/components/icons/linkIcon";
+import YesNo from "~/ui/components/reusables/yesno";
+import TrashIcon from "~/ui/components/icons/trashIcon";
 import type Constraint from "~/domain/constraint";
-import HandIcon from "~/components/icons/handIcon";
+import HandIcon from "~/ui/components/icons/handIcon";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
-import FlagIcon from "~/components/icons/flagIcon";
-import scrollToElement from "../../../utils/scrollToElement";
+import FlagIcon from "~/ui/components/icons/flagIcon";
+import scrollToElement from "../../../../utils/scrollToElement";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 
 export default function FlagCard(props: {

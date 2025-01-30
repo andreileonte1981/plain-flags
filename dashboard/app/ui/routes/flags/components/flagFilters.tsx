@@ -1,4 +1,4 @@
-import FilterEdit from "~/components/reusables/filterEdit";
+import FilterEdit from "~/ui/components/reusables/filterEdit";
 
 export default function FlagFilters(props: {
   setFilters: Function;

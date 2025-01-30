@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import YesNo from "~/components/reusables/yesno";
+import YesNo from "~/ui/components/reusables/yesno";
 import { ModalContext } from "~/context/modalContext";
 
 export default function ButtonTurnOnOff(props: { details: any }) {

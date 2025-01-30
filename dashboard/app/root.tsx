@@ -11,7 +11,7 @@ import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { ModalContext } from "./context/modalContext";
 import { useState } from "react";
-import Modal from "./components/reusables/modal";
+import Modal from "./ui/components/reusables/modal";
 import { CurrentFlagContext } from "./context/currentFlagContext";
 import { CurrentConstraintContext } from "./context/currentConstraintContext";
 

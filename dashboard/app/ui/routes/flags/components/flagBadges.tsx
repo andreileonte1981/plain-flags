@@ -1,8 +1,8 @@
-import ClockIcon from "~/components/icons/clockIcon";
-import FlagIcon from "~/components/icons/flagIcon";
-import FlagOutlineIcon from "~/components/icons/flagOutlineIcon";
-import HandIcon from "~/components/icons/handIcon";
-import Badge from "~/components/reusables/badge";
+import ClockIcon from "~/ui/components/icons/clockIcon";
+import FlagIcon from "~/ui/components/icons/flagIcon";
+import FlagOutlineIcon from "~/ui/components/icons/flagOutlineIcon";
+import HandIcon from "~/ui/components/icons/handIcon";
+import Badge from "~/ui/components/reusables/badge";
 import type Constraint from "~/domain/constraint";
 
 export default function FlagBadges(props: {

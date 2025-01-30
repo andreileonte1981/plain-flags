@@ -1,11 +1,11 @@
 import { redirect } from "react-router";
 import Client from "~/client/client";
-import type { Route } from "../../+types/root";
+import type { Route } from "../../../+types/root";
 import type Constraint from "~/domain/constraint";
 import ConstraintCard from "./components/constraintCard";
 import ConstraintFilters from "./components/constraintFilters";
 import { useContext, useEffect, useState } from "react";
-import GreenPlusButton from "~/components/reusables/greenPlusButton";
+import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CreateConstraintPanel from "./components/createConstraintPanel";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import scrollToElement from "~/utils/scrollToElement";

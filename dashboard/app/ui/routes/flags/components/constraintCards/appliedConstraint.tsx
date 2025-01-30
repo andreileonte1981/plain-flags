@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
-import UnlinkIcon from "~/components/icons/unlinkIcon";
-import YesNo from "~/components/reusables/yesno";
+import UnlinkIcon from "~/ui/components/icons/unlinkIcon";
+import YesNo from "~/ui/components/reusables/yesno";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";

@@ -1,13 +1,13 @@
 import { redirect } from "react-router";
 import type { Flag } from "~/domain/flag";
 import Client from "~/client/client";
-import type { Route } from "../../+types/root";
+import type { Route } from "../../../+types/root";
 import { useContext, useEffect, useState } from "react";
 import FlagFilters from "./components/flagFilters";
-import GreenPlusButton from "~/components/reusables/greenPlusButton";
+import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CreateFlagPanel from "./components/createFlagPanel";
 import FlagListItems from "./components/flagListItems";
-import scrollToElement from "../../utils/scrollToElement";
+import scrollToElement from "../../../utils/scrollToElement";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 
 export async function clientLoader({}) {

@@ -1,11 +1,11 @@
 import Client from "~/client/client";
-import type { Route } from "../../+types/root";
+import type { Route } from "../../../+types/root";
 import FlagBadges from "./components/flagBadges";
 import { Link } from "react-router";
-import BackIcon from "~/components/icons/backIcon";
+import BackIcon from "~/ui/components/icons/backIcon";
 import ButtonTurnOnOff from "./components/buttonTurnOnOff";
 import HistoryItem from "./components/historyItem";
-import ClockIcon from "~/components/icons/clockIcon";
+import ClockIcon from "~/ui/components/icons/clockIcon";
 import type Constraint from "~/domain/constraint";
 import ConstraintSection from "./components/constraintSection";
 import { CurrentFlagContext } from "~/context/currentFlagContext";

@@ -2,7 +2,7 @@ import type Constraint from "~/domain/constraint";
 import LinkableConstraint from "./constraintCards/linkableConstraint";
 import AppliedConstraint from "./constraintCards/appliedConstraint";
 import { useState } from "react";
-import Expand from "~/components/reusables/expand";
+import Expand from "~/ui/components/reusables/expand";
 
 export default function ConstraintSection(props: {
   linkableConstraints: Constraint[];
