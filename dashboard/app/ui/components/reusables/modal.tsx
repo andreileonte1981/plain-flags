@@ -1,9 +1,23 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router";
+
 export default function Modal(props: {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   message: string;
   setMessage: (val: string) => void;
 }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Close the modal when the route changes
+    if (!props.isOpen) {
+      return;
+    }
+
+    props.setIsOpen(false);
+  }, [location]);
+
   // TODO: add a possible icon, caller may decide between success, error, info, warning by selecting an icon component.
   return (
     props.isOpen && (
