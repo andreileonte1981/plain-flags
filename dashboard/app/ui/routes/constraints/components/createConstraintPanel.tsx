@@ -6,8 +6,11 @@ import YesNo from "~/ui/components/reusables/yesno";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CancelButton from "~/ui/components/reusables/cancelButton";
 import LocalError from "~/ui/components/reusables/localError";
+import { AnimatePresence, motion } from "motion/react";
+import { slideDownVariants } from "~/ui/animations/variants";
 
 export default function CreateConstraintPanel(props: {
+  isCreateOpen: boolean;
   setCreateOpen: Function;
 }) {
   const [formData, setFormData] = useState({
@@ -98,118 +101,133 @@ export default function CreateConstraintPanel(props: {
   }
 
   return (
-    <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
-      <div className="flex flex-col items-end">
-        <label
-          htmlFor="newConstraintDescription"
-          className="flex justify-end items-center m-1 flex-1 text-end"
+    <AnimatePresence>
+      {props.isCreateOpen && (
+        <motion.div
+          variants={slideDownVariants}
+          initial="hidden"
+          animate="shown"
+          exit="hidden"
+          transition={{ duration: 0.1, ease: "easeIn" }}
         >
-          <p className="mr-2">
-            Constraint description
-            <br />
-            <span className="text-sm text-gray-500">(e.g. 'Test Users')</span>
-          </p>
-          <div className="flex flex-col items-end">
-            <input
-              id="newConstraintDescription"
-              name="newConstraintDescription"
-              type="text"
-              className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-              defaultValue={formData.description}
-              onChange={(e) => {
-                setFormData({ ...formData, description: e.target.value });
-                setError({ ...error, description: "" });
-              }}
-            />
-            <LocalError error={error.description} />
-          </div>
-        </label>
-        <label
-          htmlFor="newConstraintKey"
-          className="flex justify-end items-center m-1 flex-1 text-end"
-        >
-          <p className="mr-2">
-            What it's for
-            <br />
-            <span className="text-sm text-gray-500">
-              (e.g. <span className="font-bold">'user_id'</span>)
-            </span>
-          </p>
-          <div className="flex flex-col items-end">
-            <input
-              id="newConstraintKey"
-              name="newConstraintKey"
-              type="text"
-              className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-              defaultValue={formData.key}
-              onChange={(e) => {
-                setFormData({ ...formData, key: e.target.value });
-                setError({ ...error, key: "" });
-              }}
-            />
-            <LocalError error={error.key} />
-          </div>
-        </label>
-        <label
-          htmlFor="newConstraintValues"
-          className="flex justify-end items-center m-1 flex-1 text-end"
-        >
-          <div>
-            <p className="mr-2">
-              Who/which it's for
-              <br />
-              <span className="text-sm text-gray-500">
-                (e.g. <span className="font-bold">'Steve, John, Pete'</span>)
-              </span>
-            </p>
-          </div>
-          <div className="flex flex-col items-end">
-            <input
-              id="newConstraintValues"
-              name="newConstraintValues"
-              type="text"
-              className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-              defaultValue={formData.commaSeparatedValues}
-              onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  commaSeparatedValues: e.target.value,
-                });
-                setError({ ...error, commaSeparatedValues: "" });
-              }}
-            />
-            <LocalError error={error.commaSeparatedValues} />
-          </div>
-        </label>
-      </div>
+          <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
+            <div className="flex flex-col items-end">
+              <label
+                htmlFor="newConstraintDescription"
+                className="flex justify-end items-center m-1 flex-1 text-end"
+              >
+                <p className="mr-2">
+                  Constraint description
+                  <br />
+                  <span className="text-sm text-gray-500">
+                    (e.g. 'Test Users')
+                  </span>
+                </p>
+                <div className="flex flex-col items-end">
+                  <input
+                    id="newConstraintDescription"
+                    name="newConstraintDescription"
+                    type="text"
+                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
+                    defaultValue={formData.description}
+                    onChange={(e) => {
+                      setFormData({ ...formData, description: e.target.value });
+                      setError({ ...error, description: "" });
+                    }}
+                  />
+                  <LocalError error={error.description} />
+                </div>
+              </label>
+              <label
+                htmlFor="newConstraintKey"
+                className="flex justify-end items-center m-1 flex-1 text-end"
+              >
+                <p className="mr-2">
+                  What it's for
+                  <br />
+                  <span className="text-sm text-gray-500">
+                    (e.g. <span className="font-bold">'user_id'</span>)
+                  </span>
+                </p>
+                <div className="flex flex-col items-end">
+                  <input
+                    id="newConstraintKey"
+                    name="newConstraintKey"
+                    type="text"
+                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
+                    defaultValue={formData.key}
+                    onChange={(e) => {
+                      setFormData({ ...formData, key: e.target.value });
+                      setError({ ...error, key: "" });
+                    }}
+                  />
+                  <LocalError error={error.key} />
+                </div>
+              </label>
+              <label
+                htmlFor="newConstraintValues"
+                className="flex justify-end items-center m-1 flex-1 text-end"
+              >
+                <div>
+                  <p className="mr-2">
+                    Who/which it's for
+                    <br />
+                    <span className="text-sm text-gray-500">
+                      (e.g.{" "}
+                      <span className="font-bold">'Steve, John, Pete'</span>)
+                    </span>
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <input
+                    id="newConstraintValues"
+                    name="newConstraintValues"
+                    type="text"
+                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
+                    defaultValue={formData.commaSeparatedValues}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        commaSeparatedValues: e.target.value,
+                      });
+                      setError({ ...error, commaSeparatedValues: "" });
+                    }}
+                  />
+                  <LocalError error={error.commaSeparatedValues} />
+                </div>
+              </label>
+            </div>
 
-      <YesNo
-        question={`Create new constraint '${formData.description}'?`}
-        onYes={() => {
-          onCreateYes();
-        }}
-        isOpen={ynOpen}
-        hide={() => {
-          setYNOpen(false);
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <GreenPlusButton
-            onClick={() => {
-              if (checkValid()) {
-                setYNOpen(true);
-              }
-            }}
-            text="Create"
-          />
-          <CancelButton
-            onClick={() => {
-              props.setCreateOpen(false);
-            }}
-            text="Cancel"
-          />
-        </div>
-      </YesNo>
-    </div>
+            <YesNo
+              question={`Create new constraint '${formData.description}'?`}
+              onYes={() => {
+                onCreateYes();
+              }}
+              isOpen={ynOpen}
+              hide={() => {
+                setYNOpen(false);
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <GreenPlusButton
+                  onClick={() => {
+                    if (checkValid()) {
+                      setYNOpen(true);
+                    }
+                  }}
+                  text="Create"
+                />
+                <CancelButton
+                  onClick={() => {
+                    props.setCreateOpen(false);
+                  }}
+                  text="Cancel"
+                />
+              </div>
+            </YesNo>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

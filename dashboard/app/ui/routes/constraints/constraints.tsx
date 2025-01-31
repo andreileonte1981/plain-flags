@@ -67,9 +67,10 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
             text="Create new constraint"
           ></GreenPlusButton>
         </div>
-        {isCreateOpen && (
-          <CreateConstraintPanel setCreateOpen={setCreateOpen} />
-        )}
+        <CreateConstraintPanel
+          isCreateOpen={isCreateOpen}
+          setCreateOpen={setCreateOpen}
+        />
       </div>
 
       <div>
