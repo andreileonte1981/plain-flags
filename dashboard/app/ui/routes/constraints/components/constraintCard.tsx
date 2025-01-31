@@ -157,7 +157,7 @@ export default function ConstraintCard(props: {
               return (
                 <li key={f.id} className={cn}>
                   <Link
-                    className="group inline-flex items-center gap-1 hover:text-red-600"
+                    className="relative group inline-flex items-center gap-1 hover:text-red-600"
                     to={`/flags/${f.id}`}
                   >
                     <LinkIcon />
@@ -173,6 +173,9 @@ export default function ConstraintCard(props: {
                         <FlagOutlineIcon />
                       </Badge>
                     )}
+                    <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-40">
+                      Flag details
+                    </div>
                   </Link>
                 </li>
               );

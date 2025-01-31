@@ -81,7 +81,7 @@ export default function FlagCard(props: {
           to={`./${props.id}`}
           className="relative group text-red-600 hover:underline font-semibold flex items-center"
         >
-          {props.id}
+          details
           <LinkIcon />
           <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-40">
             Flag details
