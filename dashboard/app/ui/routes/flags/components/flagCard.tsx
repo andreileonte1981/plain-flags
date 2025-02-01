@@ -83,7 +83,7 @@ export default function FlagCard(props: {
         >
           details
           <LinkIcon />
-          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-40">
+          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold">
             Flag details
           </div>
         </Link>

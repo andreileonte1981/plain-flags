@@ -20,6 +20,9 @@ export default {
         magenta: '#ff00ff', // Hex code for magenta
         'magenta-500': '#880088', // Hex code for magenta
       },
+      zIndex: {
+        '5': "5"
+      }
     },
   },
   plugins: [require("@tailwindcss/forms")],

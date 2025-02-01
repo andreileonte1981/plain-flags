@@ -20,7 +20,6 @@ export default function YesNoWrap(props: {
 
   useEffect(() => {
     const el = document.getElementById(props.clickId);
-    console.debug(el);
 
     el?.addEventListener("click", handleClick);
 
@@ -68,6 +67,7 @@ export default function YesNoWrap(props: {
           initial="hidden"
           animate="shown"
           exit="hidden"
+          className="z-40"
           id={`yn_${props.id}`}
           onAnimationStart={() => {
             const element = document.getElementById(`yn_${props.id}`);
