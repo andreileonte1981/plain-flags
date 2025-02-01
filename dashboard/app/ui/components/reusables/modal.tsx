@@ -18,7 +18,6 @@ export default function Modal(props: {
     props.setIsOpen(false);
   }, [location]);
 
-  // TODO: add a possible icon, caller may decide between success, error, info, warning by selecting an icon component.
   return (
     props.isOpen && (
       <div

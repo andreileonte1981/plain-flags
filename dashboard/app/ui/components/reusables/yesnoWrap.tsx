@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState, type ReactNode } from "react";
 
 export default function YesNoWrap(props: {
@@ -13,23 +14,61 @@ export default function YesNoWrap(props: {
     setOpen(true);
   }
 
+  const animDuration = 0.1;
+
   useEffect(() => {
-    const el = document.getElementById(props.clickId);
-    console.debug(el);
-    el?.addEventListener("click", handleClick);
+    let el: HTMLElement | null = null;
+    setTimeout(() => {
+      el = document.getElementById(props.clickId);
+
+      el?.addEventListener("click", handleClick);
+    }, 1100 * animDuration);
 
     return () => {
       el?.removeEventListener("click", handleClick);
     };
   }, [isOpen]);
 
+  const fade = {
+    hidden: {
+      opacity: 0,
+      transition: {
+        duration: animDuration,
+        ease: "easeIn",
+      },
+    },
+    shown: {
+      opacity: 1,
+      transition: {
+        duration: animDuration,
+        ease: "easeIn",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: animDuration,
+        ease: "easeIn",
+      },
+    },
+  };
+
   return (
-    <div id="yesno">
-      {isOpen && (
-        <div id={`yn_${props.id}`}>
+    <AnimatePresence initial={false} mode="wait">
+      {isOpen ? (
+        <motion.div
+          key="yesNoPanel"
+          variants={fade}
+          initial="hidden"
+          animate="shown"
+          exit="hidden"
+          id={`yn_${props.id}`}
+        >
           <div
             className="z-40 fixed w-screen h-screen top-0 left-0 bg-black/20"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+            }}
           >
             {/*full screen background to click on to dismiss*/}
           </div>
@@ -41,7 +80,9 @@ export default function YesNoWrap(props: {
               <div
                 className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-green-900 border-2 cursor-pointer hover:shadow-inner hover:border-green-700 active:bg-gray-200"
                 onClick={() => {
-                  props.onYes();
+                  setTimeout(() => {
+                    props.onYes();
+                  }, animDuration * 1000);
                   setOpen(false);
                 }}
               >
@@ -50,16 +91,27 @@ export default function YesNoWrap(props: {
 
               <div
                 className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-red-900 border-2 cursor-pointer hover:shadow-inner hover:border-red-700 active:bg-gray-200"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                }}
               >
                 No
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
+      ) : (
+        <motion.div
+          key="childWrapper"
+          variants={fade}
+          initial="hidden"
+          animate="shown"
+          exit="hidden"
+          id="childWrap"
+        >
+          {props.children}
+        </motion.div>
       )}
-
-      {!isOpen && <div id="childWrap">{props.children}</div>}
-    </div>
+    </AnimatePresence>
   );
 }

@@ -59,7 +59,6 @@ export default function App() {
     setIsOpen(true);
   }
 
-  // TODO see if it makes sense to use portal for the modal, after I style it and add an overlay.
   return (
     <ModalContext.Provider value={{ showMessage }}>
       <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>

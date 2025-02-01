@@ -14,7 +14,7 @@ export default function Dashboard() {
 
   function logout() {
     localStorage.setItem("jwt", "");
-    showMessage("You were logged out");
+    // TODO: show a toast with "you were logged out" when it's written.
     return navigate("/login");
   }
 
