@@ -4,9 +4,9 @@ import MenuItem from "~/ui/components/reusables/menuitem";
 import FlagIcon from "~/ui/components/icons/flagIcon";
 import HandIcon from "~/ui/components/icons/handIcon";
 import LogoutButton from "~/ui/components/reusables/logoutButton";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ModalContext } from "~/context/modalContext";
-import YesNo from "~/ui/components/reusables/yesno";
+import YesNoWrap from "../components/reusables/yesnoWrap";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -17,8 +17,6 @@ export default function Dashboard() {
     showMessage("You were logged out");
     return navigate("/login");
   }
-
-  const [logoutYNOpen, setLogoutYNOpen] = useState(false);
 
   return (
     <div className="flex items-stretch w-full min-h-screen">
@@ -59,26 +57,17 @@ export default function Dashboard() {
             </div>
 
             <div className="mb-20">
-              <YesNo
+              <YesNoWrap
+                clickId="openLogoutYesNo"
                 question="Logout: are you sure?"
                 onYes={logout}
-                isOpen={logoutYNOpen}
-                hide={() => {
-                  setLogoutYNOpen(false);
-                }}
               >
-                {/* separator */}
-                <div className="w-48 ml-2 mb-2 h-1 bg-slate-500/25 rounded"></div>
-
-                <LogoutButton
-                  handleLogout={() => setLogoutYNOpen(!logoutYNOpen)}
-                />
-              </YesNo>
+                <LogoutButton clickId="openLogoutYesNo" />
+              </YesNoWrap>
             </div>
           </div>
         </div>
       </div>
-
       <div className="bg-gray-50 bg-opacity-25 flex-auto">
         <Outlet></Outlet>
       </div>
