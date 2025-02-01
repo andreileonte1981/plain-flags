@@ -10,6 +10,8 @@ export default function YesNoWrap(props: {
 }) {
   const [isOpen, setOpen] = useState(false);
 
+  const [childrenShown, setChildrenShown] = useState(true);
+
   function handleClick() {
     setOpen(true);
   }
@@ -17,17 +19,15 @@ export default function YesNoWrap(props: {
   const animDuration = 0.1;
 
   useEffect(() => {
-    let el: HTMLElement | null = null;
-    setTimeout(() => {
-      el = document.getElementById(props.clickId);
+    const el = document.getElementById(props.clickId);
+    console.debug(el);
 
-      el?.addEventListener("click", handleClick);
-    }, 1100 * animDuration);
+    el?.addEventListener("click", handleClick);
 
     return () => {
       el?.removeEventListener("click", handleClick);
     };
-  }, [isOpen]);
+  }, [childrenShown]);
 
   const fade = {
     hidden: {
@@ -54,7 +54,13 @@ export default function YesNoWrap(props: {
   };
 
   return (
-    <AnimatePresence initial={false} mode="wait">
+    <AnimatePresence
+      initial={false}
+      mode="wait"
+      onExitComplete={() => {
+        setChildrenShown(!isOpen);
+      }}
+    >
       {isOpen ? (
         <motion.div
           key="yesNoPanel"
@@ -63,6 +69,15 @@ export default function YesNoWrap(props: {
           animate="shown"
           exit="hidden"
           id={`yn_${props.id}`}
+          onAnimationStart={() => {
+            const element = document.getElementById(`yn_${props.id}`);
+            if (element) {
+              element.scrollIntoView({
+                block: "nearest",
+                behavior: "smooth",
+              });
+            }
+          }}
         >
           <div
             className="z-40 fixed w-screen h-screen top-0 left-0 bg-black/20"

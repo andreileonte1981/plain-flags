@@ -7,11 +7,11 @@ import HandIcon from "~/ui/components/icons/handIcon";
 import LinkIcon from "~/ui/components/icons/linkIcon";
 import TrashIcon from "~/ui/components/icons/trashIcon";
 import Badge from "~/ui/components/reusables/badge";
-import YesNo from "~/ui/components/reusables/yesno";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type { Flag } from "~/domain/flag";
 import scrollToElement from "~/utils/scrollToElement";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function ConstraintCard(props: {
   id: string;
@@ -98,14 +98,11 @@ export default function ConstraintCard(props: {
           </div>
         </div>
 
-        <YesNo
+        <YesNoWrap
+          clickId={`ynDeleteConstraint_${props.id}`}
           question={`Delete constraint?`}
           onYes={() => {
             deleteConstraint();
-          }}
-          isOpen={deleteYNOpen}
-          hide={() => {
-            setDeleteYNOpen(false);
           }}
           id={ynElementId}
         >
@@ -115,19 +112,7 @@ export default function ConstraintCard(props: {
               {!deleteWaitOpen && (
                 <div
                   className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-                  onClick={() => {
-                    setDeleteYNOpen(true);
-
-                    setTimeout(() => {
-                      const element = document.getElementById(ynElementId);
-                      if (element) {
-                        element.scrollIntoView({
-                          block: "nearest",
-                          behavior: "smooth",
-                        });
-                      }
-                    }, 0);
-                  }}
+                  id={`ynDeleteConstraint_${props.id}`}
                 >
                   <TrashIcon />
                 </div>
@@ -144,7 +129,7 @@ export default function ConstraintCard(props: {
               </div>
             </div>
           )}
-        </YesNo>
+        </YesNoWrap>
       </div>
 
       {props.flags.length > 0 && (
