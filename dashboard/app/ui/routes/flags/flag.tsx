@@ -1,7 +1,7 @@
 import Client from "~/client/client";
 import type { Route } from "../../../+types/root";
 import FlagBadges from "./components/flagBadges";
-import { Link } from "react-router";
+import { Link, redirect } from "react-router";
 import BackIcon from "~/ui/components/icons/backIcon";
 import ButtonTurnOnOff from "./components/buttonTurnOnOff";
 import HistoryItem from "./components/historyItem";
@@ -12,6 +12,9 @@ import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { useContext, useEffect } from "react";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
+  if (!localStorage.getItem("jwt")) {
+    return redirect("/login");
+  }
   const detailsReq = Client.get(`flags/${params.flagId}`);
   const historyReq = Client.post("history", { flagId: params.flagId });
   const constraintsReq = Client.get("constraints");

@@ -7,17 +7,26 @@ export default class Client {
         const token = localStorage.getItem("jwt");
 
         if (token) {
-            const response = await axios.post(
-                `${this.baseUrl}${url}`,
-                data,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            try {
+                const response = await axios.post(
+                    `${this.baseUrl}${url}`,
+                    data,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-            return response
+                return response
+            } catch (error: any) {
+                if (error.status === 401) {
+                    alert("Unauthorized")
+
+                    localStorage.removeItem("jwt")
+                }
+                throw error
+            }
         }
 
         const response = await axios.post(`${this.baseUrl}${url}`, data)
@@ -28,15 +37,25 @@ export default class Client {
     static async get(url: string) {
         const token = localStorage.getItem("jwt");
 
-        const response = await axios.get(
-            `${this.baseUrl}${url}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+        try {
+            const response = await axios.get(
+                `${this.baseUrl}${url}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-        return response
+            return response
+        }
+        catch (error: any) {
+            if (error.status === 401) {
+                alert("Unauthorized")
+
+                localStorage.removeItem("jwt")
+            }
+            throw error
+        }
     }
 }

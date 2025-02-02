@@ -5,7 +5,7 @@ export default function FlagListItems(flagData?: Flag[]) {
   if (!flagData?.length) {
     return (
       <div className="flex items-center justify-center">
-        <h1 className="font-semibold text-lg my-10">No flags</h1>
+        <h1 className="text-gray-400 my-10">No flags found</h1>
       </div>
     );
   }

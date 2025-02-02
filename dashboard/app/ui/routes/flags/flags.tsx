@@ -17,7 +17,7 @@ export async function clientLoader({}) {
 
   const response = await Client.get("flags");
 
-  return response.data;
+  return response?.data;
 }
 
 export default function Component({ loaderData }: Route.ComponentProps) {
