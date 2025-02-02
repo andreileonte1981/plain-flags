@@ -2,10 +2,10 @@ import { useContext, useState } from "react";
 import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
 import LinkIcon from "~/ui/components/icons/linkIcon";
-import YesNo from "~/ui/components/reusables/yesno";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function LinkableConstraint(props: {
   c: Constraint;
@@ -58,25 +58,24 @@ export default function LinkableConstraint(props: {
         <h1>Named: {props.c.values.join(", ")}</h1>
       </div>
 
-      <YesNo
+      <YesNoWrap
         question={`Apply '${props.c.description}' to this feature?`}
+        clickId={`addConstraint_${props.flagId}_${props.c.id}`}
         onYes={() => {
           apply(props.c.id, props.flagId);
         }}
-        isOpen={ynOpen}
-        hide={() => setYnOpen(false)}
       >
         {waitOpen && <div>Applying constraint...</div>}
         {!waitOpen && (
           <button
-            onClick={() => setYnOpen(true)}
+            id={`addConstraint_${props.flagId}_${props.c.id}`}
             className="flex items-center border-magenta-500 border-2 rounded-md bg-magenta/15 p-2 text-magenta-500 text-xs uppercase font-bold hover:text-magenta hover:bg-magenta/5 active:scale-95"
           >
             Apply
             <LinkIcon />
           </button>
         )}
-      </YesNo>
+      </YesNoWrap>
     </div>
   );
 }

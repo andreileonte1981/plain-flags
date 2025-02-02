@@ -2,16 +2,15 @@ import { useContext, useState } from "react";
 import { Link, useRevalidator } from "react-router";
 import Client from "~/client/client";
 import UnlinkIcon from "~/ui/components/icons/unlinkIcon";
-import YesNo from "~/ui/components/reusables/yesno";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function AppliedConstraint(props: {
   c: Constraint;
   flagId: string;
 }) {
-  const [ynOpen, setYnOpen] = useState(false);
   const [waitOpen, setWaitOpen] = useState(false);
   const { showMessage } = useContext(ModalContext);
   const revalidator = useRevalidator();
@@ -44,25 +43,24 @@ export default function AppliedConstraint(props: {
 
   return (
     <div className="flex flex-wrap justify-between items-center border-2 rounded p-2">
-      <YesNo
+      <YesNoWrap
         question={`Remove '${props.c.description}' from this feature?`}
+        clickId={`removeConstraint_${props.flagId}_${props.c.id}`}
         onYes={() => {
           unlink(props.c.id, props.flagId);
         }}
-        isOpen={ynOpen}
-        hide={() => setYnOpen(false)}
       >
         {waitOpen && <div>Removing constraint...</div>}
         {!waitOpen && (
           <button
-            onClick={() => setYnOpen(true)}
+            id={`removeConstraint_${props.flagId}_${props.c.id}`}
             className="flex gap-1 items-center border-green-700 border-2 rounded-md bg-green-500/15 p-2 text-green-600 text-xs uppercase font-bold hover:text-green-900 hover:bg-green-500/5 active:scale-95"
           >
             <UnlinkIcon />
             Remove
           </button>
         )}
-      </YesNo>
+      </YesNoWrap>
 
       <div className="text-right">
         <Link
