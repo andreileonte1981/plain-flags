@@ -41,6 +41,8 @@ export default function CreateConstraintPanel(props: {
 
       await revalidator.revalidate();
 
+      props.setCreateOpen(false);
+
       setTimeout(() => {
         const id = `constraintcard_${response.data.id}`;
         const element = document.getElementById(id);

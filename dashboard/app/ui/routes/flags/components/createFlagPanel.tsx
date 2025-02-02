@@ -3,13 +3,13 @@ import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
 import LocalError from "~/ui/components/reusables/localError";
-import YesNo from "~/ui/components/reusables/yesno";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CancelButton from "~/ui/components/reusables/cancelButton";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import scrollToElement from "../../../../utils/scrollToElement";
 import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function CreateFlagPanel(props: {
   isCreateOpen: boolean;
@@ -17,19 +17,18 @@ export default function CreateFlagPanel(props: {
 }) {
   const [newFlagName, setNewFlagName] = useState("");
 
-  const [ynOpen, setYNOpen] = useState(false);
-
   const [newFlagError, setNewFlagError] = useState("");
 
   const revalidator = useRevalidator();
 
-  function onPressCreate() {
+  function checkValid(): boolean {
     if (!newFlagName) {
       setNewFlagError("New flag name required");
-      return;
+      return false;
     }
-    setYNOpen(true);
+    return true;
   }
+
   const { showMessage } = useContext(ModalContext);
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
@@ -88,20 +87,19 @@ export default function CreateFlagPanel(props: {
                 </div>
               </label>
             </div>
-            <YesNo
+            <YesNoWrap
+              clickId="createNewFlagButton"
               question={`Create new flag '${newFlagName}'?`}
+              preDialogValidator={checkValid}
+              key={newFlagName}
               onYes={() => {
                 onCreateYes();
-              }}
-              isOpen={ynOpen}
-              hide={() => {
-                setYNOpen(false);
               }}
             >
               <div className="flex items-center justify-between">
                 <GreenPlusButton
-                  id="createYes"
-                  onClick={onPressCreate}
+                  id="createNewFlagButton"
+                  onClick={() => {}}
                   text="Create"
                 />
                 <CancelButton
@@ -112,7 +110,7 @@ export default function CreateFlagPanel(props: {
                   text="Cancel"
                 />
               </div>
-            </YesNo>
+            </YesNoWrap>
           </div>
         </motion.div>
       )}
