@@ -2,12 +2,12 @@ import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import YesNo from "~/ui/components/reusables/yesno";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CancelButton from "~/ui/components/reusables/cancelButton";
 import LocalError from "~/ui/components/reusables/localError";
 import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function CreateConstraintPanel(props: {
   isCreateOpen: boolean;
@@ -24,8 +24,6 @@ export default function CreateConstraintPanel(props: {
     key: "",
     commaSeparatedValues: "",
   });
-
-  const [ynOpen, setYNOpen] = useState(false);
 
   const revalidator = useRevalidator();
 
@@ -198,24 +196,20 @@ export default function CreateConstraintPanel(props: {
               </label>
             </div>
 
-            <YesNo
+            <YesNoWrap
+              clickId="ynCreateConstraint"
               question={`Create new constraint '${formData.description}'?`}
+              preDialogValidator={checkValid}
+              key={Object.values(formData).join("|")}
               onYes={() => {
                 onCreateYes();
-              }}
-              isOpen={ynOpen}
-              hide={() => {
-                setYNOpen(false);
               }}
             >
               <div className="flex items-center justify-between">
                 <GreenPlusButton
-                  onClick={() => {
-                    if (checkValid()) {
-                      setYNOpen(true);
-                    }
-                  }}
+                  id="ynCreateConstraint"
                   text="Create"
+                  onClick={() => {}}
                 />
                 <CancelButton
                   onClick={() => {
@@ -224,7 +218,7 @@ export default function CreateConstraintPanel(props: {
                   text="Cancel"
                 />
               </div>
-            </YesNo>
+            </YesNoWrap>
           </div>
         </motion.div>
       )}

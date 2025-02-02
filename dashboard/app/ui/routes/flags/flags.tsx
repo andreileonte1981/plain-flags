@@ -54,6 +54,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         <div className="flex justify-between items-center border-b-4 py-2 ">
           <FlagFilters setFilters={setFilters} filters={filters} />
           <GreenPlusButton
+            id="createFlagPanelToggle"
             onClick={() => {
               setCreateOpen(!isCreateOpen);
             }}

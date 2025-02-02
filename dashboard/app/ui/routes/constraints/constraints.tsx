@@ -61,6 +61,7 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-wrap justify-between items-center border-b-4">
           <ConstraintFilters filters={filters} setFilters={setFilters} />
           <GreenPlusButton
+            id="createConstraintPanelToggle"
             onClick={() => {
               setCreateOpen(!isCreateOpen);
             }}

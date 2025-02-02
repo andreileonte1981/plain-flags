@@ -6,6 +6,15 @@ export default function YesNoWrap(props: {
   clickId: string;
   question: string;
   onYes: Function;
+
+  /**
+   * The yes/no question panel will not show if this function returns false.
+   *
+   * When passing a validation function, also specify a key for this component that changes with
+   * the validation data in the parent state, if it's the case.
+   */
+  preDialogValidator?: () => boolean;
+
   id?: string;
 }) {
   const [isOpen, setOpen] = useState(false);
@@ -13,6 +22,11 @@ export default function YesNoWrap(props: {
   const [childrenShown, setChildrenShown] = useState(true);
 
   function handleClick() {
+    if (props.preDialogValidator) {
+      if (!props.preDialogValidator()) {
+        return;
+      }
+    }
     setOpen(true);
   }
 

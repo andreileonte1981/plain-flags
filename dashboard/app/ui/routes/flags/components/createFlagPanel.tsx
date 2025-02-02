@@ -99,7 +99,11 @@ export default function CreateFlagPanel(props: {
               }}
             >
               <div className="flex items-center justify-between">
-                <GreenPlusButton onClick={onPressCreate} text="Create" />
+                <GreenPlusButton
+                  id="createYes"
+                  onClick={onPressCreate}
+                  text="Create"
+                />
                 <CancelButton
                   onClick={() => {
                     props.setCreateOpen(false);

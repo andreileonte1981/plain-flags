@@ -20,7 +20,6 @@ export default function ConstraintCard(props: {
   values: string[];
   flags: Flag[];
 }) {
-  const [deleteYNOpen, setDeleteYNOpen] = useState(false);
   const ynElementId = `yn${props.id}`;
 
   const [deleteWaitOpen, setDeleteWaitOpen] = useState(false);
