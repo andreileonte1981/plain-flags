@@ -71,7 +71,9 @@ export default function YesNoWrap(props: {
       initial={false}
       mode="wait"
       onExitComplete={() => {
-        setChildrenShown(!isOpen);
+        setTimeout(() => {
+          setChildrenShown(!isOpen);
+        }, 100);
       }}
     >
       {isOpen ? (

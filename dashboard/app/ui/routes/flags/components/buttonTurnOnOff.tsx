@@ -1,11 +1,10 @@
 import { useContext, useState } from "react";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import YesNo from "~/ui/components/reusables/yesno";
 import { ModalContext } from "~/context/modalContext";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function ButtonTurnOnOff(props: { details: any }) {
-  const [ynOpen, setYnOpen] = useState(false);
   const [turnOnOffWaitOpen, setTurnOnOffWaitOpen] = useState(false);
   const { showMessage } = useContext(ModalContext);
 
@@ -50,45 +49,45 @@ export default function ButtonTurnOnOff(props: { details: any }) {
 
   return (
     <div>
-      {props.details.isOn && (
-        <YesNo
+      {props.details.isOn ? (
+        <YesNoWrap
+          clickId={`turnOff_${props.details.id}`}
           question="Turn feature off : are you sure?"
           onYes={() => {
             turnOff();
           }}
-          isOpen={ynOpen}
-          hide={() => setYnOpen(false)}
         >
-          {turnOnOffWaitOpen && <div>Turning off</div>}
-          {!turnOnOffWaitOpen && (
+          {turnOnOffWaitOpen ? (
+            <div>Turning off</div>
+          ) : (
             <button
+              id={`turnOff_${props.details.id}`}
               className="rounded bg-red-600 text-white mx-2 px-2 py-1 hover:bg-red-400"
-              onClick={() => setYnOpen(true)}
+              onClick={() => {}}
             >
               Turn off
             </button>
           )}
-        </YesNo>
-      )}
-      {!props.details.isOn && (
-        <YesNo
+        </YesNoWrap>
+      ) : (
+        <YesNoWrap
+          clickId={`turnOn_${props.details.id}`}
           question="Turn feature on : are you sure?"
           onYes={() => {
             turnOn();
           }}
-          isOpen={ynOpen}
-          hide={() => setYnOpen(false)}
         >
           {turnOnOffWaitOpen && <div>Turning on</div>}
           {!turnOnOffWaitOpen && (
             <button
+              id={`turnOn_${props.details.id}`}
               className="rounded bg-green-600 text-white mx-2 px-2 py-1 hover:bg-green-400"
-              onClick={() => setYnOpen(true)}
+              onClick={() => {}}
             >
               Turn on
             </button>
           )}
-        </YesNo>
+        </YesNoWrap>
       )}
     </div>
   );
