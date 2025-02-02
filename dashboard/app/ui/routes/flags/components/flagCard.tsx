@@ -4,7 +4,6 @@ import FlagBadges from "./flagBadges";
 import { ModalContext } from "~/context/modalContext";
 import Client from "~/client/client";
 import LinkIcon from "~/ui/components/icons/linkIcon";
-import YesNo from "~/ui/components/reusables/yesno";
 import TrashIcon from "~/ui/components/icons/trashIcon";
 import type Constraint from "~/domain/constraint";
 import HandIcon from "~/ui/components/icons/handIcon";
@@ -12,6 +11,7 @@ import { CurrentFlagContext } from "~/context/currentFlagContext";
 import FlagIcon from "~/ui/components/icons/flagIcon";
 import scrollToElement from "../../../../utils/scrollToElement";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
+import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function FlagCard(props: {
   id: string;
@@ -20,7 +20,6 @@ export default function FlagCard(props: {
   stale: boolean;
   constraints: Constraint[];
 }) {
-  const [archiveYNOpen, setArchiveYNOpen] = useState(false);
   const ynElementId = `yn${props.id}`;
 
   const [archiveWaitOpen, setArchiveWaitOpen] = useState(false);
@@ -97,39 +96,24 @@ export default function FlagCard(props: {
           showTips={true}
         />
 
-        <YesNo
+        <YesNoWrap
           question={`Archive '${props.name}'?`}
           onYes={() => {
             archiveFlag();
           }}
-          isOpen={archiveYNOpen}
-          hide={() => {
-            setArchiveYNOpen(false);
-          }}
           id={ynElementId}
+          clickId={`Archive_${props.id}`}
         >
           {archiveWaitOpen && <div>Archiving...</div>}
           {!archiveWaitOpen && (
             <div
               className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-              onClick={() => {
-                setArchiveYNOpen(true);
-
-                setTimeout(() => {
-                  const element = document.getElementById(ynElementId);
-                  if (element) {
-                    element.scrollIntoView({
-                      block: "nearest",
-                      behavior: "smooth",
-                    });
-                  }
-                }, 0);
-              }}
+              id={`Archive_${props.id}`}
             >
               <TrashIcon />
             </div>
           )}
-        </YesNo>
+        </YesNoWrap>
       </div>
 
       {props.constraints.length > 0 && (
