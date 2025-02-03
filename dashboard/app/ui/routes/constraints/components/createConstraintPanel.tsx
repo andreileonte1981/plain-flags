@@ -8,6 +8,7 @@ import LocalError from "~/ui/components/reusables/localError";
 import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { ToastContext } from "~/context/toastContext";
 
 export default function CreateConstraintPanel(props: {
   isCreateOpen: boolean;
@@ -28,6 +29,7 @@ export default function CreateConstraintPanel(props: {
   const revalidator = useRevalidator();
 
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const onCreateYes = async () => {
     try {
@@ -37,7 +39,7 @@ export default function CreateConstraintPanel(props: {
         commaSeparatedValues: formData.commaSeparatedValues,
       });
 
-      showMessage("Constraint created.");
+      queueToast("Constraint created.");
 
       await revalidator.revalidate();
 

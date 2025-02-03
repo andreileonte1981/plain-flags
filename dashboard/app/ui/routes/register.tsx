@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
+import { ToastContext } from "~/context/toastContext";
 
 export default function Register() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ export default function Register() {
       const response = await Client.post("users", formData);
 
       if (response.status === 201) {
-        showMessage("User created.");
+        queueToast("User created. Please log in");
         navigate(`/login?email=${formData.email}`);
       }
     } catch (error: any) {
@@ -51,6 +53,7 @@ export default function Register() {
             placeholder="email"
             onChange={handleChange}
             required
+            autoFocus
           />
           <input
             className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"

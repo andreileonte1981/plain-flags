@@ -11,7 +11,6 @@ export default function LinkableConstraint(props: {
   c: Constraint;
   flagId: string;
 }) {
-  const [ynOpen, setYnOpen] = useState(false);
   const [waitOpen, setWaitOpen] = useState(false);
   const { showMessage } = useContext(ModalContext);
   const revalidator = useRevalidator();

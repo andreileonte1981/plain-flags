@@ -12,6 +12,7 @@ import { ModalContext } from "~/context/modalContext";
 import type { Flag } from "~/domain/flag";
 import scrollToElement from "~/utils/scrollToElement";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { ToastContext } from "~/context/toastContext";
 
 export default function ConstraintCard(props: {
   id: string;
@@ -25,6 +26,7 @@ export default function ConstraintCard(props: {
   const [deleteWaitOpen, setDeleteWaitOpen] = useState(false);
 
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const revalidator = useRevalidator();
 
@@ -40,7 +42,7 @@ export default function ConstraintCard(props: {
 
       revalidator.revalidate();
 
-      showMessage("Constraint deleted.");
+      queueToast("Constraint deleted.");
     } catch (error: any) {
       // debugger;
       setDeleteWaitOpen(false);

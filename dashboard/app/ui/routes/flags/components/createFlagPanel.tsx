@@ -10,6 +10,7 @@ import scrollToElement from "../../../../utils/scrollToElement";
 import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { ToastContext } from "~/context/toastContext";
 
 export default function CreateFlagPanel(props: {
   isCreateOpen: boolean;
@@ -30,6 +31,7 @@ export default function CreateFlagPanel(props: {
   }
 
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
 
@@ -37,7 +39,7 @@ export default function CreateFlagPanel(props: {
     try {
       const response = await Client.post("flags", { name: newFlagName });
 
-      showMessage("Flag created.");
+      queueToast("Flag created.");
 
       await revalidator.revalidate();
 

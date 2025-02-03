@@ -2,11 +2,13 @@ import { useContext, useState } from "react";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
+import { ToastContext } from "~/context/toastContext";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 
 export default function ButtonTurnOnOff(props: { details: any }) {
   const [turnOnOffWaitOpen, setTurnOnOffWaitOpen] = useState(false);
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const revalidator = useRevalidator();
   async function turnOff() {
@@ -20,6 +22,8 @@ export default function ButtonTurnOnOff(props: { details: any }) {
       setTurnOnOffWaitOpen(false);
 
       revalidator.revalidate();
+
+      queueToast("Feature turned off");
     } catch (error: any) {
       // debugger;
       setTurnOnOffWaitOpen(false);
@@ -39,6 +43,8 @@ export default function ButtonTurnOnOff(props: { details: any }) {
       setTurnOnOffWaitOpen(false);
 
       revalidator.revalidate();
+
+      queueToast("Feature turned on");
     } catch (error: any) {
       // debugger;
       setTurnOnOffWaitOpen(false);

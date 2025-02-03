@@ -1,11 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
+import { ToastContext } from "~/context/toastContext";
 import useQueryParams from "~/hooks/useQueryParams";
 
 export default function Login() {
   const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   const navigate = useNavigate();
   const queryParams = useQueryParams();
@@ -24,6 +26,8 @@ export default function Login() {
       if (response.status === 200) {
         localStorage.setItem("jwt", response.data.token);
 
+        queueToast("Welcome!");
+
         navigate("/flags");
       }
     } catch (error: any) {
@@ -37,6 +41,17 @@ export default function Login() {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
+  const userInputRef = useRef<HTMLInputElement>(null);
+  const passInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (queryParams.email) {
+      passInputRef.current?.focus();
+    } else {
+      userInputRef.current?.focus();
+    }
+  }, []);
+
   return (
     <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col items-center min-h-52 bg-gray-100 rounded p-4 mb-40">
@@ -45,6 +60,7 @@ export default function Login() {
         <h1 className="text-xs mb-3 text-gray-400">welcome, please log in</h1>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <input
+            ref={userInputRef}
             className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="email"
             name="email"
@@ -54,6 +70,7 @@ export default function Login() {
             defaultValue={queryParams.email}
           />
           <input
+            ref={passInputRef}
             className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="password"
             name="password"
