@@ -12,6 +12,7 @@ import FlagIcon from "~/ui/components/icons/flagIcon";
 import scrollToElement from "../../../../utils/scrollToElement";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { ToastContext } from "~/context/toastContext";
 
 export default function FlagCard(props: {
   id: string;
@@ -24,8 +25,8 @@ export default function FlagCard(props: {
 
   const [archiveWaitOpen, setArchiveWaitOpen] = useState(false);
 
+  const { queueToast } = useContext(ToastContext);
   const { showMessage } = useContext(ModalContext);
-
   const revalidator = useRevalidator();
 
   async function archiveFlag() {
@@ -40,7 +41,7 @@ export default function FlagCard(props: {
 
       revalidator.revalidate();
 
-      showMessage("Flag archived.");
+      queueToast("Flag archived.");
     } catch (error: any) {
       // debugger;
       setArchiveWaitOpen(false);

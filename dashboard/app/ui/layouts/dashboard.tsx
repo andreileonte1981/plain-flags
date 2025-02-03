@@ -4,17 +4,17 @@ import MenuItem from "~/ui/components/reusables/menuitem";
 import FlagIcon from "~/ui/components/icons/flagIcon";
 import HandIcon from "~/ui/components/icons/handIcon";
 import LogoutButton from "~/ui/components/reusables/logoutButton";
-import { useContext } from "react";
-import { ModalContext } from "~/context/modalContext";
 import YesNoWrap from "../components/reusables/yesnoWrap";
+import { ToastContext } from "~/context/toastContext";
+import { useContext } from "react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { showMessage } = useContext(ModalContext);
+  const { queueToast } = useContext(ToastContext);
 
   function logout() {
     localStorage.setItem("jwt", "");
-    // TODO: show a toast with "you were logged out" when it's written.
+    queueToast("You have been logged out.");
     return navigate("/login");
   }
 
