@@ -38,6 +38,23 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     ?.filter(
       (f) => f.name.toLowerCase().indexOf(filters.name.toLowerCase()) >= 0
     )
+    .filter((f) =>
+      filters.constraint
+        ? f.constraints.some((c) => {
+            return (
+              c.description
+                .toLowerCase()
+                .indexOf(filters.constraint.toLowerCase()) >= 0 ||
+              c.key.toLowerCase().indexOf(filters.constraint.toLowerCase()) >=
+                0 ||
+              c.values
+                .join()
+                .toLowerCase()
+                .indexOf(filters.constraint.toLowerCase()) >= 0
+            );
+          })
+        : true
+    )
     .filter((f) => (filters.stale ? f.stale : true))
     .filter((f) => (filters.active ? f.isOn : true));
 

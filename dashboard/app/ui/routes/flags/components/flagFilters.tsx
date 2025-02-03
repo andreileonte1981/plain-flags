@@ -2,16 +2,32 @@ import FilterEdit from "~/ui/components/reusables/filterEdit";
 
 export default function FlagFilters(props: {
   setFilters: Function;
-  filters: any;
+  filters: {
+    name: string;
+    constraint: string;
+    stale: boolean;
+    active: boolean;
+  };
 }) {
   return (
     <div className="flex flex-wrap items-center text-gray-600 font-semibold border-r-2 px-3">
-      <FilterEdit
-        onChange={(e) => {
-          props.setFilters({ ...props.filters, name: e.target.value });
-        }}
-        placeholder="Name"
-      />
+      <div>
+        <FilterEdit
+          onChange={(e) => {
+            props.setFilters({ ...props.filters, name: e.target.value });
+          }}
+          placeholder="Name"
+          tooltip="Search for features by name"
+        />
+
+        <FilterEdit
+          onChange={(e) => {
+            props.setFilters({ ...props.filters, constraint: e.target.value });
+          }}
+          placeholder="Constraint"
+          tooltip="Search for features by constraint description or other constraint details, like users, brand, key names"
+        />
+      </div>
 
       <div>
         <label htmlFor="staleFilter" className="m-2">
