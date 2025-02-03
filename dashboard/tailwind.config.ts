@@ -22,6 +22,9 @@ export default {
       },
       zIndex: {
         '5': "5"
+      },
+      inset: {
+        '1/8': '12.5%'
       }
     },
   },

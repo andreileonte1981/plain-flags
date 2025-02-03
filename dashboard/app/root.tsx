@@ -14,6 +14,8 @@ import { useState } from "react";
 import Modal from "./ui/components/reusables/modal";
 import { CurrentFlagContext } from "./context/currentFlagContext";
 import { CurrentConstraintContext } from "./context/currentConstraintContext";
+import { ToastContext, ToastMessage } from "./context/toastContext";
+import Toast from "./ui/components/reusables/toast";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -59,24 +61,48 @@ export default function App() {
     setIsOpen(true);
   }
 
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  function queueToast(s: string) {
+    const toastId = `toastId_${Math.random() * 100000000}`;
+    const message = new ToastMessage(s, toastId);
+
+    setToasts((prevoasts) => {
+      return [...prevoasts, message];
+    });
+
+    setTimeout(() => {
+      removeToast(toastId);
+    }, ToastMessage.delay);
+  }
+
+  function removeToast(id: string) {
+    setToasts((prevToasts) => {
+      return prevToasts.filter((t) => t.id !== id);
+    });
+  }
+
   return (
     <ModalContext.Provider value={{ showMessage }}>
-      <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
-        <CurrentConstraintContext.Provider
-          value={{ currentConstraint, setCurrentConstraint }}
-        >
-          <>
-            <Outlet />
-            <div id="main"></div>
-            <Modal
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              message={message}
-              setMessage={setMessage}
-            ></Modal>
-          </>
-        </CurrentConstraintContext.Provider>
-      </CurrentFlagContext.Provider>
+      <ToastContext.Provider value={{ queueToast, removeToast }}>
+        <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
+          <CurrentConstraintContext.Provider
+            value={{ currentConstraint, setCurrentConstraint }}
+          >
+            <>
+              <Outlet />
+              <div id="main"></div>
+              <Toast messages={toasts} removeToast={removeToast}></Toast>
+              <Modal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                message={message}
+                setMessage={setMessage}
+              ></Modal>
+            </>
+          </CurrentConstraintContext.Provider>
+        </CurrentFlagContext.Provider>
+      </ToastContext.Provider>
     </ModalContext.Provider>
   );
 }
