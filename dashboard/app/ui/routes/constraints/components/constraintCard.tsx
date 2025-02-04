@@ -125,7 +125,7 @@ export default function ConstraintCard(props: {
             <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 font-bold cursor-not-allowed">
               <TrashIcon />
 
-              <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold">
+              <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold">
                 Constrains active flags, can't delete.
                 <br />
                 Unlink constraint from flag first
@@ -161,7 +161,7 @@ export default function ConstraintCard(props: {
                         <FlagOutlineIcon />
                       </Badge>
                     )}
-                    <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-5">
+                    <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 bg-black/90 rounded top-full text-white text-sm font-bold z-5">
                       Flag details
                     </div>
                   </Link>

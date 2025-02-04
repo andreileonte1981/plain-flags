@@ -26,7 +26,7 @@ export default function MenuItem(props: {
         {props.text}
       </Link>
       <div className="ml-2 mr-2 flex-none">{props.children}</div>
-      <div className="absolute invisible group-hover:visible w-52 p-2 bg-black/90 rounded left-full text-white text-sm font-bold">
+      <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 w-52 p-2 bg-black/90 rounded left-full text-white text-sm font-bold">
         {props.tooltip}
       </div>
     </div>

@@ -87,7 +87,7 @@ export default function FlagCard(props: {
         >
           details
           <LinkIcon />
-          <div className="absolute invisible group-hover:visible p-2 mr-2 bg-black/90 rounded right-full w-24 text-white text-sm font-bold">
+          <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 mr-2 bg-black/90 rounded right-full w-24 text-white text-sm font-bold">
             Flag details
           </div>
         </Link>
@@ -128,7 +128,7 @@ export default function FlagCard(props: {
             <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 font-bold cursor-not-allowed">
               <TrashIcon />
 
-              <div className="absolute invisible group-hover:visible p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold">
+              <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 m-1 bg-black/90 rounded -top-1 right-full w-52 text-white text-sm font-bold">
                 Cannot archive active flag
               </div>
             </div>
