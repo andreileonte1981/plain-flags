@@ -9,6 +9,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export default function CreateConstraintPanel(props: {
   isCreateOpen: boolean;
@@ -30,6 +32,9 @@ export default function CreateConstraintPanel(props: {
 
   const { showMessage } = useContext(ModalContext);
   const { queueToast } = useContext(ToastContext);
+  const { currentConstraint, setCurrentConstraint } = useContext(
+    CurrentConstraintContext
+  );
 
   const onCreateYes = async () => {
     try {
@@ -43,18 +48,14 @@ export default function CreateConstraintPanel(props: {
 
       await revalidator.revalidate();
 
-      props.setCreateOpen(false);
-
       setTimeout(() => {
-        const id = `constraintcard_${response.data.id}`;
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({
-            block: "nearest",
-            behavior: "smooth",
-          });
-        }
-      }, 100);
+        setCurrentConstraint(response.data.id);
+        scrollToElement(
+          `constraintcard_${response.data.id}`,
+          "smooth",
+          "start"
+        );
+      }, 500);
     } catch (error: any) {
       // debugger;
 

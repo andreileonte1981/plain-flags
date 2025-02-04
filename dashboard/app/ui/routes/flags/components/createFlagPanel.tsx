@@ -6,11 +6,11 @@ import LocalError from "~/ui/components/reusables/localError";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CancelButton from "~/ui/components/reusables/cancelButton";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
-import scrollToElement from "../../../../utils/scrollToElement";
 import { AnimatePresence, motion } from "motion/react";
 import { slideDownVariants } from "~/ui/animations/variants";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export default function CreateFlagPanel(props: {
   isCreateOpen: boolean;

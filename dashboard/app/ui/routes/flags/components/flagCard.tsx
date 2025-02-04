@@ -9,10 +9,10 @@ import type Constraint from "~/domain/constraint";
 import HandIcon from "~/ui/components/icons/handIcon";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import FlagIcon from "~/ui/components/icons/flagIcon";
-import scrollToElement from "../../../../utils/scrollToElement";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export default function FlagCard(props: {
   id: string;

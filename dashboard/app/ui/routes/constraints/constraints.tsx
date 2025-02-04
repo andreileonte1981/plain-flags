@@ -8,7 +8,8 @@ import { useContext, useEffect, useState } from "react";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CreateConstraintPanel from "./components/createConstraintPanel";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
-import scrollToElement from "~/utils/scrollToElement";
+import { AnimatePresence, motion } from "motion/react";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -81,18 +82,26 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
           </div>
         )}
 
-        <ul>
-          {filteredConstraints.map((c) => (
-            <li className="m-2" key={c.id}>
-              <ConstraintCard
-                id={c.id}
-                description={c.description}
-                constraintkey={c.key}
-                values={c.values}
-                flags={c.flags}
-              />
-            </li>
-          ))}
+        <ul className="pt-4">
+          <AnimatePresence initial={false} presenceAffectsLayout={true}>
+            {filteredConstraints.map((c) => (
+              <motion.li
+                key={c.id}
+                initial={{ scaleY: 0, height: 0 }}
+                animate={{ scaleY: 1, height: "auto" }}
+                exit={{ scaleY: 0, height: 0, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+              >
+                <ConstraintCard
+                  id={c.id}
+                  description={c.description}
+                  constraintkey={c.key}
+                  values={c.values}
+                  flags={c.flags}
+                />
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       </div>
     </div>

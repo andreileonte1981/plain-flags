@@ -10,9 +10,9 @@ import Badge from "~/ui/components/reusables/badge";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type { Flag } from "~/domain/flag";
-import scrollToElement from "~/utils/scrollToElement";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export default function ConstraintCard(props: {
   id: string;
@@ -59,7 +59,7 @@ export default function ConstraintCard(props: {
     CurrentConstraintContext
   );
 
-  const className = `border-4 rounded-lg mx-2 p-2 my-4 text-gray-500 font-semibold ${
+  const className = `border-4 rounded-lg mx-2 mb-4 p-2 text-gray-500 font-semibold ${
     currentConstraint === props.id
       ? "border-magenta/50"
       : "border-magenta/15 bg-gray-200/25"

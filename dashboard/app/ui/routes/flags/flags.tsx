@@ -7,8 +7,8 @@ import FlagFilters from "./components/flagFilters";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CreateFlagPanel from "./components/createFlagPanel";
 import FlagListItems from "./components/flagListItems";
-import scrollToElement from "../../../utils/scrollToElement";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
