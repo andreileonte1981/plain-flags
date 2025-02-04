@@ -47,8 +47,8 @@ export default function CreateFlagPanel(props: {
 
       setTimeout(() => {
         setCurrentFlag(`flagcard_${response.data.id}`);
-        scrollToElement(`flagcard_${response.data.id}`);
-      }, 200);
+        scrollToElement(`flagcard_${response.data.id}`, "smooth", "start");
+      }, 250);
     } catch (error: any) {
       // debugger;
 

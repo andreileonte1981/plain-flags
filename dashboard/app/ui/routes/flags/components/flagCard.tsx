@@ -54,7 +54,7 @@ export default function FlagCard(props: {
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
 
-  const cn = `rounded border-2 m-2 p-2 text-gray-500 scroll-mt-48 ${
+  const cn = `rounded border-2 mx-2 mb-4 p-2 text-gray-500 scroll-mt-48 ${
     flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
   }`;
 
@@ -83,7 +83,7 @@ export default function FlagCard(props: {
         >
           details
           <LinkIcon />
-          <div className="absolute invisible group-hover:visible p-2 bg-black/90 rounded top-full text-white text-sm font-bold">
+          <div className="absolute invisible group-hover:visible p-2 mr-2 bg-black/90 rounded right-full w-24 text-white text-sm font-bold">
             Flag details
           </div>
         </Link>

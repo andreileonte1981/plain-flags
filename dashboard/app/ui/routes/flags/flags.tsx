@@ -84,7 +84,9 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           setCreateOpen={setCreateOpen}
         />
       </div>
-      <ul className="flex flex-col w-full h-full">{FlagListItems(flags)}</ul>
+      <ul className="flex flex-col w-full h-full pt-4">
+        {FlagListItems(flags)}
+      </ul>
     </div>
   );
 }
