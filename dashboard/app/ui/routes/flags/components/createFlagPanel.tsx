@@ -67,27 +67,22 @@ export default function CreateFlagPanel(props: {
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
           <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 px-3 border-b-4 py-2">
-            <div className="flex flex-col items-end m-2">
-              <label
-                htmlFor="newFlagName"
-                className="flex items-center gap-1 flex-1"
-              >
-                New flag name
-                <div>
-                  <input
-                    id="newFlagName"
-                    name="newFlagName"
-                    type="text"
-                    className="border-2 rounded p-2 w-auto focus:ring-0 focus:border-current"
-                    defaultValue={newFlagName}
-                    onChange={(e) => {
-                      setNewFlagError("");
-                      setNewFlagName(e.target.value);
-                    }}
-                  />
-                  <LocalError error={newFlagError} />
-                </div>
-              </label>
+            <div className="flex flex-col items-end my-2 mx-1">
+              <div>
+                <input
+                  id="newFlagName"
+                  name="newFlagName"
+                  type="text"
+                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                  defaultValue={newFlagName}
+                  placeholder="New flag name"
+                  onChange={(e) => {
+                    setNewFlagError("");
+                    setNewFlagName(e.target.value);
+                  }}
+                />
+                <LocalError error={newFlagError} />
+              </div>
             </div>
             <YesNoWrap
               clickId="createNewFlagButton"

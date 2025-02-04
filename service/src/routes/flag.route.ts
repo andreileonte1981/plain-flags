@@ -19,7 +19,7 @@ export async function flagRoutes(server: FastifyInstance) {
 
         if (duplicate) {
             throw new Error(
-                `Name '${flag.name}' is already used by ${duplicate.isArchived ? "archived" : "another"} flag.` +
+                `Name '${flag.name}' is used by ${duplicate.isArchived ? "an archived" : "another"} flag.` +
                 ` Please choose a different name.`
             )
         }

@@ -114,91 +114,57 @@ export default function CreateConstraintPanel(props: {
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
           <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
-            <div className="flex flex-col items-end">
-              <label
-                htmlFor="newConstraintDescription"
-                className="flex justify-end items-center m-1 flex-1 text-end"
-              >
-                <p className="mr-2">
-                  Constraint description
-                  <br />
-                  <span className="text-sm text-gray-500">
-                    (e.g. 'Test Users')
-                  </span>
-                </p>
-                <div className="flex flex-col items-end">
-                  <input
-                    id="newConstraintDescription"
-                    name="newConstraintDescription"
-                    type="text"
-                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-                    defaultValue={formData.description}
-                    onChange={(e) => {
-                      setFormData({ ...formData, description: e.target.value });
-                      setError({ ...error, description: "" });
-                    }}
-                  />
-                  <LocalError error={error.description} />
-                </div>
-              </label>
-              <label
-                htmlFor="newConstraintKey"
-                className="flex justify-end items-center m-1 flex-1 text-end"
-              >
-                <p className="mr-2">
-                  What it's for
-                  <br />
-                  <span className="text-sm text-gray-500">
-                    (e.g. <span className="font-bold">'user_id'</span>)
-                  </span>
-                </p>
-                <div className="flex flex-col items-end">
-                  <input
-                    id="newConstraintKey"
-                    name="newConstraintKey"
-                    type="text"
-                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-                    defaultValue={formData.key}
-                    onChange={(e) => {
-                      setFormData({ ...formData, key: e.target.value });
-                      setError({ ...error, key: "" });
-                    }}
-                  />
-                  <LocalError error={error.key} />
-                </div>
-              </label>
-              <label
-                htmlFor="newConstraintValues"
-                className="flex justify-end items-center m-1 flex-1 text-end"
-              >
-                <div>
-                  <p className="mr-2">
-                    Who/which it's for
-                    <br />
-                    <span className="text-sm text-gray-500">
-                      (e.g.{" "}
-                      <span className="font-bold">'Steve, John, Pete'</span>)
-                    </span>
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <input
-                    id="newConstraintValues"
-                    name="newConstraintValues"
-                    type="text"
-                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current"
-                    defaultValue={formData.commaSeparatedValues}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        commaSeparatedValues: e.target.value,
-                      });
-                      setError({ ...error, commaSeparatedValues: "" });
-                    }}
-                  />
-                  <LocalError error={error.commaSeparatedValues} />
-                </div>
-              </label>
+            <div className="flex flex-col items-end gap-2 mx-1">
+              <div className="flex flex-col items-end">
+                <input
+                  id="newConstraintDescription"
+                  name="newConstraintDescription"
+                  type="text"
+                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                  defaultValue={formData.description}
+                  placeholder="Description"
+                  onChange={(e) => {
+                    setFormData({ ...formData, description: e.target.value });
+                    setError({ ...error, description: "" });
+                  }}
+                />
+                <LocalError error={error.description} />
+              </div>
+
+              <div className="flex flex-col items-end">
+                <input
+                  id="newConstraintKey"
+                  name="newConstraintKey"
+                  type="text"
+                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                  defaultValue={formData.key}
+                  placeholder="What it's for (e.g. userId)"
+                  onChange={(e) => {
+                    setFormData({ ...formData, key: e.target.value });
+                    setError({ ...error, key: "" });
+                  }}
+                />
+                <LocalError error={error.key} />
+              </div>
+
+              <div className="flex flex-col items-end">
+                <input
+                  id="newConstraintValues"
+                  name="newConstraintValues"
+                  type="text"
+                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                  defaultValue={formData.commaSeparatedValues}
+                  placeholder="Who / which it's for"
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      commaSeparatedValues: e.target.value,
+                    });
+                    setError({ ...error, commaSeparatedValues: "" });
+                  }}
+                />
+                <LocalError error={error.commaSeparatedValues} />
+              </div>
             </div>
 
             <YesNoWrap
