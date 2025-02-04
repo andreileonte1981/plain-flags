@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
@@ -11,40 +12,48 @@ export default function Modal(props: {
 
   useEffect(() => {
     // Close the modal when the route changes
-    if (!props.isOpen) {
-      return;
+    if (props.isOpen) {
+      props.setIsOpen(false);
     }
-
-    props.setIsOpen(false);
   }, [location]);
 
   return (
-    props.isOpen && (
-      <div
-        className="fixed flex items-center justify-center top-0 h-screen w-screen z-50 bg-black/80"
-        onClick={(e) => {
-          props.setIsOpen(false);
-        }}
-      >
-        <div
-          className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 w-1/2 h-1/4"
+    <AnimatePresence mode="wait">
+      {props.isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1, ease: "easeIn" }}
+          id="modalBackdrop"
+          className="fixed flex items-center justify-center top-0 h-screen w-screen z-50 bg-black/80"
           onClick={(e) => {
-            e.stopPropagation();
+            props.setIsOpen(false);
           }}
         >
-          <h1 className="text-center text-lg p-5 font-semibold text-gray-600">
-            {props.message}
-          </h1>
-          <button
-            className="bg-gray-500 rounded px-4 hover:px-3 py-2 text-white font-semibold text-lg hover:text-xl"
-            onClick={() => {
-              props.setIsOpen(false);
+          <motion.div
+            initial={{ scale: 0, opacity: 0.5 }}
+            animate={{ scale: 1, opacity: 1 }}
+            id="modalWindow"
+            className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 w-1/2 h-1/4"
+            onClick={(e) => {
+              e.stopPropagation();
             }}
           >
-            Close
-          </button>
-        </div>
-      </div>
-    )
+            <h1 className="text-center text-lg p-5 font-semibold text-gray-600">
+              {props.message}
+            </h1>
+            <button
+              className="bg-gray-500 rounded px-4 hover:px-3 py-2 text-white font-semibold text-lg hover:text-xl"
+              onClick={() => {
+                props.setIsOpen(false);
+              }}
+            >
+              Close
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
