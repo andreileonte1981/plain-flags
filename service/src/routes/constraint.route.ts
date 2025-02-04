@@ -25,6 +25,11 @@ export async function constraintRoutes(server: FastifyInstance) {
             throw new Error("Constraint key can't be empty")
         }
 
+        const duplicate = await Constraint.findOneBy({ description: input.description })
+        if (duplicate) {
+            throw new Error(`Description '${input.description}' is the same as another constraint`)
+        }
+
         const constraint: Constraint = new Constraint()
 
         constraint.description = input.description

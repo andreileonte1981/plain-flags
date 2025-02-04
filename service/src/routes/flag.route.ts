@@ -15,7 +15,15 @@ export async function flagRoutes(server: FastifyInstance) {
         flag.isOn = false;
         flag.isArchived = false;
 
-        // TODO: check uniqueness specifically with a find and throw a readable error on duplicates.
+        const duplicate = await Flag.findOneBy({ name: flag.name })
+
+        if (duplicate) {
+            throw new Error(
+                `Name '${flag.name}' is already used by ${duplicate.isArchived ? "archived" : "another"} flag.` +
+                ` Please choose a different name.`
+            )
+        }
+
         await Flag.insert(flag)
 
         await Recorder.recordCreation(request.user as User, flag).catch((error) => {
