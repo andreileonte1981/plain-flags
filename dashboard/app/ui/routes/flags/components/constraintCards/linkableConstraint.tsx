@@ -63,6 +63,7 @@ export default function LinkableConstraint(props: {
         onYes={() => {
           apply(props.c.id, props.flagId);
         }}
+        hint="Some users may lose access to this feature"
       >
         {waitOpen && (
           <div className="animate-bounce">Applying constraint...</div>

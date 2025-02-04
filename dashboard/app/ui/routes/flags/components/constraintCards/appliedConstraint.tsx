@@ -49,6 +49,7 @@ export default function AppliedConstraint(props: {
         onYes={() => {
           unlink(props.c.id, props.flagId);
         }}
+        hint="More users may acquire access this feature"
       >
         {waitOpen && (
           <div className="animate-bounce">Removing constraint...</div>

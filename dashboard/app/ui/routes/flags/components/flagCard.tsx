@@ -108,6 +108,7 @@ export default function FlagCard(props: {
           }}
           id={ynElementId}
           clickId={`Archive_${props.id}`}
+          hint="Make sure your software doesn't have any code referring to this feature flag!"
         >
           {mayDelete() ? (
             <>

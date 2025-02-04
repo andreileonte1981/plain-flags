@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState, type ReactNode } from "react";
+import InfoIcon from "../icons/infoIcon";
 
 export default function YesNoWrap(props: {
   children: ReactNode;
   clickId: string;
   question: string;
   onYes: Function;
+  hint?: string;
 
   /**
    * The yes/no question panel will not show if this function returns false.
@@ -111,10 +113,26 @@ export default function YesNoWrap(props: {
             transition={{ duration: animDuration, type: "spring" }}
           >
             <div className="relative flex flex-col border-2 border-gray-400 rounded shadow-inner m-1 p-2 min-w-48 items-center z-50 bg-white">
-              <div className="text-gray-700 font-semibold">
+              <div className="text-gray-700 font-semibold text-center">
                 {props.question}
               </div>
+
               <div className="bg-slate-500/25 h-1 w-full rounded my-1"></div>
+
+              {props.hint && (
+                <div className="w-full">
+                  <div className="flex gap-2 justify-center items-center">
+                    <InfoIcon />
+
+                    <div className="text-gray-500 text-sm font-semibold py-2">
+                      {props.hint}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-500/25 h-1 w-full rounded my-1"></div>
+                </div>
+              )}
+
               <div className="flex mt-2 justify-center gap-5 w-full text-gray-700 font-semibold">
                 <div
                   className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-green-900 border-2 cursor-pointer hover:shadow-inner hover:border-green-700 active:bg-gray-200"
