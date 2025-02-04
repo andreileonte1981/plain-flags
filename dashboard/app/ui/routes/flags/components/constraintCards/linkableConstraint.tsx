@@ -64,7 +64,9 @@ export default function LinkableConstraint(props: {
           apply(props.c.id, props.flagId);
         }}
       >
-        {waitOpen && <div>Applying constraint...</div>}
+        {waitOpen && (
+          <div className="animate-bounce">Applying constraint...</div>
+        )}
         {!waitOpen && (
           <button
             id={`addConstraint_${props.flagId}_${props.c.id}`}

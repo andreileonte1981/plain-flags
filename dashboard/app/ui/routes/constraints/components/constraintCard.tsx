@@ -109,7 +109,9 @@ export default function ConstraintCard(props: {
         >
           {mayDelete() ? (
             <>
-              {deleteWaitOpen && <div>Deleting...</div>}
+              {deleteWaitOpen && (
+                <div className="animate-bounce">Deleting...</div>
+              )}
               {!deleteWaitOpen && (
                 <div
                   className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"

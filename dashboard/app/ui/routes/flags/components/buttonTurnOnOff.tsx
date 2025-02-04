@@ -64,7 +64,7 @@ export default function ButtonTurnOnOff(props: { details: any }) {
           }}
         >
           {turnOnOffWaitOpen ? (
-            <div>Turning off</div>
+            <div className="animate-bounce">Turning off</div>
           ) : (
             <button
               id={`turnOff_${props.details.id}`}
@@ -83,7 +83,9 @@ export default function ButtonTurnOnOff(props: { details: any }) {
             turnOn();
           }}
         >
-          {turnOnOffWaitOpen && <div>Turning on</div>}
+          {turnOnOffWaitOpen && (
+            <div className="animate-bounce">Turning on</div>
+          )}
           {!turnOnOffWaitOpen && (
             <button
               id={`turnOn_${props.details.id}`}

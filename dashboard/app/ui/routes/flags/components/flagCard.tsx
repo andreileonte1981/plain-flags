@@ -105,7 +105,9 @@ export default function FlagCard(props: {
           id={ynElementId}
           clickId={`Archive_${props.id}`}
         >
-          {archiveWaitOpen && <div>Archiving...</div>}
+          {archiveWaitOpen && (
+            <div className="animate-bounce">Archiving...</div>
+          )}
           {!archiveWaitOpen && (
             <div
               className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"

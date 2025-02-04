@@ -50,7 +50,9 @@ export default function AppliedConstraint(props: {
           unlink(props.c.id, props.flagId);
         }}
       >
-        {waitOpen && <div>Removing constraint...</div>}
+        {waitOpen && (
+          <div className="animate-bounce">Removing constraint...</div>
+        )}
         {!waitOpen && (
           <button
             id={`removeConstraint_${props.flagId}_${props.c.id}`}
