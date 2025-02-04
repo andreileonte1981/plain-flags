@@ -42,7 +42,7 @@ export default function LinkableConstraint(props: {
   );
 
   return (
-    <div className="flex justify-between flex-wrap items-center border-2 rounded text-left p-2">
+    <div className="flex justify-between flex-wrap items-center border-2 rounded text-left p-2 mb-2">
       <div>
         <Link
           to="/constraints"

@@ -42,7 +42,7 @@ export default function AppliedConstraint(props: {
   );
 
   return (
-    <div className="flex flex-wrap justify-between items-center border-2 rounded p-2">
+    <div className="flex flex-wrap justify-between items-center border-2 rounded p-2 mb-2">
       <YesNoWrap
         question={`Remove '${props.c.description}' from this feature?`}
         clickId={`removeConstraint_${props.flagId}_${props.c.id}`}
