@@ -9,7 +9,7 @@ import Constraint from "./entities/constraint"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "../data/plain-flags.sqlite",     // TODO: allow users to configure this
+    database: "../../data/plain-flags.sqlite",     // TODO: allow users to configure this
     logging: true,
     synchronize: (process.env.NODE_ENV !== "production"),
     namingStrategy: new SnakeNamingStrategy(),
