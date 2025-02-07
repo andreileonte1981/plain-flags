@@ -1,0 +1,10 @@
+services:
+  flag-management:
+    build: ./services/flag-management
+    ports:
+      - 5000:5000
+    environment:
+      - JWT_SIGNING_SECRET=eilafefyr8q093478ryvnbchul8934rcnlaa8ry
+      - SERVICE_PORT=5000
+      - APIKEY=ersafoi89a0ww3n8yrt493ew84yqjwd34y8r09
+      - STALE_FLAG_DAYS=2

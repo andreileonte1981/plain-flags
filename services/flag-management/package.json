@@ -6,7 +6,9 @@
   "scripts": {
     "test": "test",
     "build": "tsc -v && tsc -w",
+    "build-prod": "tsc",
     "start": "node --watch bin/index.js",
+    "start-prod": "node bin/index.js",
     "dev": "env-cmd -f .env node --inspect=9229 --watch bin/index.js"
   },
   "author": "Andrei Leonte",
