@@ -5,7 +5,7 @@ export class Client {
     private instance?: Axios.AxiosInstance = undefined;
 
     constructor() {
-        const baseurl = Config.serviceUrl()
+        const baseurl = Config.managementServiceUrl()
 
         try {
             this.instance = axios.create({

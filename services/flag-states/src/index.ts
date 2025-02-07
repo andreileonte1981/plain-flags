@@ -1,11 +1,6 @@
 import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import { Data } from "./data";
-import { flagRoutes } from "./routes/flag.route";
-import { userRoutes } from "./routes/user.route";
-import jwtPlugin from "./plugins/jwtPlugin";
-import { historyRoutes } from "./routes/history.route";
-import { settingsRoutes } from "./routes/settings.route";
-import { constraintRoutes } from "./routes/constraint.route";
+import { sdkRoutes } from "./routes/sdk.route";
 import cors from "@fastify/cors"
 
 const server = fastify({
@@ -25,18 +20,12 @@ async function start() {
             })
         })
 
-        server.register(jwtPlugin)
-
         server.register(cors, {})
 
-        server.register(flagRoutes, { prefix: "/api/flags" })
-        server.register(constraintRoutes, { prefix: "/api/constraints" })
-        server.register(userRoutes, { prefix: "/api/users" })
-        server.register(historyRoutes, { prefix: "/api/history" })
-        server.register(settingsRoutes, { prefix: "/api/settings" })
+        server.register(sdkRoutes, { prefix: "/api/sdk" })
 
-        await server.listen({ port: +(process.env.SERVICE_PORT || "5000"), host: "0.0.0.0" })
-        server.log.info("Flag management service listening")
+        await server.listen({ port: +(process.env.SERVICE_PORT || "5001"), host: "0.0.0.0" })
+        server.log.info("State service listening")
     }
     catch (error) {
         server.log.error(error);

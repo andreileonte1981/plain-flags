@@ -27,7 +27,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
+        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
 
         await sdk.init(process.env.APIKEY || "");
 
@@ -57,7 +57,7 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
+        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
         await sdk.init(process.env.APIKEY || "", 1000)
 
         try {
@@ -128,7 +128,7 @@ describe("SDK operation", () => {
             token
         )
 
-        const sdk = new PlainFlags(Config.serviceUrl(), null, null)
+        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
         await sdk.init(process.env.APIKEY || "", 1000)
 
         try {
