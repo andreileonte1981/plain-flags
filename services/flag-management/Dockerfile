@@ -6,7 +6,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY src src
 
-RUN npm install
+RUN npm ci
 RUN npm run build-prod
 
 CMD ["npm", "run", "start-prod"]
