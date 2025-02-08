@@ -4,6 +4,7 @@ import Flag from "../entities/flag";
 import Flags from "../logic/flag-logic/flags";
 import Recorder from "../logic/flag-history/recorder";
 import User from "../entities/user";
+import { AppDataSource } from "../data";
 
 export async function constraintRoutes(server: FastifyInstance) {
     /**
@@ -85,13 +86,15 @@ export async function constraintRoutes(server: FastifyInstance) {
         if (!flag.constraints) { flag.constraints = [] }
         flag.constraints.push(constraint)
 
-        if (!constraint.flags) { constraint.flags = [] }
-        constraint.flags.push(flag)
-
         await Recorder.recordLink(request.user as User, flag, constraint)
 
-        await flag.save()
-        await constraint.save()
+        /**
+         * Entity.save and Repository.save are unreliable for junction tables when called concurrently;
+         *  have to raw SQL here to allow stress tests to constrain many flags fast.
+         */
+        const qr = await AppDataSource.createQueryRunner();
+        await qr.query(
+            `INSERT INTO flag_constraints_constraint (flag_id, constraint_id) VALUES ('${flag.id}', '${constraint.id}');`)
 
         reply.code(200).send(input)
     })

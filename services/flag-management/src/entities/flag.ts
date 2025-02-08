@@ -31,7 +31,7 @@ export default class Flag extends BaseEntity {
     @UpdateDateColumn()
     updatedAt!: Date
 
-    @ManyToMany(() => Constraint, (constraint) => constraint.flags)
+    @ManyToMany(() => Constraint, (constraint) => constraint.flags, { cascade: true })
     @JoinTable()
     constraints!: Constraint[]
 
