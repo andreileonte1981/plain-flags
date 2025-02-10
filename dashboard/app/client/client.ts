@@ -24,6 +24,8 @@ export default class Client {
                     localStorage.removeItem("jwt")
 
                     alert("Unauthorized")
+
+                    window.location.reload()
                 }
                 throw error
             }
@@ -54,6 +56,8 @@ export default class Client {
                 localStorage.removeItem("jwt")
 
                 alert("Unauthorized")
+
+                window.location.reload()
             }
             throw error
         }
