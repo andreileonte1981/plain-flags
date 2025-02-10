@@ -129,6 +129,6 @@ dist
 .pnp.*
 
 #database file
-*.sqlite
+*.sqlite*
 
 .VSCodeCounter

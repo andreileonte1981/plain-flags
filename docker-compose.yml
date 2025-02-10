@@ -1,4 +1,13 @@
 services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on:
+      - flag-states
+    ports:
+      - 5001:5001
+
   flag-management:
     build: ./services/flag-management
     ports:
@@ -13,13 +22,13 @@ services:
 
   flag-states:
     build: ./services/flag-states
-    ports:
-      - 5001:5001
     environment:
       - SERVICE_PORT=5001
       - APIKEY=ersafoi89a0ww3n8yrt493ew84yqjwd34y8r09
     volumes:
       - db-data:/data:ro
+    depends_on:
+      - flag-management
 
   flags-dashboard:
     build: ./dashboard

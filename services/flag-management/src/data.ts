@@ -33,5 +33,14 @@ export class Data {
         })
 
         log.info("DB connected")
+
+        const queryRunner = AppDataSource.createQueryRunner()
+
+        await queryRunner.query('PRAGMA journal_mode = WAL;');
+        await queryRunner.query('PRAGMA synchronous = normal;');
+        await queryRunner.query('PRAGMA temp_store = memory;');
+        await queryRunner.query('PRAGMA mmap_size = 30000000000;');
+
+        log.info("DB optimized")
     }
 }
