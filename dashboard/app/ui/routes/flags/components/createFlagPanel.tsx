@@ -96,7 +96,9 @@ export default function CreateFlagPanel(props: {
               <div className="flex items-center justify-between">
                 <GreenPlusButton
                   id="createNewFlagButton"
-                  onClick={() => {}}
+                  onClick={() => {
+                    /* When wrapped by a Yes/No with corresponding clickId, do nothing */
+                  }}
                   text="Create"
                 />
                 <CancelButton

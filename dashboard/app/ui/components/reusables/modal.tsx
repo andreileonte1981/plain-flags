@@ -52,6 +52,7 @@ export default function Modal(props: {
               onClick={() => {
                 props.setIsOpen(false);
               }}
+              autoFocus
             >
               Close
             </button>
