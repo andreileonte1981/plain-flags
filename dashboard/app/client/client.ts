@@ -21,9 +21,9 @@ export default class Client {
                 return response
             } catch (error: any) {
                 if (error.status === 401) {
-                    alert("Unauthorized")
-
                     localStorage.removeItem("jwt")
+
+                    alert("Unauthorized")
                 }
                 throw error
             }
@@ -51,9 +51,9 @@ export default class Client {
         }
         catch (error: any) {
             if (error.status === 401) {
-                alert("Unauthorized")
-
                 localStorage.removeItem("jwt")
+
+                alert("Unauthorized")
             }
             throw error
         }

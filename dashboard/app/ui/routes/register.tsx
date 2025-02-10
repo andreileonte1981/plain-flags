@@ -3,9 +3,14 @@ import { Link, useNavigate } from "react-router";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 import { ToastContext } from "~/context/toastContext";
+import LocalError from "../components/reusables/localError";
 
 export default function Register() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmpassword: "",
+  });
 
   const { showMessage } = useContext(ModalContext);
   const { queueToast } = useContext(ToastContext);
@@ -15,8 +20,16 @@ export default function Register() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (formData.password !== formData.confirmpassword) {
+      setRegistrationError("Password must match");
+      return;
+    }
+
     try {
-      const response = await Client.post("users", formData);
+      const response = await Client.post("users", {
+        email: formData.email,
+        password: formData.password,
+      });
 
       if (response.status === 201) {
         queueToast("User created. Please log in");
@@ -32,6 +45,8 @@ export default function Register() {
   const handleChange = (event: any) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
+
+  const [registrationError, setRegistrationError] = useState("");
 
   return (
     <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
@@ -65,6 +80,19 @@ export default function Register() {
             onChange={handleChange}
             required
           />
+          <div>
+            <input
+              className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
+              type="password"
+              name="confirmpassword"
+              id="confirmpassword"
+              autoComplete="off"
+              placeholder="confirm password"
+              onChange={handleChange}
+              required
+            />
+            <LocalError error={registrationError} />
+          </div>
           <button
             className="flex justify-center items-center m-3 p-3 px-10 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
