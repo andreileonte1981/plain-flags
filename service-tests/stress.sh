@@ -1,0 +1,1 @@
+node ./bin/tests/stress/stresstest.js
