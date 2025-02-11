@@ -18,20 +18,38 @@ export const AppDataSource = new DataSource({
 
 export class Data {
     static async init(log: FastifyBaseLogger) {
-        await AppDataSource.initialize().catch((err) => {
-            log.error(`DB init error`, err)
-            throw err
-        })
+        let nAttempts = 10;
+        const waitFor = 5000;
 
-        log.info("DB connected")
+        while (nAttempts) {
+            nAttempts--;
 
-        const queryRunner = AppDataSource.createQueryRunner()
+            try {
+                await AppDataSource.initialize().catch((err) => {
+                    log.error(`DB init error`, err)
+                    throw err
+                })
 
-        await queryRunner.query('PRAGMA journal_mode = WAL;');
-        await queryRunner.query('PRAGMA synchronous = normal;');
-        await queryRunner.query('PRAGMA temp_store = memory;');
-        await queryRunner.query('PRAGMA mmap_size = 30000000000;');
+                log.info("DB connected")
 
-        log.info("DB optimized")
+                nAttempts = 0
+            }
+            catch (e) {
+                console.log(`Problems initializing database connection`)
+                console.log(e)
+
+                if (nAttempts) {
+                    console.log(`Retrying... ${nAttempts} attempts left.`)
+
+                    await sleep(waitFor)
+                }
+                else {
+                    throw e
+                }
+            }
+        }
     }
+}
+async function sleep(milliseconds: number) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
