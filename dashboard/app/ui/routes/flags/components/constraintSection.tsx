@@ -3,6 +3,8 @@ import LinkableConstraint from "./constraintCards/linkableConstraint";
 import AppliedConstraint from "./constraintCards/appliedConstraint";
 import Expand from "~/ui/components/reusables/expand";
 import { AnimatePresence, motion } from "motion/react";
+import { Link } from "react-router";
+import LinkIcon from "~/ui/components/icons/linkIcon";
 
 export default function ConstraintSection(props: {
   linkableConstraints: Constraint[];
@@ -18,25 +20,40 @@ export default function ConstraintSection(props: {
   return (
     <div className="flex gap-1 m-2 border-b-4 pb-2">
       <div className="flex flex-col items-center w-1/2 text-center border-r-2 pr-1">
-        <h1>Available constraints</h1>
+        {props.linkableConstraints.length ? (
+          <>
+            <h1>Available constraints</h1>
 
-        <Expand>
-          <ul className="py-2">
-            <AnimatePresence initial={false}>
-              {props.linkableConstraints.map((c: Constraint) => (
-                <motion.li
-                  key={`available_${c.id}`}
-                  variants={listAnim}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <LinkableConstraint c={c} flagId={props.flagId} />
-                </motion.li>
-              ))}
-            </AnimatePresence>
-          </ul>
-        </Expand>
+            <Expand>
+              <ul className="py-2">
+                <AnimatePresence initial={false}>
+                  {props.linkableConstraints.map((c: Constraint) => (
+                    <motion.li
+                      key={`available_${c.id}`}
+                      variants={listAnim}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                    >
+                      <LinkableConstraint c={c} flagId={props.flagId} />
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
+              </ul>
+            </Expand>
+          </>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <h1>No available constraints</h1>
+            <Link
+              to="/constraints"
+              className="flex items-center justify-center text-sm text-red-600 hover:underline"
+            >
+              Create constraints here
+              <LinkIcon />
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="w-1/2 text-center">
