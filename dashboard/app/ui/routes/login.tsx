@@ -4,6 +4,7 @@ import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 import { ToastContext } from "~/context/toastContext";
 import useQueryParams from "~/hooks/useQueryParams";
+import PasswordEdit from "../components/reusables/passwordEdit";
 
 export default function Login() {
   const { showMessage } = useContext(ModalContext);
@@ -61,7 +62,7 @@ export default function Login() {
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <input
             ref={userInputRef}
-            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
+            className="my-2 p-2 text-gray-600 font-semibold text-sm border-2 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="email"
             name="email"
             placeholder="email"
@@ -69,17 +70,16 @@ export default function Login() {
             required
             defaultValue={queryParams.email}
           />
-          <input
-            ref={passInputRef}
-            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 placeholder-gray-400"
-            type="password"
-            name="password"
+          <PasswordEdit
             placeholder="password"
-            onChange={handleChange}
-            required
+            handleChange={handleChange}
+            id="password"
+            defaultValue={formData.password}
+            error=""
+            ref={passInputRef}
           />
           <button
-            className="flex justify-center items-center m-3 p-3 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
+            className="flex justify-center items-center m-3 p-3 border-2 hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
           >
             Log in

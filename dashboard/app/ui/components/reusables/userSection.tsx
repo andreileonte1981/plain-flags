@@ -77,19 +77,8 @@ export default function UserSection() {
                 onMouseLeave={() => setExpanded(false)}
                 className="flex flex-col gap-4 border-2 rounded border-gray-300 py-4"
               >
-                <YesNoWrap
-                  clickId="btnlogout"
-                  question="Log out?"
-                  onYes={() => {
-                    logout();
-                  }}
-                >
-                  <SubtleButton onClick={() => {}} text="Logout" id="btnlogout">
-                    <LogoutIcon />
-                  </SubtleButton>
-                </YesNoWrap>
                 <form
-                  className="flex flex-col gap-2 p-2"
+                  className="flex flex-col gap-2 p-2 border-b-2"
                   onSubmit={changePassword}
                 >
                   <PasswordEdit
@@ -125,6 +114,17 @@ export default function UserSection() {
                     </div>
                   </button>
                 </form>
+                <YesNoWrap
+                  clickId="btnlogout"
+                  question="Log out?"
+                  onYes={() => {
+                    logout();
+                  }}
+                >
+                  <SubtleButton onClick={() => {}} text="Logout" id="btnlogout">
+                    <LogoutIcon />
+                  </SubtleButton>
+                </YesNoWrap>
               </div>
             </motion.div>
           )}

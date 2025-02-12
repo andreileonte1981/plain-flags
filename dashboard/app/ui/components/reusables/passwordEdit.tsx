@@ -1,4 +1,4 @@
-import { useState, type ChangeEventHandler } from "react";
+import { useState, type ChangeEventHandler, type RefObject } from "react";
 import LocalError from "./localError";
 
 export default function PasswordEdit(props: {
@@ -8,12 +8,14 @@ export default function PasswordEdit(props: {
   placeholder: string;
   error: string;
   autofocus?: boolean;
+  ref?: RefObject<HTMLInputElement | null>;
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="flex flex-col relative">
       <input
+        ref={props.ref}
         className="my-2 p-2 border-2 text-gray-600 text-sm rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
         type={showPassword ? "text" : "password"}
         name={props.id}

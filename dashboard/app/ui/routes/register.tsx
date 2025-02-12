@@ -4,6 +4,7 @@ import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 import { ToastContext } from "~/context/toastContext";
 import LocalError from "../components/reusables/localError";
+import PasswordEdit from "../components/reusables/passwordEdit";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -62,7 +63,7 @@ export default function Register() {
           autoComplete="off"
         >
           <input
-            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
+            className="my-2 p-2 text-gray-600 text-sm border-2 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
             type="email"
             id="email"
             name="email"
@@ -71,29 +72,20 @@ export default function Register() {
             required
             autoFocus
           />
-          <input
-            className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
-            type="password"
-            name="password"
+          <PasswordEdit
             id="password"
-            autoComplete="off"
             placeholder="password"
-            onChange={handleChange}
-            required
+            handleChange={handleChange}
+            defaultValue={formData.password}
+            error=""
           />
-          <div>
-            <input
-              className="my-2 p-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
-              type="password"
-              name="confirmpassword"
-              id="confirmpassword"
-              autoComplete="off"
-              placeholder="confirm password"
-              onChange={handleChange}
-              required
-            />
-            <LocalError error={registrationError} />
-          </div>
+          <PasswordEdit
+            id="confirmpassword"
+            placeholder="confirm password"
+            handleChange={handleChange}
+            defaultValue={formData.confirmpassword}
+            error={registrationError}
+          />
           <button
             className="flex justify-center items-center m-3 p-3 px-10 border hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
