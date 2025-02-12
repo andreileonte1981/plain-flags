@@ -35,6 +35,11 @@ export default function UserSection() {
 
       if (response.status === 200) {
         showMessage("Changed password successfully", "info");
+        setFormData({
+          currentPassword: "",
+          newPassword: "",
+          confirmpassword: "",
+        });
       }
     } catch (error: any) {
       // debugger;
@@ -96,6 +101,7 @@ export default function UserSection() {
                     onChange={handleChange}
                     required
                     autoFocus
+                    defaultValue={formData.currentPassword}
                   />
                   <input
                     className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
@@ -107,6 +113,7 @@ export default function UserSection() {
                     onChange={handleChange}
                     required
                     autoFocus
+                    defaultValue={formData.newPassword}
                   />
                   <div className="flex flex-col">
                     <input
@@ -118,6 +125,7 @@ export default function UserSection() {
                       placeholder="Confirm password"
                       onChange={handleChange}
                       required
+                      defaultValue={formData.confirmpassword}
                     />
                     <LocalError error={changePasswordError} />
                   </div>{" "}
