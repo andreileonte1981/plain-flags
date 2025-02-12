@@ -5,10 +5,10 @@ import { ToastContext } from "~/context/toastContext";
 import UserIcon from "../icons/userIcon";
 import LogoutIcon from "../icons/logoutIcon";
 import YesNoWrap from "./yesnoWrap";
-import LocalError from "./localError";
 import { AnimatePresence, motion } from "motion/react";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
+import PasswordEdit from "./passwordEdit";
 
 export default function UserSection() {
   const navigate = useNavigate();
@@ -23,8 +23,9 @@ export default function UserSection() {
 
   async function changePassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (formData.newPassword !== formData.confirmpassword) {
+    if (formData.newPassword !== formData.confirmPassword) {
       setChangePasswordError("New password must match");
+      return;
     }
 
     try {
@@ -38,7 +39,7 @@ export default function UserSection() {
         setFormData({
           currentPassword: "",
           newPassword: "",
-          confirmpassword: "",
+          confirmPassword: "",
         });
       }
     } catch (error: any) {
@@ -52,7 +53,7 @@ export default function UserSection() {
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
-    confirmpassword: "",
+    confirmPassword: "",
   });
 
   const handleChange = (event: any) => {
@@ -91,44 +92,28 @@ export default function UserSection() {
                   className="flex flex-col gap-2 p-2"
                   onSubmit={changePassword}
                 >
-                  <input
-                    className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
-                    type="password"
-                    name="currentPassword"
-                    id="currentPassword"
-                    autoComplete="off"
-                    placeholder="Current password"
-                    onChange={handleChange}
-                    required
-                    autoFocus
+                  <PasswordEdit
                     defaultValue={formData.currentPassword}
+                    handleChange={handleChange}
+                    id="currentPassword"
+                    placeholder="Current password"
+                    error=""
+                    autofocus={true}
                   />
-                  <input
-                    className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
-                    type="password"
-                    name="newPassword"
-                    id="newPassword"
-                    autoComplete="off"
-                    placeholder="New password"
-                    onChange={handleChange}
-                    required
-                    autoFocus
+                  <PasswordEdit
                     defaultValue={formData.newPassword}
+                    handleChange={handleChange}
+                    id="newPassword"
+                    placeholder="New password"
+                    error=""
                   />
-                  <div className="flex flex-col">
-                    <input
-                      className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
-                      type="password"
-                      name="confirmpassword"
-                      id="confirmpassword"
-                      autoComplete="off"
-                      placeholder="Confirm password"
-                      onChange={handleChange}
-                      required
-                      defaultValue={formData.confirmpassword}
-                    />
-                    <LocalError error={changePasswordError} />
-                  </div>{" "}
+                  <PasswordEdit
+                    defaultValue={formData.confirmPassword}
+                    handleChange={handleChange}
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    error={changePasswordError}
+                  />
                   <button
                     type="submit"
                     className="hover:bg-gray-300 active:bg-gray-200 border-gray-400 ml-5 mr-5 text-center rounded cursor-pointer text-gray-600 hover:text-red-800"
