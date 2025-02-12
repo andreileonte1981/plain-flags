@@ -9,7 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
-import { ModalContext } from "./context/modalContext";
+import { ModalContext, type ModalIconType } from "./context/modalContext";
 import { useState } from "react";
 import Modal from "./ui/components/reusables/modal";
 import { CurrentFlagContext } from "./context/currentFlagContext";
@@ -50,15 +50,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const [isOpen, setIsOpen] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
   const [currentConstraint, setCurrentConstraint] = useState("");
 
+  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("Harrow (-_-)");
+  const [iconType, setIconType] = useState("error");
 
-  function showMessage(s: string) {
+  function showMessage(s: string, icon: ModalIconType = "error") {
     setMessage(s);
     setIsOpen(true);
+    setIconType(icon);
   }
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -98,6 +100,7 @@ export default function App() {
                 setIsOpen={setIsOpen}
                 message={message}
                 setMessage={setMessage}
+                iconType={iconType as ModalIconType}
               ></Modal>
             </>
           </CurrentConstraintContext.Provider>

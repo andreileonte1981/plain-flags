@@ -51,4 +51,28 @@ export async function userRoutes(server: FastifyInstance) {
 
         reply.code(200).send({ token })
     })
+
+    server.post("/changePassword", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{ Body: { password: string } }>,
+        reply: FastifyReply
+    ) => {
+        const userId = (request.user as User).id;
+        const { password } = request.body;
+
+        if (password.trim().length === 0) {
+            throw new Error(`Invalid password. Please select a more secure password.`)
+        }
+
+        const user = await User.findOneBy({ id: userId })
+        if (!user) {
+            throw new Error(`User error`)
+        }
+
+        const salt = await bcrypt.genSalt(10)
+        user.password = await bcrypt.hash(password, salt)
+
+        await user.save()
+
+        reply.code(200).send({ email: user.email })
+    })
 }

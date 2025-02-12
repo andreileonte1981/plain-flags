@@ -7,10 +7,13 @@ import LogoutIcon from "../icons/logoutIcon";
 import YesNoWrap from "./yesnoWrap";
 import LocalError from "./localError";
 import { AnimatePresence, motion } from "motion/react";
+import Client from "~/client/client";
+import { ModalContext } from "~/context/modalContext";
 
 export default function UserSection() {
   const navigate = useNavigate();
   const { queueToast } = useContext(ToastContext);
+  const { showMessage } = useContext(ModalContext);
 
   function logout() {
     localStorage.setItem("jwt", "");
@@ -18,10 +21,24 @@ export default function UserSection() {
     return navigate("/login");
   }
 
-  function changePassword(event: React.FormEvent<HTMLFormElement>) {
+  async function changePassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (formData.password !== formData.confirmpassword) {
       setChangePasswordError("New password must match");
+    }
+
+    try {
+      const response = await Client.post("users/changePassword", {
+        password: formData.password,
+      });
+
+      if (response.status === 200) {
+        showMessage("Changed password successfully", "info");
+      }
+    } catch (error: any) {
+      // debugger;
+
+      showMessage(error.response?.data?.message || "Registration error");
     }
   }
 

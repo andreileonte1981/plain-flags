@@ -2,12 +2,15 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 import ErrorIcon from "../icons/infoIcon copy";
+import type { ModalIconType } from "~/context/modalContext";
+import InfoIcon from "../icons/infoIcon";
 
 export default function Modal(props: {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   message: string;
   setMessage: (val: string) => void;
+  iconType: ModalIconType;
 }) {
   const location = useLocation();
 
@@ -42,7 +45,12 @@ export default function Modal(props: {
             }}
           >
             <div className="px-5 flex justify-center items-center">
-              <ErrorIcon />
+              {props.iconType === "error" && <ErrorIcon />}
+              {props.iconType === "info" && (
+                <span className="text-green-600">
+                  <InfoIcon />
+                </span>
+              )}
               <h1 className="text-center text-lg py-5 px-2 font-semibold text-gray-600">
                 {props.message}
               </h1>
