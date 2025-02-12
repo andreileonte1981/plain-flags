@@ -53,13 +53,13 @@ export async function userRoutes(server: FastifyInstance) {
     })
 
     server.post("/changePassword", { onRequest: [(server as any).jwtAuth] }, async (
-        request: FastifyRequest<{ Body: { password: string } }>,
+        request: FastifyRequest<{ Body: { currentPassword: string, newPassword: string } }>,
         reply: FastifyReply
     ) => {
         const userId = (request.user as User).id;
-        const { password } = request.body;
+        const { currentPassword, newPassword } = request.body;
 
-        if (password.trim().length === 0) {
+        if (newPassword.trim().length === 0) {
             throw new Error(`Invalid password. Please select a more secure password.`)
         }
 
@@ -68,8 +68,14 @@ export async function userRoutes(server: FastifyInstance) {
             throw new Error(`User error`)
         }
 
+        const match = await bcrypt.compare(currentPassword, user.password)
+
+        if (!match) {
+            throw new Error(`Wrong current password`)
+        }
+
         const salt = await bcrypt.genSalt(10)
-        user.password = await bcrypt.hash(password, salt)
+        user.password = await bcrypt.hash(newPassword, salt)
 
         await user.save()
 

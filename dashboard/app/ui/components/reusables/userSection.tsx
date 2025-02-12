@@ -23,13 +23,14 @@ export default function UserSection() {
 
   async function changePassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (formData.password !== formData.confirmpassword) {
+    if (formData.newPassword !== formData.confirmpassword) {
       setChangePasswordError("New password must match");
     }
 
     try {
       const response = await Client.post("users/changePassword", {
-        password: formData.password,
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
       });
 
       if (response.status === 200) {
@@ -44,7 +45,8 @@ export default function UserSection() {
 
   const [expanded, setExpanded] = useState(false);
   const [formData, setFormData] = useState({
-    password: "",
+    currentPassword: "",
+    newPassword: "",
     confirmpassword: "",
   });
 
@@ -87,10 +89,21 @@ export default function UserSection() {
                   <input
                     className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
                     type="password"
-                    name="password"
-                    id="password"
+                    name="currentPassword"
+                    id="currentPassword"
                     autoComplete="off"
-                    placeholder="new password"
+                    placeholder="Current password"
+                    onChange={handleChange}
+                    required
+                    autoFocus
+                  />
+                  <input
+                    className="my-2 p-2 border-2 text-gray-600 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
+                    type="password"
+                    name="newPassword"
+                    id="newPassword"
+                    autoComplete="off"
+                    placeholder="New password"
                     onChange={handleChange}
                     required
                     autoFocus
@@ -102,7 +115,7 @@ export default function UserSection() {
                       name="confirmpassword"
                       id="confirmpassword"
                       autoComplete="off"
-                      placeholder="confirm password"
+                      placeholder="Confirm password"
                       onChange={handleChange}
                       required
                     />
