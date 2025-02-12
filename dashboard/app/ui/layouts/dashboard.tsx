@@ -43,7 +43,7 @@ export default function Dashboard() {
               </MenuItem>
             </div>
 
-            <div id="UserSection" className="my-4">
+            <div id="UserSection" className="my-2">
               <UserSection />
             </div>
           </div>

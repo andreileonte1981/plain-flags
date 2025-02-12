@@ -44,6 +44,7 @@ export default function Register() {
 
   const handleChange = (event: any) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
+    setRegistrationError("");
   };
 
   const [registrationError, setRegistrationError] = useState("");
