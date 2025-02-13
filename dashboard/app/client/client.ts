@@ -22,6 +22,8 @@ export default class Client {
             } catch (error: any) {
                 if (error.status === 401) {
                     localStorage.removeItem("jwt")
+                    localStorage.removeItem("user")
+                    localStorage.removeItem("role")
 
                     alert("Unauthorized")
 
@@ -54,6 +56,8 @@ export default class Client {
         catch (error: any) {
             if (error.status === 401) {
                 localStorage.removeItem("jwt")
+                localStorage.removeItem("user")
+                localStorage.removeItem("role")
 
                 alert("Unauthorized")
 

@@ -1,8 +1,22 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import User from "../entities/user";
+import User, { Role } from "../entities/user";
 import * as bcrypt from "bcrypt";
 
 export async function userRoutes(server: FastifyInstance) {
+    server.get("", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest,
+        reply: FastifyReply
+    ) => {
+        const user: User = request.user as User
+        if (user.role !== Role.ADMIN) {
+            throw new Error("Forbidden")
+        }
+
+        const users = await User.find()
+
+        return users.map(user => { return { id: user.id, email: user.email, role: user.role } })
+    })
+
     server.post("", async (
         request: FastifyRequest<{ Body: User }>,
         reply: FastifyReply
@@ -46,7 +60,8 @@ export async function userRoutes(server: FastifyInstance) {
 
         const token = server.jwt.sign({
             id: user.id,
-            email
+            email,
+            role: user.role
         });
 
         reply.code(200).send({ token, user: { email: user.email, role: user.role } })

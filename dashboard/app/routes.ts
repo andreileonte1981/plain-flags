@@ -5,7 +5,8 @@ export default [
     layout("ui/layouts/dashboard.tsx", [
         route("flags", "ui/routes/flags/flags.tsx"),
         route("constraints", "ui/routes/constraints/constraints.tsx"),
-        route("flags/:flagId", "ui/routes/flags/flag.tsx")
+        route("flags/:flagId", "ui/routes/flags/flag.tsx"),
+        route("users", "ui/routes/users.tsx")
     ]),
     route("login", "ui/routes/login.tsx"),
     route("register", "ui/routes/register.tsx")

@@ -4,8 +4,10 @@ import MenuItem from "~/ui/components/reusables/menuitem";
 import FlagIcon from "~/ui/components/icons/flagIcon";
 import HandIcon from "~/ui/components/icons/handIcon";
 import UserSection from "../components/reusables/userSection";
+import UserIcon from "../components/icons/userIcon";
 
 export default function Dashboard() {
+  const isAdmin = localStorage.getItem("role") === "admin";
   return (
     <div className="flex items-stretch w-full min-h-screen">
       <div id="sidebar" className="flex-none w-52 m-0 border-r-4 z-20">
@@ -22,7 +24,7 @@ export default function Dashboard() {
           {/* nav area */}
           <div className="h-full flex flex-col justify-between">
             {/* nav links */}
-            <div className="pt-2 flex flex-col items-stretch">
+            <div className="pt-2 flex flex-col gap-2 items-stretch">
               <MenuItem
                 text="Flags"
                 linkto="/flags"
@@ -41,6 +43,17 @@ export default function Dashboard() {
                   <HandIcon />
                 </div>
               </MenuItem>
+              {isAdmin && (
+                <MenuItem
+                  text="Users"
+                  linkto="/users"
+                  tooltip="Manage user accounts here"
+                >
+                  <div className="text-gray-500">
+                    <UserIcon />
+                  </div>
+                </MenuItem>
+              )}
             </div>
 
             <div id="UserSection" className="my-2">
