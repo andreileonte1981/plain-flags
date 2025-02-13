@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Client from "~/client/client";
 import { ModalContext } from "~/context/modalContext";
 import PasswordEdit from "./passwordEdit";
+import AdminIcon from "../icons/adminIcon";
 
 export default function UserSection() {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ export default function UserSection() {
   const [changePasswordError, setChangePasswordError] = useState("");
 
   const userEmail = localStorage.getItem("email");
+  const userRole = localStorage.getItem("role");
 
   return (
     <div className="m-2 mb-0">
@@ -127,7 +129,14 @@ export default function UserSection() {
                     <LogoutIcon />
                   </SubtleButton>
                 </YesNoWrap>
-                <div className="text-center text-gray-500 text-sm break-all">
+                <div className="flex flex-col gap-1 items-center text-center text-gray-500 text-sm break-all px-2">
+                  {userRole === "user" && <UserIcon />}
+                  {userRole === "admin" && (
+                    <div className="flex">
+                      <UserIcon />
+                      <AdminIcon />
+                    </div>
+                  )}
                   {userEmail}
                 </div>
               </div>
