@@ -1,4 +1,9 @@
 cd services/flag-management
+
+if [ ! -d "data" ]; then
+  npm run typeorm:migrate
+fi
+
 npm run build &
 npm run dev &
 

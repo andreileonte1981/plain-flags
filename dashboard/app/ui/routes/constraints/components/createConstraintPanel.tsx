@@ -114,45 +114,45 @@ export default function CreateConstraintPanel(props: {
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
           <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 border-b-4 py-2 px-3">
-            <div className="flex flex-col items-end gap-2 mx-1">
-              <div className="flex flex-col items-end">
-                <input
-                  id="newConstraintDescription"
-                  name="newConstraintDescription"
-                  type="text"
-                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
-                  defaultValue={formData.description}
-                  placeholder="Description"
-                  onChange={(e) => {
-                    setFormData({ ...formData, description: e.target.value });
-                    setError({ ...error, description: "" });
-                  }}
-                />
-                <LocalError error={error.description} />
-              </div>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col items-end gap-2 mx-1">
+                <div className="flex flex-col items-end">
+                  <input
+                    id="newConstraintDescription"
+                    name="newConstraintDescription"
+                    type="text"
+                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                    defaultValue={formData.description}
+                    placeholder="Description"
+                    onChange={(e) => {
+                      setFormData({ ...formData, description: e.target.value });
+                      setError({ ...error, description: "" });
+                    }}
+                  />
+                  <LocalError error={error.description} />
+                </div>
 
-              <div className="flex flex-col items-end">
-                <input
-                  id="newConstraintKey"
-                  name="newConstraintKey"
-                  type="text"
-                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
-                  defaultValue={formData.key}
-                  placeholder="What it's for (e.g. userId)"
-                  onChange={(e) => {
-                    setFormData({ ...formData, key: e.target.value });
-                    setError({ ...error, key: "" });
-                  }}
-                />
-                <LocalError error={error.key} />
+                <div className="flex flex-col items-end">
+                  <input
+                    id="newConstraintKey"
+                    name="newConstraintKey"
+                    type="text"
+                    className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                    defaultValue={formData.key}
+                    placeholder="What it's for (e.g. userId)"
+                    onChange={(e) => {
+                      setFormData({ ...formData, key: e.target.value });
+                      setError({ ...error, key: "" });
+                    }}
+                  />
+                  <LocalError error={error.key} />
+                </div>
               </div>
-
-              <div className="flex flex-col items-end">
-                <input
+              <div className="flex flex-col items-end mx-1">
+                <textarea
                   id="newConstraintValues"
                   name="newConstraintValues"
-                  type="text"
-                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
+                  className="border-2 rounded p-1 min-w-64 h-full focus:ring-0 focus:border-current placeholder-gray-300 resize"
                   defaultValue={formData.commaSeparatedValues}
                   placeholder="Who / which it's for"
                   onChange={(e) => {

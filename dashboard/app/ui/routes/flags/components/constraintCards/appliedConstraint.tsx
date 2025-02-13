@@ -76,7 +76,15 @@ export default function AppliedConstraint(props: {
           {props.c.description}
         </Link>
         <h1>For: {props.c.key}</h1>
-        <h1>Named: {props.c.values.join(", ")}</h1>
+        <div className="break-all">
+          <span className="text-gray-700">Named:</span>
+          <br />
+          <div className="flex flex-col">
+            {props.c.values.map((v, index) => (
+              <p key={`${props.c.id}_val_${index}`}>{v}</p>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ export default function HistoryItem(props: {
     }
   }
   return (
-    <p>
+    <p className="break-all">
       <span>{props.userEmail} </span>
       {whatHeDid(props.what)}
       <span>{props.constraintInfo} </span>

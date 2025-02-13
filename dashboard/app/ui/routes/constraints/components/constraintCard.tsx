@@ -91,11 +91,14 @@ export default function ConstraintCard(props: {
             </span>
           </div>
 
-          <div>
-            Named:{" "}
-            <span className="font-bold text-gray-700">
-              {props.values.join(", ")}
-            </span>
+          <div className="break-all">
+            <span className="text-gray-500">Named:</span>
+            <br />
+            <div className="flex flex-col text-gray-700">
+              {props.values.map((v, index) => (
+                <p key={`${props.id}_val_${index}`}>{v}</p>
+              ))}
+            </div>
           </div>
         </div>
 
