@@ -62,6 +62,8 @@ export default function UserSection() {
   };
   const [changePasswordError, setChangePasswordError] = useState("");
 
+  const userEmail = localStorage.getItem("email");
+
   return (
     <div className="m-2 mb-0">
       <div className="-mb-4">
@@ -125,6 +127,9 @@ export default function UserSection() {
                     <LogoutIcon />
                   </SubtleButton>
                 </YesNoWrap>
+                <div className="text-center text-gray-500 text-sm break-all">
+                  {userEmail}
+                </div>
               </div>
             </motion.div>
           )}
@@ -145,7 +150,7 @@ export default function UserSection() {
                 }}
                 className="flex gap-1 items-center justify-center text-gray-500 hover:text-red-500 active:text-red-800 cursor-pointer"
               >
-                <div id="Me" className="font-semibold text-center ">
+                <div id="Me" className="font-semibold text-center">
                   Me
                 </div>
                 <div className="flex-none">

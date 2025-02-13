@@ -14,7 +14,7 @@ describe("Basic user operations", () => {
         assert(response?.status === 201);
     })
 
-    test("A registered user who logs in receives a token", async () => {
+    test("A registered user who logs in receives a token, the role and email user info", async () => {
         const client = new Client()
 
         const email = `${Salt.uniqued("mruser")}@mail.com"`
@@ -29,6 +29,10 @@ describe("Basic user operations", () => {
         const token = loginResponse?.data?.token;
 
         assert(token)
+
+        const user = loginResponse.data.user
+        assert(user.email === email)
+        assert(user.role === "user")
     })
 
     test("Empty user name or password on registration is invalid", async () => {

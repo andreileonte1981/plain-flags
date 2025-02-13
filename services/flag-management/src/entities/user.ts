@@ -1,5 +1,10 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+export enum Role {
+    ADMIN = "admin",
+    USER = "user"
+}
+
 @Entity()
 export default class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
@@ -10,4 +15,7 @@ export default class User extends BaseEntity {
 
     @Column()
     password: string = ""
+
+    @Column({ default: Role.USER })
+    role: Role = Role.USER
 }

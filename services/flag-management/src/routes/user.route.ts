@@ -49,7 +49,7 @@ export async function userRoutes(server: FastifyInstance) {
             email
         });
 
-        reply.code(200).send({ token })
+        reply.code(200).send({ token, user: { email: user.email, role: user.role } })
     })
 
     server.post("/changePassword", { onRequest: [(server as any).jwtAuth] }, async (

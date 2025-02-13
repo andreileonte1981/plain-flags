@@ -25,7 +25,9 @@ export default function Login() {
       const response = await Client.post("users/login", formData);
 
       if (response.status === 200) {
-        localStorage.setItem("jwt", response.data.token);
+        await localStorage.setItem("jwt", response.data.token);
+        await localStorage.setItem("email", response.data.user.email);
+        await localStorage.setItem("role", response.data.user.role);
 
         queueToast("Welcome!");
 
