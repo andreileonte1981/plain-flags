@@ -154,7 +154,7 @@ export default function CreateConstraintPanel(props: {
                   name="newConstraintValues"
                   className="border-2 rounded p-1 min-w-64 h-full focus:ring-0 focus:border-current placeholder-gray-300 resize"
                   defaultValue={formData.commaSeparatedValues}
-                  placeholder="Who / which it's for"
+                  placeholder="Who / which it's for (comma separated)"
                   onChange={(e) => {
                     setFormData({
                       ...formData,
