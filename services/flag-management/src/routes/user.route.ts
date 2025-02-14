@@ -8,7 +8,7 @@ export async function userRoutes(server: FastifyInstance) {
         reply: FastifyReply
     ) => {
         const user: User = request.user as User
-        if (user.role !== Role.ADMIN) {
+        if (user.role !== Role.ADMIN && user.role !== Role.SUPERADMIN) {
             throw new Error("Forbidden")
         }
 
@@ -43,7 +43,8 @@ export async function userRoutes(server: FastifyInstance) {
     server.post("/bulk", { onRequest: [(server as any).jwtAuth] }, async (
         request: FastifyRequest<{ Body: { emails: string } }>, reply: FastifyReply
     ) => {
-        if ((request.user as User).role !== Role.ADMIN) {
+        const user = request.user as User
+        if (user.role !== Role.ADMIN && user.role !== Role.SUPERADMIN) {
             throw new Error("Permission denied")
         }
 
@@ -70,16 +71,15 @@ export async function userRoutes(server: FastifyInstance) {
     server.post("/delete", { onRequest: [(server as any).jwtAuth] }, async (
         request: FastifyRequest<{ Body: { id: string } }>, reply: FastifyReply
     ) => {
-        if ((request.user as User).role !== Role.ADMIN) {
+        const requester = (request.user as User)
+        if (requester.role !== Role.ADMIN && requester.role !== Role.SUPERADMIN) {
             throw new Error("Permission denied")
         }
 
         const id = request.body.id
 
-        // TODO: maybe remove this guard,
-        // allow an admin to use the API directly do remove another admin
         const user = await User.findOneBy({ id })
-        if (user?.role === Role.ADMIN) {
+        if (user?.role === Role.SUPERADMIN) {
             throw new Error("Cannot delete admin")
         }
 
