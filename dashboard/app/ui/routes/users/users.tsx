@@ -4,12 +4,13 @@ import { useState } from "react";
 import { redirect } from "react-router";
 import FilterEdit from "../../components/reusables/filterEdit";
 
-import { type User } from "~/domain/user";
+import { Role, type User } from "~/domain/user";
 import UserList from "./components/userList";
 import CreateUsersPanel from "./components/createUsersPanel";
 
 export async function clientLoader({}) {
-  if (localStorage.getItem("role") !== "admin") {
+  const myRole = localStorage.getItem("role");
+  if (myRole !== Role.ADMIN && myRole !== Role.SUPERADMIN) {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
     localStorage.removeItem("role");

@@ -25,7 +25,7 @@ export default function UserList(props: { users: User[] }) {
                 key={`email_${u.id}`}
               >
                 <div className="break-all pb-2">
-                  {u.role === Role.ADMIN ? (
+                  {u.role === Role.ADMIN || u.role === Role.SUPERADMIN ? (
                     <span className="font-bold">{u.email}</span>
                   ) : (
                     <span>{u.email}</span>
@@ -40,7 +40,7 @@ export default function UserList(props: { users: User[] }) {
                 key={`role_${u.id}`}
               >
                 <div className="pb-2">
-                  {u.role === Role.ADMIN ? (
+                  {u.role === Role.ADMIN || u.role === Role.SUPERADMIN ? (
                     <span className="font-bold">{u.role}</span>
                   ) : (
                     <span>{u.role}</span>

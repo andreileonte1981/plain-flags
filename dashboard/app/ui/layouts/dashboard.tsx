@@ -5,9 +5,11 @@ import FlagIcon from "~/ui/components/icons/flagIcon";
 import HandIcon from "~/ui/components/icons/handIcon";
 import UserSection from "../components/reusables/userSection";
 import UserIcon from "../components/icons/userIcon";
+import { Role } from "~/domain/user";
 
 export default function Dashboard() {
-  const isAdmin = localStorage.getItem("role") === "admin";
+  const myRole = localStorage.getItem("role");
+  const isAdmin = myRole === Role.ADMIN || myRole === Role.SUPERADMIN;
   return (
     <div className="flex items-stretch w-full min-h-screen">
       <div id="sidebar" className="flex-none w-52 m-0 border-r-4 z-20">

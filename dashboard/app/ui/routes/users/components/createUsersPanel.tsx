@@ -68,7 +68,6 @@ export default function CreateUsersPanel() {
           id="newUserEmails"
           name="newUserEmails"
           className="border-2 rounded p-1 focus:ring-0 focus:border-current placeholder-gray-300 resize w-full"
-          defaultValue={newUserEmails}
           value={newUserEmails}
           placeholder="New user emails (comma separated)"
           onChange={(e) => {

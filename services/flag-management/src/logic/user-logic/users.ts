@@ -9,15 +9,15 @@ export default class Users {
 
         const admin = new User()
 
-        admin.email = process.env.ADMIN_EMAIL || "admin.default@default.admin"
+        admin.email = process.env.SUPERADMIN_EMAIL || "superadmin@default.admin"
 
         const salt = await bcrypt.genSalt(10)
 
-        admin.password = await bcrypt.hash(process.env.ADMIN_PASSWORD || "password", salt)
+        admin.password = await bcrypt.hash(process.env.SUPERADMIN_PASSWORD || "password", salt)
 
         console.log(admin.password)
 
-        admin.role = Role.ADMIN
+        admin.role = Role.SUPERADMIN
 
         await User.insert(admin)
     }

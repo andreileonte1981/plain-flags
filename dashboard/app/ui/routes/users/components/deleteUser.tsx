@@ -37,9 +37,39 @@ export default function DeleteUser(props: User) {
     }
   }
 
-  function mayDelete(): boolean {
-    return props.role !== Role.ADMIN;
+  let reason = "";
+  function setReason(s: string) {
+    reason = s;
   }
+
+  function mayDelete(): boolean {
+    const myRole = localStorage.getItem("role");
+    const myEmail = localStorage.getItem("email");
+
+    if (props.role === Role.SUPERADMIN) {
+      setReason(`Cannot delete super admin`);
+      return false;
+    }
+
+    if (myRole === Role.SUPERADMIN) {
+      return true;
+    }
+
+    if (props.email === myEmail) {
+      setReason("Cannot delete yourself");
+      return false;
+    }
+
+    if (myRole === Role.ADMIN || myRole === Role.SUPERADMIN) {
+      return true;
+    }
+
+    setReason("Not allowed");
+
+    return false;
+  }
+
+  const mayDeleteUser = mayDelete();
 
   return (
     <YesNoWrap
@@ -50,7 +80,7 @@ export default function DeleteUser(props: User) {
       }}
       id={ynElementId}
     >
-      {mayDelete() ? (
+      {mayDeleteUser ? (
         <>
           {deleteWaitOpen && <div className="animate-bounce">Deleting...</div>}
           {!deleteWaitOpen && (
@@ -67,7 +97,7 @@ export default function DeleteUser(props: User) {
           <TrashIcon />
 
           <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 m-1 bg-black/90 rounded -top-2 -left-44 text-white text-sm font-bold">
-            Cannot delete admin
+            {reason}
           </div>
         </div>
       )}
