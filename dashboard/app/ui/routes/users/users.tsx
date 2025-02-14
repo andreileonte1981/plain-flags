@@ -1,6 +1,6 @@
 import Client from "~/client/client";
 import type { Route } from "../../../+types/root";
-import { Fragment, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import { redirect, useRevalidator } from "react-router";
 import FilterEdit from "../../components/reusables/filterEdit";
@@ -9,9 +9,8 @@ import YesNoWrap from "../../components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
 import { ModalContext } from "~/context/modalContext";
 import { scrollToElement } from "~/utils/scrollTo";
-import { Role, type User } from "~/domain/user";
-import DeleteUser from "./components/deleteUser";
-import { AnimatePresence, motion } from "motion/react";
+import { type User } from "~/domain/user";
+import UserList from "./components/userList";
 
 export async function clientLoader({}) {
   if (localStorage.getItem("role") !== "admin") {
@@ -98,13 +97,6 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  const listAnim = {
-    initial: { originY: 0, scaleY: 0, height: 0 },
-    animate: { originY: 0, scaleY: 1, height: "auto" },
-    exit: { originY: 0, scaleY: 0, height: 0, opacity: 0 },
-    transition: { duration: 0.3, ease: "easeInOut" },
-  };
-
   return (
     <div className="mx-2 flex flex-col">
       <div id="usersHeader" className="sticky top-0 z-10 bg-white">
@@ -156,67 +148,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
       </div>
-      <div>
-        <div className="grid grid-cols-[80%,10%,10%] items-center p-2 text-gray-600">
-          <AnimatePresence initial={false} presenceAffectsLayout={true}>
-            {users.map((u) => (
-              <Fragment key={`user_${u.id}`}>
-                <motion.div
-                  variants={listAnim}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key={`email_${u.id}`}
-                >
-                  <div className="break-all pb-2">
-                    {u.role === Role.ADMIN ? (
-                      <span className="font-bold">{u.email}</span>
-                    ) : (
-                      <span>{u.email}</span>
-                    )}
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={listAnim}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key={`role_${u.id}`}
-                >
-                  <div className="pb-2">
-                    {u.role === Role.ADMIN ? (
-                      <span className="font-bold">{u.role}</span>
-                    ) : (
-                      <span>{u.role}</span>
-                    )}
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={listAnim}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key={`trash_${u.id}`}
-                >
-                  <div className="pb-2 flex justify-end">
-                    <DeleteUser id={u.id} email={u.email} role={u.role} />
-                  </div>
-                </motion.div>
-                <motion.div
-                  variants={listAnim}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  key={`separator_${u.id}`}
-                  className="col-span-3"
-                >
-                  <div className="w-full h-0.5 bg-gray-100 mb-2"></div>
-                </motion.div>
-              </Fragment>
-            ))}
-          </AnimatePresence>
-        </div>
-      </div>
+      <UserList users={users} />
     </div>
   );
 }
