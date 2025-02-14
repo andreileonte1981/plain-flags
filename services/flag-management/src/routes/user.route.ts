@@ -40,6 +40,33 @@ export async function userRoutes(server: FastifyInstance) {
         reply.code(201).send(user)
     })
 
+    server.post("/bulk", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{ Body: { emails: string } }>, reply: FastifyReply
+    ) => {
+        if ((request.user as User).role !== Role.ADMIN) {
+            throw new Error("Permission denied")
+        }
+
+        const useremails = request.body.emails.split(",");
+
+        const newUsers: User[] = [];
+
+        for (const email of useremails) {
+            const newUser = new User();
+            newUser.email = email.trim();
+            newUser.role = Role.USER;
+
+            const salt = await bcrypt.genSalt(10)
+            newUser.password = await bcrypt.hash(process.env.DEFAULT_USER_PASSWORD || "password", salt)
+
+            newUsers.push(newUser)
+        }
+
+        User.insert(newUsers)
+
+        reply.code(201).send(useremails)
+    })
+
     server.post("/login", async (
         request: FastifyRequest<{ Body: { email: string, password: string } }>,
         reply: FastifyReply
