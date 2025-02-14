@@ -62,9 +62,30 @@ export async function userRoutes(server: FastifyInstance) {
             newUsers.push(newUser)
         }
 
-        User.insert(newUsers)
+        await User.insert(newUsers)
 
         reply.code(201).send(useremails)
+    })
+
+    server.post("/delete", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{ Body: { id: string } }>, reply: FastifyReply
+    ) => {
+        if ((request.user as User).role !== Role.ADMIN) {
+            throw new Error("Permission denied")
+        }
+
+        const id = request.body.id
+
+        // TODO: maybe remove this guard,
+        // allow an admin to use the API directly do remove another admin
+        const user = await User.findOneBy({ id })
+        if (user?.role === Role.ADMIN) {
+            throw new Error("Cannot delete admin")
+        }
+
+        await User.delete({ id })
+
+        reply.code(200).send(id)
     })
 
     server.post("/login", async (
