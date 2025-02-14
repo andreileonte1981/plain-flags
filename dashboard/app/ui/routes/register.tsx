@@ -65,6 +65,7 @@ export default function Register() {
           <input
             className="my-2 p-2 text-gray-600 text-sm border-2 rounded focus:border-current focus:ring-0 font-semibold placeholder-gray-400"
             type="email"
+            spellCheck={false}
             id="email"
             name="email"
             placeholder="email"

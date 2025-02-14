@@ -7,6 +7,7 @@ import FilterEdit from "../../components/reusables/filterEdit";
 import { Role, type User } from "~/domain/user";
 import UserList from "./components/userList";
 import CreateUsersPanel from "./components/createUsersPanel";
+import CreateAdminPanel from "./components/createAdminPanel";
 
 export async function clientLoader({}) {
   const myRole = localStorage.getItem("role");
@@ -47,6 +48,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
       <div id="usersHeader" className="sticky top-0 z-10 bg-white">
         <div className="flex flex-col flex-wrap items-center justify-center border-b-4">
           <CreateUsersPanel />
+          <CreateAdminPanel />
 
           <div id="userFilters" className="w-full p-2">
             <FilterEdit

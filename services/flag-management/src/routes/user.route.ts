@@ -41,7 +41,7 @@ export async function userRoutes(server: FastifyInstance) {
     })
 
     server.post("/bulk", { onRequest: [(server as any).jwtAuth] }, async (
-        request: FastifyRequest<{ Body: { emails: string } }>, reply: FastifyReply
+        request: FastifyRequest<{ Body: { emails: string, role?: string } }>, reply: FastifyReply
     ) => {
         const user = request.user as User
         if (user.role !== Role.ADMIN && user.role !== Role.SUPERADMIN) {
@@ -55,7 +55,7 @@ export async function userRoutes(server: FastifyInstance) {
         for (const email of useremails) {
             const newUser = new User();
             newUser.email = email.trim();
-            newUser.role = Role.USER;
+            newUser.role = request.body.role as Role || Role.USER;
 
             const salt = await bcrypt.genSalt(10)
             newUser.password = await bcrypt.hash(process.env.DEFAULT_USER_PASSWORD || "password", salt)

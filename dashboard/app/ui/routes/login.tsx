@@ -68,6 +68,7 @@ export default function Login() {
             type="email"
             name="email"
             placeholder="email"
+            spellCheck={false}
             onChange={handleChange}
             required
             defaultValue={queryParams.email}
