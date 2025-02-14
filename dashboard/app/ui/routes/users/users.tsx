@@ -11,6 +11,7 @@ import { ModalContext } from "~/context/modalContext";
 import { scrollToElement } from "~/utils/scrollTo";
 import { Role, type User } from "~/domain/user";
 import DeleteUser from "./components/deleteUser";
+import { AnimatePresence, motion } from "motion/react";
 
 export async function clientLoader({}) {
   if (localStorage.getItem("role") !== "admin") {
@@ -58,7 +59,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
       setNewUserError("At least one user email required");
       return false;
     }
-    const emails = newUserEmails.split(",");
+    const emails = newUserEmails.split(",").filter((e) => e.trim().length > 0);
     const invalids: string[] = [];
     const emailCheck =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -73,6 +74,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         return false;
       }
     }
+    setNewUserEmails(emails.join(","));
     return true;
   }
 
@@ -94,6 +96,13 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
       showMessage(error.response?.data?.message || "User creation error");
     }
+  };
+
+  const listAnim = {
+    initial: { originY: 0, scaleY: 0, height: 0 },
+    animate: { originY: 0, scaleY: 1, height: "auto" },
+    exit: { originY: 0, scaleY: 0, height: 0, opacity: 0 },
+    transition: { duration: 0.3, ease: "easeInOut" },
   };
 
   return (
@@ -149,31 +158,63 @@ export default function Component({ loaderData }: Route.ComponentProps) {
       </div>
       <div>
         <div className="grid grid-cols-[80%,10%,10%] items-center p-2 text-gray-600">
-          {users.map((u) => (
-            <Fragment key={`user_${u.id}`}>
-              <div className="break-all pb-2" key={`email_${u.id}`}>
-                {u.role === Role.ADMIN ? (
-                  <span className="font-bold">{u.email}</span>
-                ) : (
-                  <span>{u.email}</span>
-                )}
-              </div>
-              <div className="pb-2" key={`role_${u.id}`}>
-                {u.role === Role.ADMIN ? (
-                  <span className="font-bold">{u.role}</span>
-                ) : (
-                  <span>{u.role}</span>
-                )}
-              </div>
-              <div className="pb-2 flex justify-end" key={`trash_${u.id}`}>
-                <DeleteUser id={u.id} email={u.email} role={u.role} />
-              </div>
-              <div
-                key={`separator_${u.id}`}
-                className="col-span-3 w-full h-0.5 mb-2 bg-gray-100"
-              ></div>
-            </Fragment>
-          ))}
+          <AnimatePresence initial={false} presenceAffectsLayout={true}>
+            {users.map((u) => (
+              <Fragment key={`user_${u.id}`}>
+                <motion.div
+                  variants={listAnim}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  key={`email_${u.id}`}
+                >
+                  <div className="break-all pb-2">
+                    {u.role === Role.ADMIN ? (
+                      <span className="font-bold">{u.email}</span>
+                    ) : (
+                      <span>{u.email}</span>
+                    )}
+                  </div>
+                </motion.div>
+                <motion.div
+                  variants={listAnim}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  key={`role_${u.id}`}
+                >
+                  <div className="pb-2">
+                    {u.role === Role.ADMIN ? (
+                      <span className="font-bold">{u.role}</span>
+                    ) : (
+                      <span>{u.role}</span>
+                    )}
+                  </div>
+                </motion.div>
+                <motion.div
+                  variants={listAnim}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  key={`trash_${u.id}`}
+                >
+                  <div className="pb-2 flex justify-end">
+                    <DeleteUser id={u.id} email={u.email} role={u.role} />
+                  </div>
+                </motion.div>
+                <motion.div
+                  variants={listAnim}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  key={`separator_${u.id}`}
+                  className="col-span-3"
+                >
+                  <div className="w-full h-0.5 bg-gray-100 mb-2"></div>
+                </motion.div>
+              </Fragment>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>
