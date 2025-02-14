@@ -1,6 +1,6 @@
 import Client from "~/client/client";
 import type { Route } from "../../../+types/root";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import { redirect, useRevalidator } from "react-router";
 import FilterEdit from "../../components/reusables/filterEdit";
@@ -49,22 +49,40 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   const { queueToast } = useContext(ToastContext);
   const revalidator = useRevalidator();
 
+  const [newUserEmails, setNewUserEmails] = useState("");
+
+  const [newUserError, setNewUserError] = useState("");
+
   function checkValid(): boolean {
-    if (!newUserEmail) {
-      setNewUserError("New user email required");
+    if (!newUserEmails) {
+      setNewUserError("At least one user email required");
       return false;
+    }
+    const emails = newUserEmails.split(",");
+    const invalids: string[] = [];
+    const emailCheck =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    for (const email of emails) {
+      const e = email.trim();
+      if (!emailCheck.test(e)) {
+        invalids.push(e);
+      }
+
+      if (invalids.length) {
+        setNewUserError(`Invalid emails: ${invalids.join(", ")}`);
+        return false;
+      }
     }
     return true;
   }
 
   const onCreateYes = async () => {
     try {
-      const response = await Client.post("users", {
-        email: newUserEmail,
-        password: "password",
+      const response = await Client.post("users/bulk", {
+        emails: newUserEmails,
       });
 
-      queueToast("User created.");
+      queueToast("Users created.");
 
       await revalidator.revalidate();
 
@@ -78,37 +96,33 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  const [newUserEmail, setNewUserEmail] = useState("");
-
-  const [newUserError, setNewUserError] = useState("");
-
   return (
     <div className="mx-2 flex flex-col">
-      <div className="sticky top-0 z-10 bg-white">
-        <div className="flex flex-col flex-wrap items-center justify-center border-b-4 py-2">
-          <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 px-3 border-b-4 py-2">
-            <div className="flex flex-col items-end my-2 mx-1">
-              <div>
-                <input
-                  id="newUserEmail"
-                  name="newUserEmail"
-                  type="text"
-                  className="border-2 rounded p-1 w-auto focus:ring-0 focus:border-current placeholder-gray-300"
-                  defaultValue={newUserEmail}
-                  placeholder="New user email"
-                  onChange={(e) => {
-                    setNewUserError("");
-                    setNewUserEmail(e.target.value);
-                  }}
-                />
-                <LocalError error={newUserError} />
-              </div>
+      <div id="usersHeader" className="sticky top-0 z-10 bg-white">
+        <div className="flex flex-col flex-wrap items-center justify-center border-b-4">
+          <div
+            id="userCreatePanel"
+            className="flex items-center justify-between flex-wrap w-full font-semibold text-gray-600 px-3 border-b-4"
+          >
+            <div className="flex flex-col grow flex-1 items-start my-2">
+              <textarea
+                id="newUserEmails"
+                name="newUserEmails"
+                className="border-2 rounded p-1 focus:ring-0 focus:border-current placeholder-gray-300 resize w-full"
+                defaultValue={newUserEmails}
+                placeholder="New user emails (comma separated)"
+                onChange={(e) => {
+                  setNewUserError("");
+                  setNewUserEmails(e.target.value);
+                }}
+              />
+              <LocalError error={newUserError} />
             </div>
             <YesNoWrap
               clickId="createNewUserButton"
-              question={`Create new user '${newUserEmail}'?`}
+              question={`Create new users?`}
               preDialogValidator={checkValid}
-              key={newUserEmail}
+              key={newUserEmails}
               onYes={() => {
                 onCreateYes();
               }}
@@ -117,24 +131,26 @@ export default function Component({ loaderData }: Route.ComponentProps) {
                 <GreenPlusButton
                   id="createNewUserButton"
                   onClick={() => {}}
-                  text="Create"
+                  text="Create users"
                 />
               </div>
             </YesNoWrap>
-          </div>{" "}
-          <FilterEdit
-            onChange={(e) => {
-              setMailFilter(e.target.value);
-            }}
-            placeholder="Find user by email"
-            tooltip=""
-          />
+          </div>
+          <div id="userFilters" className="w-full p-2">
+            <FilterEdit
+              onChange={(e) => {
+                setMailFilter(e.target.value);
+              }}
+              placeholder="Find user by email"
+              tooltip=""
+            />
+          </div>
         </div>
       </div>
       <div>
-        <div className="grid grid-cols-[80%,10%,10%] items-center p-4 text-gray-600">
+        <div className="grid grid-cols-[80%,10%,10%] items-center p-2 text-gray-600">
           {users.map((u) => (
-            <>
+            <Fragment key={`user_${u.id}`}>
               <div className="break-all pb-2" key={`email_${u.id}`}>
                 {u.role === Role.ADMIN ? (
                   <span className="font-bold">{u.email}</span>
@@ -152,8 +168,11 @@ export default function Component({ loaderData }: Route.ComponentProps) {
               <div className="pb-2 flex justify-end" key={`trash_${u.id}`}>
                 <DeleteUser id={u.id} email={u.email} role={u.role} />
               </div>
-              <div className="col-span-3 w-full h-0.5 mb-2 bg-gray-100"></div>
-            </>
+              <div
+                key={`separator_${u.id}`}
+                className="col-span-3 w-full h-0.5 mb-2 bg-gray-100"
+              ></div>
+            </Fragment>
           ))}
         </div>
       </div>
