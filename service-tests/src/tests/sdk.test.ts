@@ -42,6 +42,46 @@ describe("SDK operation", () => {
         sdk.stopUpdates()
     })
 
+    test("Turning on a flag will show it as on in the SDK after a manual state update", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const name = Salt.uniqued("test-sd-o")
+
+        const response: any = await client.post("/api/flags", { name }, token)
+
+        const id = response?.data.id
+
+        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
+
+        await sdk.init(process.env.APIKEY || "", 120000)
+
+        try {
+            assert(!sdk.isOn(name))
+        }
+        catch (error) {
+            sdk.stopUpdates()
+            throw (error)
+        }
+
+        const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
+
+        assert(turnOnResponse?.status === 200)
+
+        await sdk.updateState()
+
+        try {
+            assert(sdk.isOn(name))
+        }
+        catch (error) {
+            sdk.stopUpdates()
+            throw (error)
+        }
+
+        sdk.stopUpdates()
+    })
+
     test("The SDK polls for updates at the specified interval", async () => {
         const client = new Client()
 

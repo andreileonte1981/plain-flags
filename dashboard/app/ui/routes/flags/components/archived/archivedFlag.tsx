@@ -31,7 +31,7 @@ export default function ArchivedFlag(props: { id: string; name: string }) {
         </div>
 
         {expanded ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col pb-2">
             <div
               onClick={() => setExpanded(!expanded)}
               className="flex items-center gap-2 cursor-pointer hover:text-red-500"
@@ -44,7 +44,7 @@ export default function ArchivedFlag(props: { id: string; name: string }) {
         ) : (
           <div
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-2 cursor-pointer hover:text-red-500"
+            className="flex items-center gap-2 cursor-pointer hover:text-red-500 pb-2"
           >
             <ClockIcon />
             <span>History</span>

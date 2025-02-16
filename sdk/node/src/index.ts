@@ -45,13 +45,19 @@ export default class PlainFlags {
                 context
             )
         }
-        catch(error) {
+        catch (error) {
             this.error(`Flag name ${flagName} state query failed`, error)
 
             return defaultValue;
         }
     }
 
+    /**
+     * Initializes the Plain Flags sdk
+     * 
+     * @param apiKey - must be the same as configured on the flag state backend service
+     * @param pollInterval - if positive, the app will poll the service for updated flag state every interval, in milliseconds
+     */
     async init(apiKey: string, pollInterval = 30000) {
         try {
             this.client = new Client(apiKey, this.serviceUrl)
@@ -64,7 +70,9 @@ export default class PlainFlags {
             this.log(`Feature flags state updated from service`)
             this.log(this.flagStates)
 
-            this.startPolling(pollInterval, this.client);
+            if (pollInterval > 0) {
+                this.startPolling(pollInterval, this.client);
+            }
         }
         catch (error) {
             this.error(`Feature flags initialization error`, error)
@@ -77,10 +85,22 @@ export default class PlainFlags {
         }
     }
 
+    async updateState() {
+        if (!this.client) { return }
+
+        this.flagStates = (await this.client.get(`/api/sdk`)).data
+
+        this.log(`Feature flags state updated from service`)
+        this.log(this.flagStates)
+    }
+
     private startPolling(pollInterval: number, client: Client) {
         this.interval = setInterval(async () => {
             try {
                 this.flagStates = (await client.get(`/api/sdk`)).data
+
+                this.log(`Feature flags state updated from service`)
+                this.log(this.flagStates)
             }
             catch (error) {
                 this.error(

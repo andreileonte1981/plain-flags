@@ -20,5 +20,10 @@ npm run build &
 
 cd ../
 
+cd sdk/node
+npm run build &
+
+cd ../../
+
 cd dashboard
 npm run dev
