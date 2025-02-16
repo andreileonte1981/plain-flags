@@ -23,7 +23,7 @@ export default function Toast(props: {
               exit={{ scale: 0, originY: 1, height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <div className="flex justify-between items-center border-2 shadow-lg p-2 rounded-lg bg-white hover:text-gray-800">
+              <div className="flex justify-between items-center border-2 shadow-lg p-2 rounded-lg bg-green-100 hover:text-gray-800">
                 <div className="p-2">
                   <InfoIcon />
                 </div>

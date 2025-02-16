@@ -74,7 +74,7 @@ export default function DeleteUser(props: User) {
   return (
     <YesNoWrap
       clickId={`ynDeleteUser_${props.id}`}
-      question={`Delete user ${props.email}?`}
+      question={`Delete ${props.role} ${props.email}?`}
       onYes={() => {
         deleteUser();
       }}

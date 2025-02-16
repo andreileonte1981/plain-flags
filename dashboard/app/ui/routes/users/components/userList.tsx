@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Fragment } from "react/jsx-runtime";
 import { Role, type User } from "~/domain/user";
 import DeleteUser from "./deleteUser";
+import { scrollToElement } from "~/utils/scrollTo";
 
 export default function UserList(props: { users: User[] }) {
   const listAnim = {
@@ -53,8 +54,16 @@ export default function UserList(props: { users: User[] }) {
                 animate="animate"
                 exit="exit"
                 key={`trash_${u.id}`}
+                id={`trash_${u.id}`}
               >
-                <div className="pb-2 flex justify-end">
+                <div
+                  className="pb-2 flex justify-end"
+                  onClick={() => {
+                    setTimeout(() => {
+                      scrollToElement(`trash_${u.id}`);
+                    }, 200);
+                  }}
+                >
                   <DeleteUser id={u.id} email={u.email} role={u.role} />
                 </div>
               </motion.div>
