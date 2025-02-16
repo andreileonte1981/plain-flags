@@ -22,6 +22,16 @@ export default function CreateAdminPanel() {
       setNewUserError("New admin email required");
       return false;
     }
+
+    const emailCheck =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    const e = newAdminEmail.trim();
+    if (!emailCheck.test(e)) {
+      setNewUserError(`Invalid email address`);
+      return false;
+    }
+
     return true;
   }
 
