@@ -49,8 +49,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-col flex-wrap items-center justify-center border-b-4">
           <CreateUsersPanel />
           <CreateAdminPanel />
-
-          <div id="userFilters" className="w-full p-2">
+          <div id="userFilters" className="p-2">
             <FilterEdit
               onChange={(e) => {
                 setMailFilter(e.target.value);

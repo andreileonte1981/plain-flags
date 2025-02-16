@@ -55,6 +55,9 @@ export default function Login() {
     }
   }, []);
 
+  const registrationDisabled =
+    import.meta.env.VITE_DISABLE_USER_REGISTRATION || false;
+
   return (
     <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col items-center min-h-52 bg-gray-100 rounded p-4 mb-40">
@@ -88,13 +91,17 @@ export default function Login() {
             Log in
           </button>
         </form>
-        <div className="h-1 w-full rounded bg-black/5 m-2"></div>
-        <Link
-          className="text-red-700 text-sm font-semibold hover:underline hover:text-red-600"
-          to="/register"
-        >
-          Register
-        </Link>
+        {!registrationDisabled && (
+          <>
+            <div className="h-1 w-full rounded bg-black/5 m-2"></div>
+            <Link
+              className="text-red-700 text-sm font-semibold hover:underline hover:text-red-600"
+              to="/register"
+            >
+              Register
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

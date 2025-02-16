@@ -21,6 +21,13 @@ export async function userRoutes(server: FastifyInstance) {
         request: FastifyRequest<{ Body: User }>,
         reply: FastifyReply
     ) => {
+        if (process.env.DISABLE_USER_REGISTRATION) {
+            throw new Error(
+                "User registration disabled." +
+                " Please ask your team leader to create an account for you."
+            )
+        }
+
         const user = request.body;
 
         if (!user.email.trim().length || !user.password.trim().length) {

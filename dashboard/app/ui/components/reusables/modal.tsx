@@ -44,14 +44,14 @@ export default function Modal(props: {
               e.stopPropagation();
             }}
           >
-            <div className="px-5 flex justify-center items-center">
+            <div className="py-5 px-7 flex gap-1 justify-center items-start">
               {props.iconType === "error" && <ErrorIcon />}
               {props.iconType === "info" && (
                 <span className="text-green-600">
                   <InfoIcon />
                 </span>
               )}
-              <h1 className="text-center text-lg py-5 px-2 font-semibold text-gray-600">
+              <h1 className="text-center text-lg font-semibold text-gray-600">
                 {props.message}
               </h1>
             </div>
