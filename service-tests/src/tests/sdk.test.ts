@@ -29,7 +29,7 @@ describe("SDK operation", () => {
 
         const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
 
-        await sdk.init(process.env.APIKEY || "");
+        await sdk.init(process.env.APIKEY_SDK || "");
 
         try {
             assert(sdk.isOn(name))
@@ -55,7 +55,7 @@ describe("SDK operation", () => {
 
         const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
 
-        await sdk.init(process.env.APIKEY || "", 120000)
+        await sdk.init(process.env.APIKEY_SDK || "", 120000)
 
         try {
             assert(!sdk.isOn(name))
@@ -98,7 +98,7 @@ describe("SDK operation", () => {
         assert(turnOnResponse?.status === 200)
 
         const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
-        await sdk.init(process.env.APIKEY || "", 1000)
+        await sdk.init(process.env.APIKEY_SDK || "", 1000)
 
         try {
             assert(sdk.isOn(name))
@@ -169,7 +169,7 @@ describe("SDK operation", () => {
         )
 
         const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
-        await sdk.init(process.env.APIKEY || "", 1000)
+        await sdk.init(process.env.APIKEY_SDK || "", 1000)
 
         try {
             assert(sdk.isOn(flagName, undefined, {

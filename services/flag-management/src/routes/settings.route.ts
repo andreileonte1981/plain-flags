@@ -1,9 +1,9 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Settings from "../entities/settings";
+import { apiKeyAuth } from "../middleware/api-key.auth";
 
 export async function settingsRoutes(server: FastifyInstance) {
-    // TODO: protect with APIKEY
-    server.post("/daysOffset", async (
+    server.post("/daysOffset", { preHandler: apiKeyAuth }, async (
         request: FastifyRequest,
         reply: FastifyReply
     ) => {

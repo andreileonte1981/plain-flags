@@ -32,11 +32,16 @@ export class Client {
         if (token) {
             return await this.instance?.post(url, payload, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
+                    "x-api-key": process.env.APIKEY_MGT
                 }
             })
         }
 
-        return await this.instance?.post(url, payload)
+        return await this.instance?.post(url, payload, {
+            headers: {
+                "x-api-key": process.env.APIKEY_MGT
+            }
+        })
     }
 }
