@@ -62,6 +62,17 @@ export async function flagRoutes(server: FastifyInstance) {
         });
     })
 
+    server.get("/archived", { onRequest: [(server as any).jwtAuth] }, async () => {
+        const all = await Flag.find({ where: { isArchived: true } })
+
+        return all.map((flag) => {
+            return {
+                ...flag,
+                updatedAt: undefined
+            }
+        });
+    })
+
     /**
      * Details for a single flag
      */
