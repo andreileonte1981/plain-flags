@@ -4,6 +4,8 @@ import ClockIcon from "~/ui/components/icons/clockIcon";
 import CollapseIcon from "~/ui/components/icons/collapseIcon";
 import HistoryItem from "../historyItem";
 import ExpandIcon from "~/ui/components/icons/expandIcon";
+import { AnimatePresence, motion } from "motion/react";
+import { slideDownVariants } from "~/ui/animations/variants";
 
 export default function ArchivedFlag(props: { id: string; name: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -53,29 +55,38 @@ export default function ArchivedFlag(props: { id: string; name: string }) {
         )}
       </div>
 
-      {expanded ? (
-        <ul className="border-t-2">
-          {history ? (
-            (history as any[]).map((h: any, i: number) => (
-              <li
-                key={`${props.id}_${i}`}
-                className="border-b-2 my-1 mx-2 text-sm"
-              >
-                <HistoryItem
-                  userEmail={h.userEmail}
-                  what={h.what}
-                  when={h.when}
-                  constraintInfo={h.constraintInfo}
-                />
-              </li>
-            ))
-          ) : (
-            <span>Loading</span>
-          )}
-        </ul>
-      ) : (
-        <div className="w-full h-0.5 bg-gray-100 mb-2"></div>
-      )}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            variants={slideDownVariants}
+            initial="hidden"
+            animate="shown"
+            exit="hidden"
+            transition={{ duration: 0.1, ease: "easeIn" }}
+          >
+            <ul className="border-t-2">
+              {history ? (
+                (history as any[]).map((h: any, i: number) => (
+                  <li
+                    key={`${props.id}_${i}`}
+                    className="border-b-2 my-1 mx-2 text-sm"
+                  >
+                    <HistoryItem
+                      userEmail={h.userEmail}
+                      what={h.what}
+                      when={h.when}
+                      constraintInfo={h.constraintInfo}
+                    />
+                  </li>
+                ))
+              ) : (
+                <span>Loading</span>
+              )}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {!expanded && <div className="w-full h-0.5 bg-gray-100 mb-2"></div>}
     </div>
   );
 }

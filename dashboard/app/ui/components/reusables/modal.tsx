@@ -45,12 +45,14 @@ export default function Modal(props: {
             }}
           >
             <div className="py-5 px-7 flex gap-1 justify-center items-start">
-              {props.iconType === "error" && <ErrorIcon />}
-              {props.iconType === "info" && (
-                <span className="text-green-600">
-                  <InfoIcon />
-                </span>
-              )}
+              <div className="py-0.5">
+                {props.iconType === "error" && <ErrorIcon />}
+                {props.iconType === "info" && (
+                  <span className="text-green-600">
+                    <InfoIcon />
+                  </span>
+                )}
+              </div>
               <h1 className="text-center text-lg font-semibold text-gray-600">
                 {props.message}
               </h1>

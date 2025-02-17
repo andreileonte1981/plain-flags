@@ -13,8 +13,12 @@ export default function Dashboard() {
     <div className="flex items-stretch w-full min-h-screen">
       <div id="sidebar" className="flex-none w-52 m-0 border-r-4 z-20">
         <div className="fixed w-52 h-full left-0 right-0 flex flex-col justify-between">
-          <div id="titleLogo">
-            <h1 className="text-center p-3 font-bold text-gray-500">
+          <div
+            id="titleLogo"
+            className="flex items-center justify-center py-4 gap-2"
+          >
+            <img src="app/graphics/logo.svg" alt="logo" className="w-12 h-12" />
+            <h1 className="text-center font-bold text-gray-500 text-lg uppercase">
               Plain Flags
             </h1>
           </div>

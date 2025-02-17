@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="230"
+   height="230"
+   viewBox="0 0 60.854107 60.854107"
+   version="1.1"
+   id="svg2181"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="rounded-rects.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview2183"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.7469907"
+     inkscape:cx="126.50325"
+     inkscape:cy="113.05154"
+     inkscape:window-width="1504"
+     inkscape:window-height="995"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2178" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#666666;stroke:#2a2a2a;stroke-width:0.469012"
+       id="rect2600"
+       width="2.1197796"
+       height="32.1549"
+       x="31.287539"
+       y="7.8105097"
+       rx="0.41021383" />
+    <rect
+       style="fill:#00ff00;stroke:#2a2a2a;stroke-width:0.469228"
+       id="rect2654"
+       width="24.551826"
+       height="20.629427"
+       x="33.371632"
+       y="7.7067828"
+       rx="0.26919767" />
+    <rect
+       style="opacity:1;fill:#666666;stroke:#2a2a2a;stroke-width:0.469012"
+       id="rect2656"
+       width="2.1197796"
+       height="32.1549"
+       x="-24.410915"
+       y="14.191998"
+       rx="0.41021383"
+       transform="rotate(-76.40104)" />
+    <rect
+       style="fill:#e6e6e6;stroke:#2a2a2a;stroke-width:0.469228"
+       id="rect2658"
+       width="24.551826"
+       height="20.629427"
+       x="-48.921833"
+       y="14.037685"
+       rx="0.26919767"
+       transform="rotate(-76.40104)" />
+  </g>
+</svg>
