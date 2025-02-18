@@ -53,7 +53,13 @@ export default function Register() {
   return (
     <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
       <div className="flex flex-col items-center min-h-52 bg-gray-100 rounded p-4 mb-52">
-        <h1 className="my-3 font-bold uppercase text-gray-500">Plain Flags</h1>
+        <div className="flex items-center gap-2">
+          <img src="app/graphics/logo.svg" alt="logo" className="w-6 h-6" />
+          <h1 className="my-3 font-bold uppercase text-gray-500">
+            Plain Flags
+          </h1>
+        </div>
+
         <div className="h-1 w-full rounded bg-black/5 m-2"></div>
         <h1 className="text-xs mb-3 text-gray-400">register new user</h1>
 
