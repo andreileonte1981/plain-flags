@@ -3,7 +3,6 @@ import Constrainer from "./constrainer";
 import { FlagState } from "./flag-state";
 
 export default class PlainFlags {
-    private interval?: NodeJS.Timeout;
     private client?: Client;
     private flagStates: { [flagName: string]: FlagState } = {};
 
@@ -103,12 +102,6 @@ export default class PlainFlags {
         }
     }
 
-    stopUpdates() {
-        if (this.interval) {
-            clearInterval(this.interval)
-        }
-    }
-
     async updateState() {
         if (!this.client) { return }
 
@@ -119,7 +112,7 @@ export default class PlainFlags {
     }
 
     private startPolling(pollInterval: number, client: Client) {
-        this.interval = setInterval(async () => {
+        setInterval(async () => {
             try {
                 this.flagStates = (await client.get(`/api/sdk`)).data
 
@@ -132,7 +125,7 @@ export default class PlainFlags {
                     error
                 )
             }
-        }, pollInterval)
+        }, pollInterval).unref()
     }
 
     private log(...args: any) {

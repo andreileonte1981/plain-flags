@@ -70,12 +70,17 @@ async function main() {
     console.log(`---stress test started: ${nClients} clients, ${nFlags} flags ---`)
     const sdks: PlainFlags[] = [];
     for (let i = 0; i < nClients; i++) {
-        sdks.push(new PlainFlags(Config.stateServiceUrl(), null, null))
+        sdks.push(new PlainFlags({
+            policy: "poll",
+            apiKey: process.env.APIKEY || "",
+            pollInterval,
+            serviceUrl: Config.stateServiceUrl()
+        }, null, null))
     }
 
     const initRequests: Function[] = []
     for (let i = 0; i < nClients; i++) {
-        const initRequest = async () => sdks[i].init(process.env.APIKEY || "", pollInterval)
+        const initRequest = async () => sdks[i].init()
 
         initRequests.push(initRequest)
     }
@@ -87,10 +92,6 @@ async function main() {
     const endTime = performance.now()
 
     console.log(`---stress tests ended in ${endTime - startTime}---`)
-
-    for (let i = 0; i < nClients; i++) {
-        sdks[i].stopUpdates()
-    }
 }
 
 main()

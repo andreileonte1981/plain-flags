@@ -38,15 +38,7 @@ describe("SDK operation", () => {
 
         await sdk.init();
 
-        try {
-            assert(sdk.isOn(name))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw (error)
-        }
-
-        sdk.stopUpdates()
+        assert(sdk.isOn(name))
     })
 
     test("Turning on a flag will show it as on in the SDK after a manual state update", async () => {
@@ -71,13 +63,7 @@ describe("SDK operation", () => {
 
         await sdk.init();
 
-        try {
-            assert(!sdk.isOn(name))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw (error)
-        }
+        assert(!sdk.isOn(name))
 
         const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
 
@@ -85,15 +71,7 @@ describe("SDK operation", () => {
 
         await sdk.updateState()
 
-        try {
-            assert(sdk.isOn(name))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw (error)
-        }
-
-        sdk.stopUpdates()
+        assert(sdk.isOn(name))
     })
 
     test("The SDK polls for updates at the specified interval", async () => {
@@ -123,20 +101,15 @@ describe("SDK operation", () => {
 
         await sdk.init();
 
-        try {
-            assert(sdk.isOn(name))
+        assert(sdk.isOn(name))
 
-            const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
+        await sleep(15000)
 
-            await sleep(1500)   // Polls at one second, see sdk.init above
+        const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
 
-            assert(!sdk.isOn(name))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw (error)
-        }
-        sdk.stopUpdates()
+        await sleep(1500)   // Polls at one second, see sdk.init above
+
+        assert(!sdk.isOn(name))
     })
 
     test("A constrained activated flag will be on only for the constrained context", async () => {
@@ -202,31 +175,23 @@ describe("SDK operation", () => {
 
         await sdk.init();
 
-        try {
-            assert(sdk.isOn(flagName, undefined, {
-                user: "John", brand: "Initech"
-            }))
+        assert(sdk.isOn(flagName, undefined, {
+            user: "John", brand: "Initech"
+        }))
 
-            // Constrained to John and Steve users only
-            assert(!sdk.isOn(flagName, undefined, {
-                user: "Dave", brand: "Initech"
-            }))
+        // Constrained to John and Steve users only
+        assert(!sdk.isOn(flagName, undefined, {
+            user: "Dave", brand: "Initech"
+        }))
 
-            // Constrained to Acme and Initech brands only
-            assert(!sdk.isOn(flagName, undefined, {
-                user: "John", brand: "TBC"
-            }))
+        // Constrained to Acme and Initech brands only
+        assert(!sdk.isOn(flagName, undefined, {
+            user: "John", brand: "TBC"
+        }))
 
-            // The flag is not constrained in any region
-            assert(sdk.isOn(flagName, undefined, {
-                region: "Elbonia"
-            }))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw (error)
-        }
-
-        sdk.stopUpdates()
+        // The flag is not constrained in any region
+        assert(sdk.isOn(flagName, undefined, {
+            region: "Elbonia"
+        }))
     })
 })
