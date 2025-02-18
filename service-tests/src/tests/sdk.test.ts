@@ -27,9 +27,16 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
+        const sdk = new PlainFlags(
+            {
+                policy: "manual",
+                serviceUrl: Config.stateServiceUrl(),
+                apiKey: process.env.APIKEY_SDK || ""
+            },
+            null, null
+        )
 
-        await sdk.init(process.env.APIKEY_SDK || "");
+        await sdk.init();
 
         try {
             assert(sdk.isOn(name))
@@ -53,9 +60,16 @@ describe("SDK operation", () => {
 
         const id = response?.data.id
 
-        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
+        const sdk = new PlainFlags(
+            {
+                policy: "manual",
+                serviceUrl: Config.stateServiceUrl(),
+                apiKey: process.env.APIKEY_SDK || ""
+            },
+            null, null
+        )
 
-        await sdk.init(process.env.APIKEY_SDK || "", 120000)
+        await sdk.init();
 
         try {
             assert(!sdk.isOn(name))
@@ -97,8 +111,17 @@ describe("SDK operation", () => {
 
         assert(turnOnResponse?.status === 200)
 
-        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
-        await sdk.init(process.env.APIKEY_SDK || "", 1000)
+        const sdk = new PlainFlags(
+            {
+                policy: "poll",
+                serviceUrl: Config.stateServiceUrl(),
+                apiKey: process.env.APIKEY_SDK || "",
+                pollInterval: 1000
+            },
+            null, null
+        )
+
+        await sdk.init();
 
         try {
             assert(sdk.isOn(name))
@@ -168,8 +191,16 @@ describe("SDK operation", () => {
             token
         )
 
-        const sdk = new PlainFlags(Config.stateServiceUrl(), null, null)
-        await sdk.init(process.env.APIKEY_SDK || "", 1000)
+        const sdk = new PlainFlags(
+            {
+                policy: "manual",
+                serviceUrl: Config.stateServiceUrl(),
+                apiKey: process.env.APIKEY_SDK || ""
+            },
+            null, null
+        )
+
+        await sdk.init();
 
         try {
             assert(sdk.isOn(flagName, undefined, {

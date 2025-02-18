@@ -1,4 +1,4 @@
-import { Client } from "./client";
+import { Client, ManualStateUpdateConfig, PollStateUpdateConfig, StateUpdateConfig } from "./client";
 import Constrainer from "./constrainer";
 import { FlagState } from "./flag-state";
 
@@ -8,12 +8,13 @@ export default class PlainFlags {
     private flagStates: { [flagName: string]: FlagState } = {};
 
     /**
-     * @param serviceUrl The url for the feature flags REST API
+     * @param stateUpdateConfig Configuration for getting feature flag state updates
      * @param logCallback Custom method of your choice to log regular messages. Default console.log. Set to null to mute.
      * @param errorCallback Custom method of your choice to log errors. Default console.error. Set to null to mute.
      */
     constructor(
-        private readonly serviceUrl: string,
+        private readonly stateUpdateConfig:
+            ManualStateUpdateConfig | PollStateUpdateConfig,
 
         private logCallback: ((...args: any) => void) | null =
             (...args) => {
@@ -58,24 +59,47 @@ export default class PlainFlags {
      * @param apiKey - must be the same as configured on the flag state backend service
      * @param pollInterval - if positive, the app will poll the service for updated flag state every interval, in milliseconds
      */
-    async init(apiKey: string, pollInterval = 30000) {
-        try {
-            this.client = new Client(apiKey, this.serviceUrl)
+    async init() {
+        switch (this.stateUpdateConfig.policy) {
+            case "manual":
+                try {
+                    const config = this.stateUpdateConfig as ManualStateUpdateConfig
+                    this.client = new Client(
+                        config.apiKey,
+                        config.serviceUrl)
 
-            this.log(`Feature flags HTTP client initialized`)
+                    this.log(`Feature flags HTTP client initialized`)
 
-            // TODO: version the library and the service, send library version here to ensure compatibility is at least managed.
-            this.flagStates = (await this.client.get(`/api/sdk`)).data
+                    this.flagStates = (await this.client.get(`/api/sdk`)).data
 
-            this.log(`Feature flags state updated from service`)
-            this.log(this.flagStates)
+                    this.log(`Feature flags state updated from service`)
+                    this.log(this.flagStates)
+                }
+                catch (error) {
+                    this.error(`Feature flags initialization error`, error)
+                }
+                break
 
-            if (pollInterval > 0) {
-                this.startPolling(pollInterval, this.client);
-            }
-        }
-        catch (error) {
-            this.error(`Feature flags initialization error`, error)
+            case "poll":
+                try {
+                    const config = this.stateUpdateConfig as PollStateUpdateConfig
+                    this.client = new Client(
+                        config.apiKey,
+                        config.serviceUrl)
+
+                    this.log(`Feature flags HTTP client initialized`)
+
+                    this.flagStates = (await this.client.get(`/api/sdk`)).data
+
+                    this.log(`Feature flags state updated from service`)
+                    this.log(this.flagStates)
+
+                    this.startPolling(config.pollInterval, this.client);
+                }
+                catch (error) {
+                    this.error(`Feature flags initialization error`, error)
+                }
+                break;
         }
     }
 
