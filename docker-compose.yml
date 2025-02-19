@@ -29,10 +29,13 @@ services:
     environment:
       - SERVICE_PORT=5001
       - APIKEY=ersafoi89a0ww3n8yrt493ew84yqjwd34y8r09
+      - MANAGEMENT_WS=ws://flag-management:8080
     volumes:
       - db-data:/data:ro
     depends_on:
       - flag-management
+    deploy:
+      replicas: 3
 
   flags-dashboard:
     build: ./dashboard
