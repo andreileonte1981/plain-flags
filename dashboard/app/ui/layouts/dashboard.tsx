@@ -17,7 +17,7 @@ export default function Dashboard() {
             id="titleLogo"
             className="flex items-center justify-center py-4 gap-2"
           >
-            <img src="app/graphics/logo.svg" alt="logo" className="w-12 h-12" />
+            <img src="/images/logo.svg" alt="logo" className="w-12 h-12" />
             <h1 className="text-center font-bold text-gray-500 text-lg uppercase">
               Plain Flags
             </h1>

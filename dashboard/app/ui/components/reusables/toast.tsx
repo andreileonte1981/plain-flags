@@ -25,11 +25,7 @@ export default function Toast(props: {
             >
               <div className="flex justify-between items-center border-2 border-green-700 shadow-lg p-2 rounded-lg bg-green-100/95 hover:text-gray-800">
                 <div className="p-2">
-                  <img
-                    src="app/graphics/logo.svg"
-                    alt="logo"
-                    className="w-5 h-5"
-                  />
+                  <img src="/images/logo.svg" alt="logo" className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
                   <motion.h1
