@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, EntitySubscriberInterface, EventSubscriber, Index, InsertEvent, PrimaryGeneratedColumn } from "typeorm";
+import { StateBroadcaster } from "../stateBroadcaster";
 
 @Entity()
 export default class History extends BaseEntity {
@@ -29,4 +30,13 @@ export default class History extends BaseEntity {
 
     @CreateDateColumn()
     when!: Date;
+}
+
+@EventSubscriber()
+export class HistorySubscriber implements EntitySubscriberInterface {
+    listenTo() { return History }
+
+    async afterInsert(event: InsertEvent<History>) {
+        StateBroadcaster.broadcastState()
+    }
 }

@@ -1,15 +1,15 @@
-import WebSocket from 'ws'
+import ReconnectingWebSocket from 'reconnecting-websocket'
+import WS from "ws"
 
 export class StateSubscriber {
     static async init() {
-        const ws = new WebSocket('ws://localhost:8080', {   // TODO configure url and port
-            perMessageDeflate: false
-        });
+        const ws = new ReconnectingWebSocket('ws://localhost:8080', [], {
+            WebSocket: WS
+        })
 
-        ws.on("message", function message(data) {
+        ws.addEventListener("message", function message(data) {
             console.log(`ws message received:`)
             console.debug(data)
         })
-
     }
 }
