@@ -12,7 +12,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: upath.resolve(__dirname, '../../.env') });
 
 describe("SDK operation", () => {
-    test("Turning on a flag will show it as on in the SDK ", async () => {
+    test("Turning on a flag will show it as on in the SDK after initialization", async () => {
         const client = new Client()
 
         const token = await tokenForLoggedInUser(client)
@@ -103,13 +103,53 @@ describe("SDK operation", () => {
 
         assert(sdk.isOn(name))
 
-        await sleep(15000)
+        await sleep(1500)
 
         const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
 
         await sleep(1500)   // Polls at one second, see sdk.init above
 
         assert(!sdk.isOn(name))
+    })
+
+    test("The SDK receives updates after a change if connecting over web socket", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const sdk = new PlainFlags(
+            {
+                policy: "ws",
+                serviceUrl: Config.stateServiceWs(),
+            },
+            null, null
+        )
+
+        await sdk.init();
+
+        const name = Salt.uniqued("test-s-ws")
+
+        const response: any = await client.post("/api/flags", { name }, token)
+
+        const id = response?.data.id
+
+        const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
+
+        assert(turnOnResponse?.status === 200)
+
+        await sleep(150)  // There's a 0.1 second delay to allow for the DB sync
+
+        assert(sdk.isOn(name))
+
+        const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
+
+        assert(turnOffResponse?.status === 200)
+
+        await sleep(150)
+
+        assert(!sdk.isOn(name))
+
+        sdk.stopUpdates()
     })
 
     test("A constrained activated flag will be on only for the constrained context", async () => {

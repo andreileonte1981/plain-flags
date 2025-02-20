@@ -1,13 +1,14 @@
 import WebSocket, { WebSocketServer } from 'ws';
+import { latestFlagState } from './logic/flag-logic/flag-state';
 
 /**
- * This broadcasts to all flag-states services that flag state has changed.
+ * This broadcasts the latest state of flags to all connected clients.
  */
 export class StateBroadcaster {
     private static server: WebSocket.Server;
 
     static async init() {
-        this.server = new WebSocketServer({ port: 8080 });  // TODO configure port in .env and compose file
+        this.server = new WebSocketServer({ port: 8081 });  // TODO configure port in .env and compose file
 
         this.server.on('connection', (ws) => {
             console.log('New client connected')
@@ -19,10 +20,12 @@ export class StateBroadcaster {
     }
 
     static async broadcastState() {
+        console.log(`broadcasting state`)
         this.server.clients.forEach(
-            function each(client) {
+            async function each(client) {
                 if (client.readyState === WebSocket.OPEN) {
-                    client.send("stateUpdate", { binary: false })
+                    const state = await latestFlagState()
+                    client.send(JSON.stringify(state), { binary: false })
                 }
             })
     }

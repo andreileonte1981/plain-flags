@@ -3,6 +3,7 @@ import { Data } from "./data";
 import { sdkRoutes } from "./routes/sdk.route";
 import cors from "@fastify/cors"
 import { StateSubscriber } from "./stateSubscriber";
+import { StateBroadcaster } from "./stateBroadcaster";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === "production") ?
@@ -13,6 +14,7 @@ const server = fastify({
 async function start() {
     try {
         await StateSubscriber.init()
+        await StateBroadcaster.init()
 
         await Data.init(server.log)
 

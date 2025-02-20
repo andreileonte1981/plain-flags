@@ -1,22 +1,5 @@
 import axios from "axios"
 
-export interface StateUpdateConfig {
-    readonly policy: "manual" | "poll"
-}
-
-export interface ManualStateUpdateConfig extends StateUpdateConfig {
-    readonly policy: "manual"
-    readonly serviceUrl: string
-    readonly apiKey: string
-}
-
-export interface PollStateUpdateConfig extends StateUpdateConfig {
-    readonly policy: "poll"
-    readonly serviceUrl: string
-    readonly pollInterval: number
-    readonly apiKey: string
-}
-
 export class Client {
     private instance?: Axios.AxiosInstance = undefined;
 
