@@ -1,7 +1,7 @@
 import { Client } from "./client";
 import Constrainer from "./constrainer";
 import { FlagState } from "./flag-state";
-import { ManualStateUpdateConfig, PollStateUpdateConfig, SocketStateUpdateConfig, StateUpdateConfig } from "./update-policy";
+import { ManualStateUpdateConfig, PollStateUpdateConfig, SocketStateUpdateConfig, StateUpdateConfig } from "./update-policy/update-policy";
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import WS from "ws"
 
@@ -13,6 +13,7 @@ export default class PlainFlags {
 
     /**
      * @param stateUpdateConfig Configuration for getting feature flag state updates
+     * 
      * @param logCallback Custom method of your choice to log regular messages. Default console.log. Set to null to mute.
      * @param errorCallback Custom method of your choice to log errors. Default console.error. Set to null to mute.
      */
@@ -31,6 +32,18 @@ export default class PlainFlags {
             },
     ) { }
 
+    /**
+     * @param flagName - name of your feature
+     * @param defaultValue - what to return on failure to query state
+     * @param context - what and who this is, as defined in the Constraints page in the dashboard
+     * 
+     * @example
+     * if (plainFlags.isOn("MyFeature", false, { userId: getCurrentUserId() })) {
+     *   ...feature code here...
+     * }
+     * 
+     * @returns the state of the named feature for the context, or the default value
+     */
     isOn(
         flagName: string,
         defaultValue: boolean = false,
@@ -59,61 +72,22 @@ export default class PlainFlags {
 
     /**
      * Initializes the Plain Flags sdk
-     * 
-     * @param apiKey - must be the same as configured on the flag state backend service
-     * @param pollInterval - if positive, the app will poll the service for updated flag state every interval, in milliseconds
      */
     async init() {
         try {
             switch (this.stateUpdateConfig.policy) {
                 case "manual": {
-                    const config = this.stateUpdateConfig as ManualStateUpdateConfig
-                    this.client = new Client(
-                        config.apiKey,
-                        config.serviceUrl)
-
-                    this.log(
-                        `Feature flags HTTP client initialized.` +
-                        ` Call 'updateState' when you want a recent state of your features`
-                    )
-
-                    this.flagStates = (await this.client.get(`/api/sdk`)).data
-
-                    this.log(`Feature flags state updated from service`)
-                    this.log(this.flagStates)
+                    await this.initManualUpdates()
                     break
                 }
 
                 case "poll": {
-                    const config = this.stateUpdateConfig as PollStateUpdateConfig
-                    this.client = new Client(
-                        config.apiKey,
-                        config.serviceUrl)
-
-                    this.log(`Feature flags HTTP client initialized.` +
-                        ` Will poll for updated feature state every ${config.pollInterval} milliseconds`
-                    )
-
-                    this.flagStates = (await this.client.get(`/api/sdk`)).data
-
-                    this.log(`Feature flags state updated from service`)
-                    this.log(this.flagStates)
-
-                    this.startPolling(config.pollInterval, this.client)
+                    await this.initPollingUpdates()
                     break;
                 }
 
                 case "ws": {
-                    const config = this.stateUpdateConfig as SocketStateUpdateConfig
-                    this.ws = new ReconnectingWebSocket(
-                        config.serviceUrl, [], { WebSocket: WS, debug: false }
-                    )
-
-                    this.ws.addEventListener("message", (event) => {
-                        this.log(`Updated feature states received:`)
-                        this.flagStates = JSON.parse(event.data)
-                        this.log(this.flagStates)
-                    })
+                    await this.initWebSocketUpdates()
                     break
                 }
             }
@@ -129,16 +103,26 @@ export default class PlainFlags {
      * Call this only if you initialized with the "ws" update policy.
      */
     stopUpdates() {
-        this.ws?.close()
+        try {
+            this.ws?.close()
+        }
+        catch (error) {
+            this.error("Error closing the ws connection", error)
+        }
     }
 
     async updateState() {
-        if (!this.client) { return }
+        try {
+            if (!this.client) { return }
 
-        this.flagStates = (await this.client.get(`/api/sdk`)).data
+            this.flagStates = (await this.client.get(`/api/sdk`)).data
 
-        this.log(`Feature flags state updated from service`)
-        this.log(this.flagStates)
+            this.log(`Feature flags state updated from service`)
+            this.log(this.flagStates)
+        }
+        catch (error) {
+            this.error("Error updating state", error)
+        }
     }
 
     private startPolling(pollInterval: number, client: Client) {
@@ -174,5 +158,53 @@ export default class PlainFlags {
             }
         }
         catch (error) { }
+    }
+
+    private async initManualUpdates() {
+        const config = this.stateUpdateConfig as ManualStateUpdateConfig
+        this.client = new Client(
+            config.apiKey,
+            config.serviceUrl)
+
+        this.log(
+            `Feature flags HTTP client initialized.` +
+            ` Call 'updateState' when you want a recent state of your features`
+        )
+
+        this.flagStates = (await this.client.get(`/api/sdk`)).data
+
+        this.log(`Feature flags state updated from service`)
+        this.log(this.flagStates)
+    }
+
+    private async initPollingUpdates() {
+        const config = this.stateUpdateConfig as PollStateUpdateConfig
+        this.client = new Client(
+            config.apiKey,
+            config.serviceUrl)
+
+        this.log(`Feature flags HTTP client initialized.` +
+            ` Will poll for updated feature state every ${config.pollInterval} milliseconds`
+        )
+
+        this.flagStates = (await this.client.get(`/api/sdk`)).data
+
+        this.log(`Feature flags state updated from service`)
+        this.log(this.flagStates)
+
+        this.startPolling(config.pollInterval, this.client)
+    }
+
+    private async initWebSocketUpdates() {
+        const config = this.stateUpdateConfig as SocketStateUpdateConfig
+        this.ws = new ReconnectingWebSocket(
+            config.serviceUrl, [], { WebSocket: WS, debug: false }
+        )
+
+        this.ws.addEventListener("message", (event) => {
+            this.log(`Updated feature states received:`)
+            this.flagStates = JSON.parse(event.data)
+            this.log(this.flagStates)
+        })
     }
 }
