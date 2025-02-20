@@ -4,14 +4,14 @@ import Salt from "../../utils/salt"
 import * as upath from "upath"
 import PlainFlags from "feature-flags-node-sdk"
 import Config from "../../utils/config"
+import { sleep } from "../../utils/sleep"
 
 const dotenv = require('dotenv');
-dotenv.config({ path: upath.resolve(__dirname, '../../.env') });
+dotenv.config({ path: upath.resolve(__dirname, '../../../.env') });
 
 async function main() {
     const nFlags = 100
     const nClients = 10000
-    const pollInterval = 5000
 
     const client = new Client()
 
@@ -67,14 +67,12 @@ async function main() {
     /**
      * Now measure how long the stress test lasts
      */
-    console.log(`---stress test started: ${nClients} clients, ${nFlags} flags ---`)
+    console.log(`---stress test started: socket updates, ${nClients} clients, ${nFlags} flags ---`)
     const sdks: PlainFlags[] = [];
     for (let i = 0; i < nClients; i++) {
         sdks.push(new PlainFlags({
-            policy: "poll",
-            apiKey: process.env.APIKEY || "",
-            pollInterval,
-            serviceUrl: Config.stateServiceUrl()
+            policy: "ws",
+            serviceUrl: Config.stateServiceWs()
         }, null, null))
     }
 
@@ -89,9 +87,37 @@ async function main() {
 
     await Promise.all(initRequests.map(f => f()))
 
+    const id = responses[0].data.id
+    console.log(`---clients created in ${performance.now() - startTime}---`)
+
+    await client.post("/api/flags/turnon", { id }, token)
+
+    let updated = false;
+    while (!updated) {
+        updated = true;
+        for (let i = 0; i < nClients; i++) {
+            if (!sdks[i].isOn(
+                responses[0].data.name,
+                false,
+                { user: "John", brand: "Initech" }
+            )) {
+                updated = false
+                break
+            }
+        }
+
+        if (!updated) {
+            console.log("Not all updated, waiting...")
+            await sleep(1000)
+        }
+    }
+
     const endTime = performance.now()
 
-    console.log(`---stress tests ended in ${endTime - startTime}---`)
+    console.log(`---stress tests ended in ${endTime - startTime}, cleaning up...---`)
+    for (let i = 0; i < nClients; i++) {
+        sdks[i].stopUpdates()
+    }
 }
 
 main()

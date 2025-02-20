@@ -2,8 +2,9 @@ import { Client } from "./client";
 import Constrainer from "./constrainer";
 import { FlagState } from "./flag-state";
 import { ManualStateUpdateConfig, PollStateUpdateConfig, SocketStateUpdateConfig, StateUpdateConfig } from "./update-policy/update-policy";
-import ReconnectingWebSocket from 'reconnecting-websocket'
+import ReconnectingWebSocket, { ErrorEvent } from 'reconnecting-websocket'
 import WS from "ws"
+import { sleep } from "./sleep";
 
 export default class PlainFlags {
     private client?: Client
@@ -198,13 +199,33 @@ export default class PlainFlags {
     private async initWebSocketUpdates() {
         const config = this.stateUpdateConfig as SocketStateUpdateConfig
         this.ws = new ReconnectingWebSocket(
-            config.serviceUrl, [], { WebSocket: WS, debug: false }
+            config.serviceUrl, [], {
+            WebSocket: WS,
+            debug: false,
+            connectionTimeout: 50000
+        }
         )
+
+        for (let i = 0; i < 100; i++) {
+            if (this.ws.readyState !== ReconnectingWebSocket.OPEN) {
+                await sleep(100)
+            }
+        }
+
+        if (this.ws.readyState !== ReconnectingWebSocket.OPEN) {
+            this.error("Taking very long to connect to the feature state service, will keep trying.")
+        }
 
         this.ws.addEventListener("message", (event) => {
             this.log(`Updated feature states received:`)
             this.flagStates = JSON.parse(event.data)
             this.log(this.flagStates)
+        })
+
+        this.ws.addEventListener("open", () => { this.log("Connected to feature state service") })
+
+        this.ws.addEventListener("error", (event: ErrorEvent) => {
+            this.error("Error communicating to feature state service", event.message)
         })
     }
 }

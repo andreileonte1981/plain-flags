@@ -1,1 +1,1 @@
-node ./bin/tests/stress/stresstest.js
+node ./bin/tests/stress-tests/$1.js
