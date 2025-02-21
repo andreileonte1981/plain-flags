@@ -2,11 +2,12 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - flag-states
     ports:
       - 5001:5001
+      - 8081:8081
 
   flag-management:
     build: ./services/flag-management
@@ -20,7 +21,7 @@ services:
       - SUPERADMIN_EMAIL=boss@plainflags.com
       - SUPERADMIN_PASSWORD=password
       - DEFAULT_USER_PASSWORD=stop00
-      - DISABLE_USER_REGISTRATION=true
+      # - DISABLE_USER_REGISTRATION=true
     volumes:
       - db-data:/data/:rw
 
@@ -35,7 +36,7 @@ services:
     depends_on:
       - flag-management
     deploy:
-      replicas: 3
+      replicas: 10
 
   flags-dashboard:
     build: ./dashboard
