@@ -8,7 +8,7 @@ export class StateBroadcaster {
     private static server: WebSocket.Server;
 
     static async init() {
-        this.server = new WebSocketServer({ port: 8081 });  // TODO configure port in .env and compose file
+        this.server = new WebSocketServer({ port: +(process.env.WS_SERVER_PORT || 8081) });
 
         this.server.on('connection', (ws) => {
             console.log('New client connected')

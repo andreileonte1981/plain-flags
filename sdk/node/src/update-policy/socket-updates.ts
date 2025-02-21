@@ -12,7 +12,7 @@ export default class SocketUpdates extends Updates {
             config.serviceUrl, [], {
             WebSocket: WS,
             debug: false,
-            connectionTimeout: 50000
+            connectionTimeout: 60000
         })
 
         for (let i = 0; i < 100; i++) {
