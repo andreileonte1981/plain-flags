@@ -13,6 +13,7 @@ export default class SocketClient {
 
     constructor(
         private url: string,
+        private sharedSecret: string,
         private log: (...args: any) => void,
         private error: (...args: any) => void,
         private onData: (data: any) => void
@@ -35,7 +36,7 @@ export default class SocketClient {
                 this.onData(message.fs)
             }
             else if (message.ch) {
-                this.ws?.send(process.env.APIKEY_SDK || "plainflagssharedsecret")
+                this.ws?.send(this.sharedSecret)
             }
         })
 

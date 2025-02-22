@@ -121,6 +121,7 @@ describe("SDK operation", () => {
             {
                 policy: "ws",
                 serviceUrl: Config.stateServiceWs(),
+                apiKey: process.env.APIKEY_SDK || ""
             },
             null, null
         )

@@ -34,6 +34,7 @@ export interface PollStateUpdateConfig extends IStateUpdateConfig {
 export interface SocketStateUpdateConfig extends IStateUpdateConfig {
     readonly policy: "ws"
     readonly serviceUrl: string
+    readonly apiKey: string
 }
 
 export type StateUpdateConfig = ManualStateUpdateConfig | PollStateUpdateConfig | SocketStateUpdateConfig

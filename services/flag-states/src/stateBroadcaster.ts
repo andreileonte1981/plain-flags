@@ -13,9 +13,28 @@ export class StateBroadcaster {
         this.server.on('connection', (ws: WebSocket) => {
             console.log('New client connected')
 
-            ws.on("open", async (client: WebSocket) => {
-                const state = await latestFlagState()
-                client.send(JSON.stringify({ fs: state }), { binary: false })
+            ws.send(JSON.stringify({ ch: "Hi" }), { binary: false });
+
+            (ws as any).pending = true
+
+            ws.on("message", async (data) => {
+                const decoded = data.toString();
+                if (decoded === process.env.APIKEY) {
+                    delete (ws as any).pending
+
+                    console.log("Client authenticated")
+                    const state = await latestFlagState()
+
+                    ws.send(JSON.stringify({ fs: state }), { binary: false })
+                }
+                else {
+                    delete (ws as any).pending
+
+                    ws.send("Auth failed")
+                    ws.close()
+
+                    console.log(`Client authentication failed: ${ws.url}`)
+                }
             })
 
             ws.on('close', () => {
@@ -28,9 +47,11 @@ export class StateBroadcaster {
         console.log(`broadcasting state`)
         const state = await latestFlagState()
         this.server.clients.forEach(
-            async function each(client) {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify({ fs: state }), { binary: false })
+            async (client) => {
+                if (!(client as any).pending) {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({ fs: state }), { binary: false })
+                    }
                 }
             })
     }

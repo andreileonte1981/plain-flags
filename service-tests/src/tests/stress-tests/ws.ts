@@ -72,7 +72,8 @@ async function main() {
     for (let i = 0; i < nClients; i++) {
         sdks.push(new PlainFlags({
             policy: "ws",
-            serviceUrl: Config.stateServiceWs()
+            serviceUrl: Config.stateServiceWs(),
+            apiKey: process.env.APIKEY_SDK || ""
         },
             null, null
         ))

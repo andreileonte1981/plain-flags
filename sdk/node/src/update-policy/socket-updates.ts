@@ -10,6 +10,7 @@ export default class SocketUpdates extends Updates {
         try {
             this.client = new SocketClient(
                 config.serviceUrl,
+                config.apiKey,
                 (...args) => this.log(...args),
                 (...args) => this.error(...args),
                 (data: any) => { this.setFlagStates(data) }
