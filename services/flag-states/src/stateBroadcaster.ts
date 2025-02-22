@@ -13,6 +13,11 @@ export class StateBroadcaster {
         this.server.on('connection', (ws) => {
             console.log('New client connected')
 
+            ws.on("open", async (client: WebSocket) => {
+                const state = await latestFlagState()
+                client.send(JSON.stringify(state), { binary: false })
+            })
+
             ws.on('close', () => {
                 console.log('Client disconnected')
             });

@@ -1,4 +1,4 @@
-import { Client } from "../client"
+import { Client } from "../utils/client"
 import { PollStateUpdateConfig } from "./update-policy"
 import Updates from "./updates";
 

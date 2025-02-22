@@ -125,30 +125,35 @@ describe("SDK operation", () => {
             null, null
         )
 
-        await sdk.init();
+        try {
+            await sdk.init();
 
-        const name = Salt.uniqued("test-s-ws")
+            const name = Salt.uniqued("test-s-ws")
 
-        const response: any = await client.post("/api/flags", { name }, token)
+            const response: any = await client.post("/api/flags", { name }, token)
 
-        const id = response?.data.id
+            const id = response?.data.id
 
-        const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
+            const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
 
-        assert(turnOnResponse?.status === 200)
+            assert(turnOnResponse?.status === 200)
 
-        await sleep(150)  // There's a 0.1 second delay to allow for the DB sync
+            await sleep(150)  // There's a 0.1 second delay to allow for the DB sync
 
-        assert(sdk.isOn(name))
+            assert(sdk.isOn(name))
 
-        const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
+            const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
 
-        assert(turnOffResponse?.status === 200)
+            assert(turnOffResponse?.status === 200)
 
-        await sleep(150)
+            await sleep(150)
 
-        assert(!sdk.isOn(name))
-
+            assert(!sdk.isOn(name))
+        }
+        catch (error) {
+            sdk.stopUpdates()
+            throw error
+        }
         sdk.stopUpdates()
     })
 

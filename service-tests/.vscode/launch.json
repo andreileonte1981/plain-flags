@@ -10,7 +10,8 @@
       ],
       "type": "node",
       "console": "integratedTerminal",
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "resolveSourceMapLocations": []
     }
   ]
 }
