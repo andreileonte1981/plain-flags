@@ -13,7 +13,7 @@ const server = fastify({
 
 async function start() {
     try {
-        await StateSubscriber.init()
+        await StateSubscriber.init()    // TODO pass server.log here and use it
         await StateBroadcaster.init()
 
         await Data.init(server.log)

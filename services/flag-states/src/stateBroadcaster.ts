@@ -10,31 +10,18 @@ export class StateBroadcaster {
     static async init() {
         this.server = new WebSocketServer({ port: +(process.env.WS_SERVER_PORT || 8081) });
 
-        this.server.on('connection', (ws: WebSocket) => {
-            console.log('New client connected')
+        this.server.on('connection', async (ws: WebSocket, req) => {
+            if (req.headers["x-api-key"] !== process.env.APIKEY) {
+                console.error(`Auth failed ${req.headers["sec-websocket-key"]}`)
+                ws.send(`{"error": "auth failed"}`)
+                ws.close()
+            }
 
-            ws.send(JSON.stringify({ ch: "Hi" }), { binary: false });
+            ws.on("open", async () => {
+                console.log('Client connected')
+                const state = await latestFlagState()
 
-            (ws as any).pending = true
-
-            ws.on("message", async (data) => {
-                const decoded = data.toString();
-                if (decoded === process.env.APIKEY) {
-                    delete (ws as any).pending
-
-                    console.log("Client authenticated")
-                    const state = await latestFlagState()
-
-                    ws.send(JSON.stringify({ fs: state }), { binary: false })
-                }
-                else {
-                    delete (ws as any).pending
-
-                    ws.send("Auth failed")
-                    ws.close()
-
-                    console.log(`Client authentication failed: ${ws.url}`)
-                }
+                ws.send(JSON.stringify({ fs: state }), { binary: false })
             })
 
             ws.on('close', () => {
@@ -48,10 +35,8 @@ export class StateBroadcaster {
         const state = await latestFlagState()
         this.server.clients.forEach(
             async (client) => {
-                if (!(client as any).pending) {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({ fs: state }), { binary: false })
-                    }
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ fs: state }), { binary: false })
                 }
             })
     }

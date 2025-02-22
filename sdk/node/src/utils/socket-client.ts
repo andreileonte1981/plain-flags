@@ -13,7 +13,7 @@ export default class SocketClient {
 
     constructor(
         private url: string,
-        private sharedSecret: string,
+        private apiKey: string,
         private log: (...args: any) => void,
         private error: (...args: any) => void,
         private onData: (data: any) => void
@@ -24,7 +24,7 @@ export default class SocketClient {
     connected() { return this.ws?.readyState === WebSocket.OPEN }
 
     private connect() {
-        this.ws = new WebSocket(this.url, {})
+        this.ws = new WebSocket(this.url, { headers: { "x-api-key": this.apiKey } })
 
         this.ws.on("error", this.error)
 
@@ -35,8 +35,8 @@ export default class SocketClient {
             if (message.fs) {
                 this.onData(message.fs)
             }
-            else if (message.ch) {
-                this.ws?.send(this.sharedSecret)
+            else if (message.error) {
+                this.error(`error`, message.error)
             }
         })
 
