@@ -26,10 +26,10 @@ export class StateBroadcaster {
 
     static async broadcastState() {
         console.log(`broadcasting state`)
+        const state = await latestFlagState()
         this.server.clients.forEach(
             async function each(client) {
                 if (client.readyState === WebSocket.OPEN) {
-                    const state = await latestFlagState()
                     client.send(JSON.stringify({ fs: state }), { binary: false })
                 }
             })

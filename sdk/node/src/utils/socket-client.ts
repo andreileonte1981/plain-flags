@@ -20,6 +20,8 @@ export default class SocketClient {
         this.connect()
     }
 
+    connected() { return this.ws?.readyState === WebSocket.OPEN }
+
     private connect() {
         this.ws = new WebSocket(this.url, {})
 

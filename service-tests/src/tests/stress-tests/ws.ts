@@ -73,7 +73,9 @@ async function main() {
         sdks.push(new PlainFlags({
             policy: "ws",
             serviceUrl: Config.stateServiceWs()
-        }, null, null))
+        },
+            null, null
+        ))
     }
 
     const initRequests: Function[] = []
