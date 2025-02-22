@@ -27,8 +27,14 @@ export default class SocketClient {
 
         this.ws.on("message", (data: any) => {
             const decoded = data.toString()
+            const message = JSON.parse(decoded)
 
-            this.onData(JSON.parse(decoded))
+            if (message.fs) {
+                this.onData(message.fs)
+            }
+            else if (message.ch) {
+                this.ws?.send(process.env.APIKEY_SDK || "plainflagssharedsecret")
+            }
         })
 
         this.waitConnection()
@@ -36,12 +42,15 @@ export default class SocketClient {
 
     private async waitConnection() {
         let attempt = 0
-        while (this.ws?.readyState !== WebSocket.OPEN) {
+        while (this.ws?.readyState === WebSocket.CONNECTING) {
             this.log(`Waiting to connect. Attempt ${++attempt}`)
             await sleep(1000)
         }
-        this.log("Connected")
-        this.startPings()
+
+        if (this.ws?.readyState === WebSocket.OPEN) {
+            this.log("Connected")
+            this.startPings()
+        }
     }
 
     private async startPings() {
@@ -57,7 +66,7 @@ export default class SocketClient {
             if (Date.now() - this.lastPongTime > this.WORRY_TIME) {
                 this.trying = false
 
-                this.error(`Connection unresponsive for more than ${this.WORRY_TIME}`)
+                this.error(`Connection unresponsive for more than ${this.WORRY_TIME} ms`)
 
                 try {
                     this.ws?.close()
@@ -77,6 +86,7 @@ export default class SocketClient {
     disconnect() {
         try {
             this.trying = false;
+            this.log("closing")
             this.ws?.close()
         }
         catch (error) {

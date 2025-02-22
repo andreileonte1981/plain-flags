@@ -25,29 +25,35 @@ export default class PlainFlags {
         private readonly stateUpdateConfig:
             StateUpdateConfig,
 
-        private logCallback: ((...args: any) => void) | null =
-            (...args) => {
-                console.log(args)
-            },
+        private logCallback: ((...args: any) => void) | null = console.log,
 
-        private errorCallback: ((...args: any) => void) | null =
-            (...args) => {
-                console.error(args)
-            },
+        private errorCallback: ((...args: any) => void) | null = console.error,
     ) {
         switch (this.stateUpdateConfig.policy) {
             case "manual": {
-                this.updates = new ManualUpdates(this.log, this.error, (flagStates: FlagStates) => { this.flagStates = flagStates })
+                this.updates = new ManualUpdates(
+                    (...args) => this.log(...args),
+                    (...args) => this.error(...args),
+                    (flagStates: FlagStates) => { this.flagStates = flagStates }
+                )
                 break
             }
 
             case "poll": {
-                this.updates = new PollUpdates(this.log, this.error, (flagStates: FlagStates) => { this.flagStates = flagStates })
+                this.updates = new PollUpdates(
+                    (...args) => this.log(...args),
+                    (...args) => this.error(...args),
+                    (flagStates: FlagStates) => { this.flagStates = flagStates }
+                )
                 break;
             }
 
             case "ws": {
-                this.updates = new SocketUpdates(this.log, this.error, (flagStates: FlagStates) => { this.flagStates = flagStates })
+                this.updates = new SocketUpdates(
+                    (...args) => this.log(...args),
+                    (...args) => this.error(...args),
+                    (flagStates: FlagStates) => { this.flagStates = flagStates }
+                )
                 break
             }
         }
@@ -92,7 +98,7 @@ export default class PlainFlags {
     }
 
     /**
-     * Initializes the Plain Flags sdk
+     * Initializes the Plain Flags SDK
      */
     async init() {
         try {

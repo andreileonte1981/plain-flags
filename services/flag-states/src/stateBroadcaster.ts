@@ -10,12 +10,12 @@ export class StateBroadcaster {
     static async init() {
         this.server = new WebSocketServer({ port: +(process.env.WS_SERVER_PORT || 8081) });
 
-        this.server.on('connection', (ws) => {
+        this.server.on('connection', (ws: WebSocket) => {
             console.log('New client connected')
 
             ws.on("open", async (client: WebSocket) => {
                 const state = await latestFlagState()
-                client.send(JSON.stringify(state), { binary: false })
+                client.send(JSON.stringify({ fs: state }), { binary: false })
             })
 
             ws.on('close', () => {
@@ -30,7 +30,7 @@ export class StateBroadcaster {
             async function each(client) {
                 if (client.readyState === WebSocket.OPEN) {
                     const state = await latestFlagState()
-                    client.send(JSON.stringify(state), { binary: false })
+                    client.send(JSON.stringify({ fs: state }), { binary: false })
                 }
             })
     }
