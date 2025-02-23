@@ -18,7 +18,7 @@ const server = fastify({
 
 async function start() {
     try {
-        await StateBroadcaster.init()
+        await StateBroadcaster.init(server.log)
 
         await Data.init(server.log)
 

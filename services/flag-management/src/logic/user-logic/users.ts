@@ -15,8 +15,6 @@ export default class Users {
 
         admin.password = await bcrypt.hash(process.env.SUPERADMIN_PASSWORD || "password", salt)
 
-        console.log(admin.password)
-
         admin.role = Role.SUPERADMIN
 
         await User.insert(admin)

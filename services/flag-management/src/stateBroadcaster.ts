@@ -1,3 +1,4 @@
+import { FastifyBaseLogger } from 'fastify';
 import WebSocket, { WebSocketServer } from 'ws';
 
 /**
@@ -6,14 +7,14 @@ import WebSocket, { WebSocketServer } from 'ws';
 export class StateBroadcaster {
     private static server: WebSocket.Server;
 
-    static async init() {
+    static async init(log: FastifyBaseLogger) {
         this.server = new WebSocketServer({ port: +(process.env.WS_SERVER_PORT || 8080) });
 
         this.server.on('connection', (ws) => {
-            console.log('New client connected')
+            log.info('New client connected')
 
             ws.on('close', () => {
-                console.log('Client disconnected')
+                log.info('Client disconnected')
             });
         });
     }
