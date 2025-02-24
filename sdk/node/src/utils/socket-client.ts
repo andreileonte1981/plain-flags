@@ -5,7 +5,8 @@ export default class SocketClient {
     private ws?: WebSocket
 
     private lastPongTime = 0
-    private trying = true
+    private pinging = true
+    private trying = false
 
     // TODO: make these params
     private readonly PING_FREQ = 1500
@@ -33,6 +34,7 @@ export default class SocketClient {
             const message = JSON.parse(decoded)
 
             if (message.fs) {
+                this.log(`Updated flag state: ${JSON.stringify(message.fs, undefined, 2)}`)
                 this.onData(message.fs)
             }
             else if (message.error) {
@@ -45,7 +47,8 @@ export default class SocketClient {
 
     private async waitConnection() {
         let attempt = 0
-        while (this.ws?.readyState === WebSocket.CONNECTING) {
+        this.trying = true
+        while (this.ws?.readyState === WebSocket.CONNECTING && this.trying) {
             this.log(`Waiting to connect. Attempt ${++attempt}`)
             await sleep(1000)
         }
@@ -53,21 +56,31 @@ export default class SocketClient {
         if (this.ws?.readyState === WebSocket.OPEN) {
             this.log("Connected")
             this.startPings()
+            return
+        }
+
+        if (this.ws?.readyState === WebSocket.CLOSED || this.ws?.readyState === WebSocket.CLOSING) {
+            this.error("Connection closed")
+            this.connect()
         }
     }
 
     private async startPings() {
-        this.trying = true
+        this.pinging = true
         this.lastPongTime = Date.now()
-        this.ws?.on("pong", () => { this.lastPongTime = Date.now() })
+        this.ws?.on("pong", () => {
+            // console.log("pong")
+            this.lastPongTime = Date.now()
+        })
 
-        while (this.trying) {
+        while (this.pinging) {
             this.ws?.ping()
+            // console.log("ping")
 
             await sleep(this.PING_FREQ)
 
             if (Date.now() - this.lastPongTime > this.WORRY_TIME) {
-                this.trying = false
+                this.pinging = false
 
                 this.error(`Connection unresponsive for more than ${this.WORRY_TIME} ms`)
 
@@ -88,7 +101,8 @@ export default class SocketClient {
 
     disconnect() {
         try {
-            this.trying = false;
+            this.pinging = false
+            this.trying = false
             this.log("closing")
             this.ws?.close()
         }

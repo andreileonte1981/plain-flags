@@ -20,16 +20,17 @@ export class StateBroadcaster {
                 ws.close()
             }
 
-            ws.on("open", async () => {
-                this.log.info('Client connected')
-                const state = await latestFlagState()
-
-                ws.send(JSON.stringify({ fs: state }), { binary: false })
-            })
-
             ws.on('close', () => {
                 this.log.info('Client disconnected')
             });
+
+            ws.on("error", (err) => { this.log.error(err) })
+
+            this.log.info('Client connected')
+            this.log.info(`${this.server.clients.size} clients`)
+            const state = await latestFlagState()
+
+            ws.send(JSON.stringify({ fs: state }), { binary: false })
         });
     }
 
