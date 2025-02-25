@@ -15,20 +15,17 @@ export default function Dashboard() {
         <div className="fixed w-52 h-full left-0 right-0 flex flex-col justify-between">
           <div
             id="titleLogo"
-            className="flex items-center justify-center py-4 gap-2"
+            className="flex items-center justify-center gap-2"
           >
-            <img src="/images/logo.svg" alt="logo" className="w-12 h-12" />
-            <h1 className="text-center font-bold text-gray-500 text-lg uppercase">
-              Plain Flags
-            </h1>
+            <img src="/images/logo.svg" alt="logo" className="p-8" />
           </div>
 
-          {/* separator */}
-          <div className="w-48 ml-2 h-1 bg-slate-500/25 rounded"></div>
+          <div
+            id="sidebarTopSeparator"
+            className="w-48 ml-2 h-1 bg-slate-500/25 rounded"
+          ></div>
 
-          {/* nav area */}
-          <div className="h-full flex flex-col justify-between">
-            {/* nav links */}
+          <div id="navArea" className="h-full flex flex-col justify-between">
             <div className="pt-2 flex flex-col gap-2 items-stretch">
               <MenuItem
                 text="Flags"

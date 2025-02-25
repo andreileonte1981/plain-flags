@@ -5,11 +5,11 @@ import type Constraint from "~/domain/constraint";
 import ConstraintCard from "./components/constraintCard";
 import ConstraintFilters from "./components/constraintFilters";
 import { useContext, useEffect, useState } from "react";
-import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CreateConstraintPanel from "./components/createConstraintPanel";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { AnimatePresence, motion } from "motion/react";
 import { scrollToElement } from "~/utils/scrollTo";
+import PurplePlusButton from "~/ui/components/reusables/purplePlusButton";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -61,13 +61,13 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
       <div className="sticky top-0 z-10 bg-white mx-2">
         <div className="flex flex-wrap justify-between items-center border-b-4">
           <ConstraintFilters filters={filters} setFilters={setFilters} />
-          <GreenPlusButton
+          <PurplePlusButton
             id="createConstraintPanelToggle"
             onClick={() => {
               setCreateOpen(!isCreateOpen);
             }}
             text="Create new constraint"
-          ></GreenPlusButton>
+          ></PurplePlusButton>
         </div>
         <CreateConstraintPanel
           isCreateOpen={isCreateOpen}

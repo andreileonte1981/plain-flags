@@ -6,6 +6,7 @@ import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import HandIcon from "~/ui/components/icons/handIcon";
 
 export default function LinkableConstraint(props: {
   c: Constraint;
@@ -49,8 +50,9 @@ export default function LinkableConstraint(props: {
           onClick={() => {
             setCurrentConstraint(props.c.id);
           }}
-          className="text-magenta-500 hover:underline"
+          className="flex gap-1 items-center text-magenta-500 hover:underline"
         >
+          <LinkIcon />
           {props.c.description}
         </Link>
 
@@ -86,7 +88,7 @@ export default function LinkableConstraint(props: {
             className="flex items-center border-magenta-500 border-2 rounded-md bg-magenta/15 p-2 text-magenta-500 text-xs uppercase font-bold hover:text-magenta hover:bg-magenta/5 active:scale-95"
           >
             Apply
-            <LinkIcon />
+            <HandIcon />
           </button>
         )}
       </YesNoWrap>

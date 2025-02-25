@@ -3,6 +3,8 @@ import { Fragment } from "react/jsx-runtime";
 import { Role, type User } from "~/domain/user";
 import DeleteUser from "./deleteUser";
 import { scrollToElement } from "~/utils/scrollTo";
+import AdminIcon from "~/ui/components/icons/adminIcon";
+import UserIcon from "~/ui/components/icons/userIcon";
 
 export default function UserList(props: { users: User[] }) {
   const listAnim = {
@@ -14,7 +16,7 @@ export default function UserList(props: { users: User[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[80%,10%,10%] items-center p-2 text-gray-600">
+      <div className="grid grid-cols-[75%,15%,10%] items-center p-2 text-gray-600">
         <AnimatePresence initial={false} presenceAffectsLayout={true}>
           {props.users.map((u) => (
             <Fragment key={`user_${u.id}`}>
@@ -42,9 +44,15 @@ export default function UserList(props: { users: User[] }) {
               >
                 <div className="pb-2">
                   {u.role === Role.ADMIN || u.role === Role.SUPERADMIN ? (
-                    <span className="font-bold">{u.role}</span>
+                    <div className="flex items-center gap-1">
+                      <AdminIcon />
+                      <span className="font-bold">{u.role}</span>
+                    </div>
                   ) : (
-                    <span>{u.role}</span>
+                    <div className="flex items-center gap-1">
+                      <UserIcon />
+                      <span>{u.role}</span>
+                    </div>
                   )}
                 </div>
               </motion.div>

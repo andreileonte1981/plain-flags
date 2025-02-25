@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
 import { useRevalidator } from "react-router";
 import Client from "~/client/client";
-import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import CancelButton from "~/ui/components/reusables/cancelButton";
 import LocalError from "~/ui/components/reusables/localError";
 import { AnimatePresence, motion } from "motion/react";
@@ -11,6 +10,7 @@ import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { scrollToElement } from "~/utils/scrollTo";
+import PurplePlusButton from "~/ui/components/reusables/purplePlusButton";
 
 export default function CreateConstraintPanel(props: {
   isCreateOpen: boolean;
@@ -177,7 +177,7 @@ export default function CreateConstraintPanel(props: {
               }}
             >
               <div className="flex items-center justify-between">
-                <GreenPlusButton
+                <PurplePlusButton
                   id="ynCreateConstraint"
                   text="Create"
                   onClick={() => {}}

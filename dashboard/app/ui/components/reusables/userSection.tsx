@@ -80,7 +80,7 @@ export default function UserSection() {
             >
               <div
                 onMouseLeave={() => setExpanded(false)}
-                className="flex flex-col gap-4 border-2 rounded border-gray-300 py-4"
+                className="flex flex-col gap-4 border-2 rounded bg-gray-100 border-gray-300 shadow-md py-4"
               >
                 <form
                   className="flex flex-col gap-2 p-2 border-b-2"

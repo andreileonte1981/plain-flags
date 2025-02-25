@@ -2,76 +2,193 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="230"
-   height="230"
-   viewBox="0 0 60.854107 60.854107"
+   width="96mm"
+   height="96mm"
+   viewBox="0 0 96 96"
    version="1.1"
-   id="svg2181"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="rounded-rects.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   id="svg63"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview2183"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="1.7469907"
-     inkscape:cx="126.50325"
-     inkscape:cy="113.05154"
-     inkscape:window-width="1504"
-     inkscape:window-height="995"
-     inkscape:window-x="26"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
   <defs
-     id="defs2178" />
+     id="defs60">
+    <rect
+       x="25.674028"
+       y="19.518154"
+       width="113.72475"
+       height="75.940544"
+       id="rect5609" />
+    <rect
+       x="25.674028"
+       y="19.518154"
+       width="113.72475"
+       height="75.940544"
+       id="rect5719" />
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter6973"
+       x="-0.1970994"
+       y="-0.12508045"
+       width="1.3941988"
+       height="1.2501609">
+      <feGaussianBlur
+         stdDeviation="2 2"
+         result="fbSourceGraphic"
+         id="feGaussianBlur6971" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix6975" />
+      <feGaussianBlur
+         id="feGaussianBlur6977"
+         stdDeviation="1.3 0.41"
+         result="fbSourceGraphic"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix6979" />
+      <feGaussianBlur
+         id="feGaussianBlur6981"
+         stdDeviation="1.3 0.41"
+         result="fbSourceGraphic"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix6983" />
+      <feGaussianBlur
+         id="feGaussianBlur6985"
+         stdDeviation="1.3 0.41"
+         result="fbSourceGraphic"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix6987" />
+      <feGaussianBlur
+         id="feGaussianBlur6989"
+         stdDeviation="0.6 0.41"
+         result="fbSourceGraphic"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix6991" />
+      <feGaussianBlur
+         id="feGaussianBlur6993"
+         stdDeviation="0.6 0.41"
+         result="blur"
+         in="fbSourceGraphic" />
+      <feColorMatrix
+         id="feColorMatrix6995"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 50 0 "
+         result="colormatrix" />
+      <feComposite
+         in2="fbSourceGraphic"
+         id="feComposite6997"
+         in="colormatrix"
+         operator="in" />
+    </filter>
+  </defs>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
+     id="layer2"
+     style="fill:#969696;fill-opacity:1;stroke:none;stroke-width:1.00007;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter6973)"
+     transform="matrix(0.85110166,-0.01031665,-0.19044893,0.45423769,15.57808,47.735601)">
+    <rect
+       style="fill:#969696;fill-opacity:1;stroke:none;stroke-width:1.00007;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6909"
+       width="43.571918"
+       height="30.226086"
+       x="50.93906"
+       y="7.2483072"
+       rx="5.2916665" />
+    <rect
+       style="fill:#969696;fill-opacity:1;stroke:none;stroke-width:1.07401;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6911"
+       width="38.043015"
+       height="33.176098"
+       x="21.820612"
+       y="-46.050026"
+       rx="4.6201997"
+       transform="matrix(0.00335973,0.99999436,-0.86872277,-0.49529865,0,0)" />
+    <rect
+       style="fill:#969696;fill-opacity:1;stroke:none;stroke-width:1.00007;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6913"
+       width="8.177557"
+       height="69.68718"
+       x="14.028192"
+       y="-89.894104"
+       rx="3.9549305"
+       transform="rotate(119.5552)" />
+    <rect
+       style="fill:#969696;fill-opacity:1;stroke:none;stroke-width:1.00007;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6915"
+       width="8.177557"
+       height="69.68718"
+       x="46.158478"
+       y="3.213382"
+       rx="3.9549305" />
+  </g>
+  <g
      id="layer1">
     <rect
-       style="opacity:1;fill:#666666;stroke:#2a2a2a;stroke-width:0.469012"
-       id="rect2600"
-       width="2.1197796"
-       height="32.1549"
-       x="31.287539"
-       y="7.8105097"
-       rx="0.41021383" />
+       style="fill:#00b96f;fill-opacity:1;stroke:#2a2a2a;stroke-width:2.06293"
+       id="rect443"
+       width="43.571918"
+       height="30.226086"
+       x="45.509102"
+       y="12.76056"
+       rx="5.2916665" />
     <rect
-       style="fill:#00ff00;stroke:#2a2a2a;stroke-width:0.469228"
-       id="rect2654"
-       width="24.551826"
-       height="20.629427"
-       x="33.371632"
-       y="7.7067828"
-       rx="0.26919767" />
+       style="fill:#ababab;fill-opacity:1;stroke:#2a2a2a;stroke-width:2.01948"
+       id="rect449"
+       width="38.043015"
+       height="33.176098"
+       x="30.445303"
+       y="-39.766167"
+       rx="4.6201997"
+       transform="matrix(0.00335973,0.99999436,-0.86872277,-0.49529864,0,0)" />
     <rect
-       style="opacity:1;fill:#666666;stroke:#2a2a2a;stroke-width:0.469012"
-       id="rect2656"
-       width="2.1197796"
-       height="32.1549"
-       x="-24.410915"
-       y="14.191998"
-       rx="0.41021383"
-       transform="rotate(-76.40104)" />
+       style="fill:#2a2a2a;fill-opacity:1;stroke:#2a2a2a;stroke-width:2.06293"
+       id="rect447"
+       width="8.177557"
+       height="69.68718"
+       x="21.501585"
+       y="-87.889671"
+       rx="3.9549305"
+       transform="rotate(119.5552)" />
     <rect
-       style="fill:#e6e6e6;stroke:#2a2a2a;stroke-width:0.469228"
-       id="rect2658"
-       width="24.551826"
-       height="20.629427"
-       x="-48.921833"
-       y="14.037685"
-       rx="0.26919767"
-       transform="rotate(-76.40104)" />
+       style="fill:#2a2a2a;fill-opacity:1;stroke:#2a2a2a;stroke-width:2.06293"
+       id="rect337"
+       width="8.177557"
+       height="69.68718"
+       x="40.728519"
+       y="8.7256346"
+       rx="3.9549305" />
+  </g>
+  <g
+     id="layer3"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,45.466308,10.619643)"
+       id="text5607"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';white-space:pre;shape-inside:url(#rect5609);display:inline;fill:#585858;fill-opacity:1;stroke:none"><tspan
+         x="25.673828"
+         y="55.912585"
+         id="tspan7227">plain</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(-0.00294228,0.26762437,0.26456754,0.15204759,15.938294,39.380159)"
+       id="text5717"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';white-space:pre;shape-inside:url(#rect5719);shape-padding:0;display:inline;fill:#007949;fill-opacity:1;stroke:none"><tspan
+         x="25.673828"
+         y="55.912585"
+         id="tspan7229">flags</tspan></text>
   </g>
 </svg>

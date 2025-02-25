@@ -6,6 +6,7 @@ import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ModalContext } from "~/context/modalContext";
 import type Constraint from "~/domain/constraint";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import LinkIcon from "~/ui/components/icons/linkIcon";
 
 export default function AppliedConstraint(props: {
   c: Constraint;
@@ -71,8 +72,9 @@ export default function AppliedConstraint(props: {
           onClick={() => {
             setCurrentConstraint(props.c.id);
           }}
-          className="text-magenta-500 hover:underline"
+          className="flex gap-1 items-center text-magenta-500 hover:underline"
         >
+          <LinkIcon />
           {props.c.description}
         </Link>
         <h1>For: {props.c.key}</h1>
