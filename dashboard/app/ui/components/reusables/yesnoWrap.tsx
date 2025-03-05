@@ -37,6 +37,15 @@ export default function YesNoWrap(props: {
   useEffect(() => {
     const el = document.getElementById(props.clickId);
 
+    /**
+     * Watch this bug
+     */
+    // if (!el) {
+    //   console.log(
+    //     `failed to add event listener, no element ${props.clickId} found`
+    //   );
+    // }
+
     el?.addEventListener("click", handleClick);
 
     return () => {
@@ -75,7 +84,7 @@ export default function YesNoWrap(props: {
       onExitComplete={() => {
         setTimeout(() => {
           setChildrenShown(!isOpen);
-        }, 100);
+        }, 2500 * animDuration);
       }}
     >
       {isOpen ? (
