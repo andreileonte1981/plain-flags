@@ -54,8 +54,10 @@ export default function FlagCard(props: {
 
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
 
-  const cn = `rounded border-2 mx-2 mb-4 p-2 text-gray-500 scroll-mt-48 ${
-    flagId === currentFlag ? "border-gray-700" : "bg-gray-50 border-gray-300"
+  const cn = `rounded-lg border-4 mx-2 mb-4 p-2 text-gray-500 scroll-mt-48 ${
+    flagId === currentFlag
+      ? "border-green-700 shadow-lg"
+      : "bg-gray-50 border-green-700/20"
   }`;
 
   const { currentConstraint, setCurrentConstraint } = useContext(
@@ -77,13 +79,13 @@ export default function FlagCard(props: {
     >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
         <h1 className="my-2 font-bold text-gray-700 text-lg flex items-center gap-1">
-          {flagId === currentFlag && <FlagIcon />}
+          <FlagIcon />
           {props.name}
         </h1>
 
         <Link
           to={`./${props.id}`}
-          className="relative group text-red-600 hover:underline font-semibold flex items-center"
+          className="relative group text-green-700 hover:underline font-semibold flex items-center"
         >
           details
           <LinkIcon />

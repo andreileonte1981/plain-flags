@@ -38,7 +38,7 @@ services:
     depends_on:
       - flag-management
     deploy:
-      replicas: 10
+      replicas: 3
 
   flags-dashboard:
     build: ./dashboard

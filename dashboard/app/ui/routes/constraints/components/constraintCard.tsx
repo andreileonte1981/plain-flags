@@ -61,7 +61,7 @@ export default function ConstraintCard(props: {
 
   const className = `border-4 rounded-lg mx-2 mb-4 p-2 text-gray-500 font-semibold ${
     currentConstraint === props.id
-      ? "border-magenta/50"
+      ? "border-magenta/50 shadow-lg"
       : "border-magenta/15 bg-gray-200/25"
   }`;
 
@@ -74,7 +74,7 @@ export default function ConstraintCard(props: {
         scrollToElement(`constraintcard_${props.id}`);
       }}
     >
-      <div className="flex justify-between my-2 border-b">
+      <div className="flex justify-between my-2 pb-4 border-b">
         <div className="flex items-center gap-2">
           <HandIcon />
           <div className="font-bold text-gray-700">{props.description}</div>
@@ -148,7 +148,7 @@ export default function ConstraintCard(props: {
               return (
                 <li key={f.id} className={cn}>
                   <Link
-                    className="relative group inline-flex items-center gap-1 hover:text-red-600"
+                    className="relative group inline-flex items-center gap-1 hover:text-green-600"
                     to={`/flags/${f.id}`}
                   >
                     <LinkIcon />

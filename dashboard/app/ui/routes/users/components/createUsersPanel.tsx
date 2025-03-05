@@ -6,6 +6,7 @@ import { ToastContext } from "~/context/toastContext";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import LocalError from "~/ui/components/reusables/localError";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { emailCheck } from "~/utils/emailCheck";
 
 export default function CreateUsersPanel() {
   const { showMessage } = useContext(ModalContext);
@@ -21,21 +22,22 @@ export default function CreateUsersPanel() {
       setNewUserError("At least one user email required");
       return false;
     }
+
     const emails = newUserEmails.split(",").filter((e) => e.trim().length > 0);
     const invalids: string[] = [];
-    const emailCheck =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
     for (const email of emails) {
       const e = email.trim();
       if (!emailCheck.test(e)) {
         invalids.push(e);
       }
-
-      if (invalids.length) {
-        setNewUserError(`Invalid emails: ${invalids.join(", ")}`);
-        return false;
-      }
     }
+
+    if (invalids.length) {
+      setNewUserError(`Invalid emails: ${invalids.join(", ")}`);
+      return false;
+    }
+
     setNewUserEmails(emails.join(","));
     return true;
   }

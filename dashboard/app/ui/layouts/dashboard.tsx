@@ -40,7 +40,7 @@ export default function Dashboard() {
                 <MenuItem
                   text="Archived Flags"
                   linkto="archived"
-                  tooltip="Manage user accounts here"
+                  tooltip="See what feature flags were removed (admin only)"
                 >
                   <div className="text-gray-500">
                     <svg
@@ -71,7 +71,7 @@ export default function Dashboard() {
                 <MenuItem
                   text="Users"
                   linkto="/users"
-                  tooltip="Manage user accounts here"
+                  tooltip="Create and delete users (admin only)"
                 >
                   <div className="text-gray-500">
                     <UserIcon />

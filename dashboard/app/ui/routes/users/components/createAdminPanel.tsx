@@ -7,6 +7,7 @@ import { Role } from "~/domain/user";
 import GreenPlusButton from "~/ui/components/reusables/greenPlusButton";
 import LocalError from "~/ui/components/reusables/localError";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
+import { emailCheck } from "~/utils/emailCheck";
 
 export default function CreateAdminPanel() {
   const { showMessage } = useContext(ModalContext);
@@ -22,9 +23,6 @@ export default function CreateAdminPanel() {
       setNewUserError("New admin email required");
       return false;
     }
-
-    const emailCheck =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const e = newAdminEmail.trim();
     if (!emailCheck.test(e)) {
