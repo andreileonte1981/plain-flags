@@ -7,6 +7,13 @@ import { useState } from "react";
 import FilterEdit from "~/ui/components/reusables/filterEdit";
 import ArchivedList from "./components/archived/archivedList";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Archived Feature Flags" },
+    { name: "description", content: "See archived feature flags" },
+  ];
+}
+
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");

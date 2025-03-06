@@ -11,6 +11,16 @@ import ConstraintSection from "./components/constraintSection";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { useContext, useEffect } from "react";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Feature Flag Details" },
+    {
+      name: "description",
+      content: "Turn your feature on and off here, constrain it, remove it",
+    },
+  ];
+}
+
 export async function clientLoader({ params }: Route.LoaderArgs) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");

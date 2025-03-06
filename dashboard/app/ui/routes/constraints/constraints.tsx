@@ -11,6 +11,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { scrollToElement } from "~/utils/scrollTo";
 import PurplePlusButton from "~/ui/components/reusables/purplePlusButton";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Constraints" },
+    { name: "description", content: "Control access to your features" },
+  ];
+}
+
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");

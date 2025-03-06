@@ -11,6 +11,13 @@ import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { scrollToElement } from "~/utils/scrollTo";
 import { AnimatePresence, motion } from "motion/react";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Feature Flags" },
+    { name: "description", content: "Control your feature release" },
+  ];
+}
+
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");

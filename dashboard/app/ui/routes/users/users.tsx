@@ -9,6 +9,13 @@ import UserList from "./components/userList";
 import CreateUsersPanel from "./components/createUsersPanel";
 import CreateAdminPanel from "./components/createAdminPanel";
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Users" },
+    { name: "description", content: "Create and delete users" },
+  ];
+}
+
 export async function clientLoader({}) {
   const myRole = localStorage.getItem("role");
   if (myRole !== Role.ADMIN && myRole !== Role.SUPERADMIN) {
