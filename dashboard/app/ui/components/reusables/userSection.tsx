@@ -126,7 +126,11 @@ export default function UserSection() {
                     logout();
                   }}
                 >
-                  <SubtleButton onClick={() => {}} text="Logout" id="btnlogout">
+                  <SubtleButton
+                    onClick={() => {}}
+                    text="Log out"
+                    id="btnlogout"
+                  >
                     <LogoutIcon />
                   </SubtleButton>
                 </YesNoWrap>

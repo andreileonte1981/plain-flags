@@ -24,6 +24,14 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     return <div>Loading...</div>;
   }
 
+  if (unfilteredFlags.length === 0) {
+    return (
+      <div className="flex items-center justify-center">
+        <h1 className="text-gray-400 my-10">No flags were archived</h1>
+      </div>
+    );
+  }
+
   const [filter, setFilter] = useState("");
 
   const flags = unfilteredFlags?.filter(

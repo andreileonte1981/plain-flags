@@ -9,6 +9,7 @@ import CreateFlagPanel from "./components/createFlagPanel";
 import FlagListItems from "./components/flagListItems";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { scrollToElement } from "~/utils/scrollTo";
+import { AnimatePresence, motion } from "motion/react";
 
 export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
@@ -68,15 +69,26 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   return (
     <div className="mx-2 flex flex-col">
       <div className="sticky top-0 z-10 bg-white">
-        <div className="flex justify-between items-center border-b-4 py-2 ">
+        <div className="flex flex-wrap items-center border-b-4 py-2 ">
           <FlagFilters setFilters={setFilters} filters={filters} />
-          <GreenPlusButton
-            id="createFlagPanelToggle"
-            onClick={() => {
-              setCreateOpen(!isCreateOpen);
-            }}
-            text="Create new flag"
-          ></GreenPlusButton>
+          <AnimatePresence initial={false}>
+            {!isCreateOpen && (
+              <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                exit={{ scaleX: 0, opacity: 0 }}
+                transition={{ ease: "easeInOut", duration: 0.2 }}
+              >
+                <GreenPlusButton
+                  id="createFlagPanelToggle"
+                  onClick={() => {
+                    setCreateOpen(!isCreateOpen);
+                  }}
+                  text="Create new flag"
+                ></GreenPlusButton>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <CreateFlagPanel

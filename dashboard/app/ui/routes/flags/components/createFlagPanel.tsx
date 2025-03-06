@@ -66,7 +66,7 @@ export default function CreateFlagPanel(props: {
           exit="hidden"
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
-          <div className="flex items-center justify-between flex-wrap font-semibold text-gray-600 px-3 border-b-4 py-2">
+          <div className="flex items-center flex-wrap gap-2 bg-green-600/10 font-semibold text-gray-600 px-3 border-b-4 py-2">
             <div className="flex flex-col items-end my-2 mx-1">
               <div>
                 <input
@@ -106,7 +106,7 @@ export default function CreateFlagPanel(props: {
                     props.setCreateOpen(false);
                     setNewFlagError("");
                   }}
-                  text="Cancel"
+                  text="Close"
                 />
               </div>
             </YesNoWrap>

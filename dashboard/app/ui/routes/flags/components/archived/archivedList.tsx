@@ -10,6 +10,14 @@ export default function ArchivedList(props: { flags: Flag[] }) {
     transition: { duration: 0.2, ease: "easeInOut" },
   };
 
+  if (props.flags.length === 0) {
+    return (
+      <div className="flex items-center justify-center">
+        <h1 className="text-gray-400 my-10">None found</h1>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="p-2 text-gray-600">

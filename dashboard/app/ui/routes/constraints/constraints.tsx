@@ -59,15 +59,26 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <div className="sticky top-0 z-10 bg-white mx-2">
-        <div className="flex flex-wrap justify-between items-center border-b-4">
+        <div className="flex flex-wrap gap-4 items-center border-b-4">
           <ConstraintFilters filters={filters} setFilters={setFilters} />
-          <PurplePlusButton
-            id="createConstraintPanelToggle"
-            onClick={() => {
-              setCreateOpen(!isCreateOpen);
-            }}
-            text="Create new constraint"
-          ></PurplePlusButton>
+          <AnimatePresence initial={false}>
+            {!isCreateOpen && (
+              <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: 1, opacity: 1 }}
+                exit={{ scaleX: 0, opacity: 0 }}
+                transition={{ ease: "easeInOut", duration: 0.2 }}
+              >
+                <PurplePlusButton
+                  id="createConstraintPanelToggle"
+                  onClick={() => {
+                    setCreateOpen(!isCreateOpen);
+                  }}
+                  text="Create new constraint"
+                ></PurplePlusButton>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <CreateConstraintPanel
           isCreateOpen={isCreateOpen}
