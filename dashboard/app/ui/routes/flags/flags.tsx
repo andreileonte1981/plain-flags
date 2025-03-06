@@ -76,7 +76,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   return (
     <div className="mx-2 flex flex-col">
       <div className="sticky top-0 z-10 bg-white">
-        <div className="flex flex-wrap items-center border-b-4 py-2 ">
+        <div className="flex flex-wrap items-center border-b-4 border-green-600/30 py-2 ">
           <FlagFilters setFilters={setFilters} filters={filters} />
           <AnimatePresence initial={false}>
             {!isCreateOpen && (

@@ -66,7 +66,7 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <div className="sticky top-0 z-10 bg-white mx-2">
-        <div className="flex flex-wrap gap-4 items-center border-b-4">
+        <div className="flex flex-wrap gap-4 items-center border-b-4 border-magenta/20">
           <ConstraintFilters filters={filters} setFilters={setFilters} />
           <AnimatePresence initial={false}>
             {!isCreateOpen && (

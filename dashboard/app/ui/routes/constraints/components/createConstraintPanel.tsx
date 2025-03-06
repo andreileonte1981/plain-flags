@@ -113,7 +113,7 @@ export default function CreateConstraintPanel(props: {
           exit="hidden"
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
-          <div className="flex items-center gap-4 flex-wrap bg-purple-500/5 font-semibold text-gray-600 border-b-4 py-2 px-3">
+          <div className="flex items-center gap-4 flex-wrap bg-purple-500/5 font-semibold text-gray-600 border-b-4 border-magenta/20 py-2 px-3">
             <div className="flex flex-wrap gap-2">
               <div className="flex flex-col items-end gap-2 mx-1">
                 <div className="flex flex-col items-end">
