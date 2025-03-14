@@ -5,7 +5,6 @@ import {
 import ManualUpdates from "./update-policy/manual-updates";
 import Updates, { FlagStates } from "./update-policy/updates";
 import PollUpdates from "./update-policy/poll-updates";
-import SocketUpdates from "./update-policy/socket-updates";
 
 export default class PlainFlags {
     private updates?: Updates
@@ -46,15 +45,6 @@ export default class PlainFlags {
                     (flagStates: FlagStates) => { this.flagStates = flagStates }
                 )
                 break;
-            }
-
-            case "ws": {
-                this.updates = new SocketUpdates(
-                    (...args) => this.log(...args),
-                    (...args) => this.error(...args),
-                    (flagStates: FlagStates) => { this.flagStates = flagStates }
-                )
-                break
             }
         }
     }
@@ -110,18 +100,7 @@ export default class PlainFlags {
     }
 
     /**
-     * Stops the updates.
-     * 
-     * Call this only if you initialized with the "ws" update policy. Has no effect otherwise.
-     */
-    stopUpdates() {
-        this.updates?.stopUpdates()
-    }
-
-    /**
      * Requests an updated state of your features.
-     * 
-     * Only has an effect if you choose "manual" or "poll" update policy.
      */
     async updateState() {
         this.flagStates = await this.updates?.updateState() || {};

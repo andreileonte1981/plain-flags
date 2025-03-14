@@ -112,52 +112,6 @@ describe("SDK operation", () => {
         assert(!sdk.isOn(name))
     })
 
-    test("The SDK receives updates after a change if connecting over web socket", async () => {
-        const client = new Client()
-
-        const token = await tokenForLoggedInUser(client)
-
-        const sdk = new PlainFlags(
-            {
-                policy: "ws",
-                serviceUrl: Config.stateServiceWs(),
-                apiKey: process.env.APIKEY_SDK || ""
-            },
-            null, null
-        )
-
-        try {
-            await sdk.init();
-
-            const name = Salt.uniqued("test-s-ws")
-
-            const response: any = await client.post("/api/flags", { name }, token)
-
-            const id = response?.data.id
-
-            const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
-
-            assert(turnOnResponse?.status === 200)
-
-            await sleep(150)  // There's a 0.1 second delay to allow for the DB sync
-
-            assert(sdk.isOn(name))
-
-            const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
-
-            assert(turnOffResponse?.status === 200)
-
-            await sleep(150)
-
-            assert(!sdk.isOn(name))
-        }
-        catch (error) {
-            sdk.stopUpdates()
-            throw error
-        }
-        sdk.stopUpdates()
-    })
-
     test("A constrained activated flag will be on only for the constrained context", async () => {
         const client = new Client()
 

@@ -1,6 +1,6 @@
 
 interface IStateUpdateConfig {
-    readonly policy: "manual" | "poll" | "ws"
+    readonly policy: "manual" | "poll"
 }
 
 /**
@@ -24,17 +24,4 @@ export interface PollStateUpdateConfig extends IStateUpdateConfig {
     readonly apiKey: string
 }
 
-/**
- * A resilient web socket connection will allow
- * the state service to send up-to-date feature state
- * every time it changes
- * 
- * With this policy, you should call stopUpdates when your application finishes execution.
- */
-export interface SocketStateUpdateConfig extends IStateUpdateConfig {
-    readonly policy: "ws"
-    readonly serviceUrl: string
-    readonly apiKey: string
-}
-
-export type StateUpdateConfig = ManualStateUpdateConfig | PollStateUpdateConfig | SocketStateUpdateConfig
+export type StateUpdateConfig = ManualStateUpdateConfig | PollStateUpdateConfig

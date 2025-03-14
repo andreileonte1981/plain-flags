@@ -3,7 +3,7 @@ import Flag, { FlagSubscriber } from "./entities/flag"
 import { FastifyBaseLogger } from "fastify"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import User from "./entities/user"
-import History, { HistorySubscriber } from "./entities/history"
+import History from "./entities/history"
 import Settings from "./entities/settings"
 import Constraint from "./entities/constraint"
 
@@ -22,7 +22,6 @@ export const AppDataSource = new DataSource({
     ],
     subscribers: [
         FlagSubscriber,
-        HistorySubscriber
     ],
     migrations: process.env.NODE_ENV === "migration" ? ["./migrations/*.ts"] : []
 })
