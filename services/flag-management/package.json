@@ -10,7 +10,7 @@
     "start": "node --watch bin/index.js",
     "start-prod": "NODE_ENV=production node bin/index.js",
     "dev": "env-cmd -f .env node --inspect=9229 --watch bin/index.js",
-    "typeorm": "NODE_ENV=migration env-cmd -f .env typeorm-ts-node-commonjs",
+    "typeorm": "NODE_ENV=migration typeorm-ts-node-commonjs",
     "typeorm:generate": "npm run typeorm migration:generate -- --dataSource ./src/data.ts",
     "typeorm:create": "npm run typeorm migration:create -- --dataSource ./src/data.ts",
     "typeorm:migrate": "npm run typeorm migration:run -- --dataSource ./src/data.ts",
