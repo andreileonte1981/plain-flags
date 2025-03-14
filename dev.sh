@@ -1,5 +1,6 @@
 cd services/flag-management
 
+# Assumes data folder for development is "data"
 if [ ! -d "data" ]; then
   npm run typeorm:migrate
 fi

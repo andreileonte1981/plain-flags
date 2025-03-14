@@ -3,10 +3,11 @@ import Flag from "./entities/flag"
 import { FastifyBaseLogger } from "fastify"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import Constraint from "./entities/constraint"
+import * as path from "upath"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "../../data/plain-flags.sqlite",     // TODO: allow users to configure this
+    database: path.join(process.env.DATA_FOLDER_PATH || "../../data", "plain-flags.sqlite"),
     logging: false,
     synchronize: false,
     namingStrategy: new SnakeNamingStrategy(),

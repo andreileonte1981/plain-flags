@@ -6,10 +6,11 @@ import User from "./entities/user"
 import History from "./entities/history"
 import Settings from "./entities/settings"
 import Constraint from "./entities/constraint"
+import * as path from "upath"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "../../data/plain-flags.sqlite",     // TODO: allow users to configure this
+    database: path.join(process.env.DATA_FOLDER_PATH || "../../data", "plain-flags.sqlite"),
     logging: true,
     synchronize: false,
     namingStrategy: new SnakeNamingStrategy(),
