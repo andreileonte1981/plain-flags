@@ -14,14 +14,13 @@ services:
     ports:
       - 5000:5000
     environment:
-      - JWT_SIGNING_SECRET=eilafefyr8q093478ryvnbchul8934rcnlaa8ry
+      - JWT_SIGNING_SECRET=jwt_replaceme
       - SERVICE_PORT=5000
-      - APIKEY=ersafoi89a0ww3n8yrt493ew84yqjwd34y8r09
+      - APIKEY=apikey_replaceme
       - STALE_FLAG_DAYS=20
-      - SUPERADMIN_EMAIL=boss@plainflags.com
+      - SUPERADMIN_EMAIL=superadmin@email.com
       - SUPERADMIN_PASSWORD=password
-      - DEFAULT_USER_PASSWORD=stop00
-      - WS_SERVER_PORT=8080
+      - DEFAULT_USER_PASSWORD=password
       # - DISABLE_USER_REGISTRATION=true
     volumes:
       - db-data:/data/:rw
@@ -30,9 +29,7 @@ services:
     build: ./services/flag-states
     environment:
       - SERVICE_PORT=5001
-      - APIKEY=ersafoi89a0ww3n8yrt493ew84yqjwd34y8r09
-      - MANAGEMENT_WS=ws://flag-management:8080
-      - WS_SERVER_PORT=8081
+      - APIKEY=apikey_replaceme
     volumes:
       - db-data:/data:ro
     depends_on:
@@ -43,7 +40,7 @@ services:
   flags-dashboard:
     build: ./dashboard
     ports:
-      - 3000:3000
+      - 3000:3000   # Access the dashboard at port 3000 on the host
     environment:
       - VITE_API_URL=http://flag-management/api
       # - VITE_DISABLE_USER_REGISTRATION=true
