@@ -1,7 +1,7 @@
 {
   "name": "plain-flags-node-sdk",
   "version": "1.0.0",
-  "description": "The part of feature flags you embed in your application to tell which features are active and for which users",
+  "description": "The part of Plain Flags you embed in your application to tell which features are active and for which users",
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js"
@@ -19,11 +19,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/axios": "^0.9.36",
-    "@types/node": "^22.10.0"
+    "@types/node": "^22.10.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@types/ws": "^8.5.14",
-    "axios": "^1.7.8",
-    "ws": "^8.18.0"
+    "axios": "^1.8.3"
   }
 }
