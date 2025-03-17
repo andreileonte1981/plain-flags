@@ -4,13 +4,13 @@ Basic feature flags
 
 ## Folder structure
 
-**services** - The backend for the feature flags logic. Exposes a REST API.
+**services** - The back end for the feature flags logic.
 
-**services/flag-management** - The service for creating and changing feature flags
+**services/flag-management** - The service for creating and changing feature flags. Exposes a REST API.
 
-**services/flag-states** - The service that tells the application of interest which features are on
+**services/flag-states** - The service that tells the application of interest which features are on. Exposes a REST API.
 
-**service-tests** - A test project with an HTTP client with all the service behaviour tests. Tests are over I/O.
+**service-tests** - A test project with an HTTP client with all the service behaviour tests.
 
 **sdk** - Collection of SDK libraries to import in other applications for using the feature flags.
 

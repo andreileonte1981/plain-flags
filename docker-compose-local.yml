@@ -1,9 +1,4 @@
 services:
-
-#  The nginx image is not essential to run Plain Flags.
-#  It is here in order to facilitate scaling and load balancing
-#   for the flag-states service.
-#  You may choose any scaling strategy you prefer or none at all for your installation
   nginx:
     image: nginx:latest
     volumes:
@@ -11,13 +6,11 @@ services:
     depends_on:
       - flag-states
     ports:
-      - 5001:5001   # The port where flag state updates are requested by clients.
+      - 5001:5001
       - 8081:8081
 
-  # This service writes to a SQLite database file.
-  # If you run it in multiple instances, it may behave unpredictably.
   flag-management:
-    image: andreileonte011/plain-flags-management   # Uses latest. Add version tag for production usage.
+    build: ./services/flag-management
     ports:
       - 5000:5000
     environment:
@@ -30,10 +23,10 @@ services:
       - DEFAULT_USER_PASSWORD=password
       # - DISABLE_USER_REGISTRATION=true
     volumes:
-      - db-data:/data/:rw   # Writes to the SQLite database.
+      - db-data:/data/:rw
 
   flag-states:
-    image: andreileonte011/plain-flags-states   # Uses latest. Add version tag for production usage.
+    build: ./services/flag-states
     environment:
       - SERVICE_PORT=5001
       - APIKEY=apikey_replaceme
@@ -43,11 +36,9 @@ services:
       - flag-management
     deploy:
       replicas: 3
-    # ports:  # Enable this port mapping if you don't use a proxy such as nginx above.
-    #   - 5001:5001
 
   flags-dashboard:
-    image: andreileonte011/plain-flags-dashboard   # Uses latest. Add version tag for production usage.
+    build: ./dashboard
     ports:
       - 3000:3000   # Access the dashboard at port 3000 on the host
     environment:
