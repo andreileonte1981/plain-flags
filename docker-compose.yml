@@ -20,23 +20,31 @@ services:
     image: andreileonte011/plain-flags-management   # Uses latest. Add version tag for production usage.
     ports:
       - 5000:5000
+    env_file:
+      - ./services/flag-management/.env
+    # Some env variables are commented out because they are secret.
+    # These are taken from the env file specified above.
     environment:
-      - JWT_SIGNING_SECRET=jwt_replaceme
+      # - JWT_SIGNING_SECRET=jwt_replaceme
       - SERVICE_PORT=5000
-      - APIKEY=apikey_replaceme
+      # - APIKEY=apikey_replaceme
       - STALE_FLAG_DAYS=20
-      - SUPERADMIN_EMAIL=superadmin@email.com
-      - SUPERADMIN_PASSWORD=password
-      - DEFAULT_USER_PASSWORD=password
+      # - SUPERADMIN_EMAIL=superadmin@email.com
+      # - SUPERADMIN_PASSWORD=password
+      # - DEFAULT_USER_PASSWORD=password
       # - DISABLE_USER_REGISTRATION=true
     volumes:
       - db-data:/data/:rw   # Writes to the SQLite database.
 
   flag-states:
     image: andreileonte011/plain-flags-states   # Uses latest. Add version tag for production usage.
+    env_file:
+      - ./services/flag-states/.env
+    # Some env variables are commented out because they are secret.
+    # These are taken from the env file specified above.
     environment:
       - SERVICE_PORT=5001
-      - APIKEY=apikey_replaceme
+      # - APIKEY=apikey_replaceme
     volumes:
       - db-data:/data:ro
     depends_on:

@@ -13,23 +13,27 @@ services:
     build: ./services/flag-management
     ports:
       - 5000:5000
+    env_file:
+      - ./services/flag-management/.env
     environment:
-      - JWT_SIGNING_SECRET=jwt_replaceme
+      # - JWT_SIGNING_SECRET
       - SERVICE_PORT=5000
-      - APIKEY=apikey_replaceme
+      # - APIKEY
       - STALE_FLAG_DAYS=20
-      - SUPERADMIN_EMAIL=superadmin@email.com
-      - SUPERADMIN_PASSWORD=password
-      - DEFAULT_USER_PASSWORD=password
+      # - SUPERADMIN_EMAIL
+      # - SUPERADMIN_PASSWORD
+      # - DEFAULT_USER_PASSWORD
       # - DISABLE_USER_REGISTRATION=true
     volumes:
       - db-data:/data/:rw
 
   flag-states:
     build: ./services/flag-states
+    env_file:
+      - ./services/flag-states/.env
     environment:
       - SERVICE_PORT=5001
-      - APIKEY=apikey_replaceme
+      # - APIKEY
     volumes:
       - db-data:/data:ro
     depends_on:
