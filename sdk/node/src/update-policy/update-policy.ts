@@ -20,6 +20,9 @@ export interface ManualStateUpdateConfig extends IStateUpdateConfig {
 export interface PollStateUpdateConfig extends IStateUpdateConfig {
     readonly policy: "poll"
     readonly serviceUrl: string
+    /**
+     * In milliseconds
+     */
     readonly pollInterval: number
     readonly apiKey: string
 }

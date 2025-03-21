@@ -13,7 +13,8 @@
     "plain",
     "feature",
     "flag",
-    "toggle"
+    "toggle",
+    "free"
   ],
   "author": "Andrei Leonte",
   "license": "ISC",
