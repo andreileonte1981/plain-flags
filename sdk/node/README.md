@@ -6,7 +6,7 @@ This library facilitates your software's connection to the Plain Flags feature f
 
 You must host an installation of the Plain Flags feature flag back end services.
 
-More about Plain Flags at [plainflags.dev](www.plainflags.dev)
+More about Plain Flags at [plainflags.dev](https://plainflags.dev)
 
 The Plain Flags back end must run in an environment where your software can make http requests.
 
