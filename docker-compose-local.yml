@@ -41,6 +41,9 @@ services:
     environment:
       - SERVICE_PORT=5001
       # - APIKEY
+      - APIKEY_FILE=/run/secrets/apikey_states
+    secrets:
+      - apikey_states
     volumes:
       - db-data:/data:ro
     depends_on:
@@ -63,6 +66,8 @@ secrets:
     file: ./.secrets/password.super.txt
   default_user_password:
     file: ./.secrets/password.user.txt
+  apikey_states:
+    file: ./.secrets/apikey.states.txt
 
 volumes:
   db-data:
