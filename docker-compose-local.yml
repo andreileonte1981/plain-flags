@@ -17,6 +17,7 @@ services:
       - ./services/flag-management/.env
     environment:
       # - JWT_SIGNING_SECRET
+      - JWT_SIGNING_SECRET_FILE=/run/secrets/jwt_signing_secret
       - SERVICE_PORT=5000
       # - APIKEY
       - STALE_FLAG_DAYS=20
@@ -24,6 +25,8 @@ services:
       # - SUPERADMIN_PASSWORD
       # - DEFAULT_USER_PASSWORD
       # - DISABLE_USER_REGISTRATION=true
+    secrets:
+      - jwt_signing_secret
     volumes:
       - db-data:/data/:rw
 
@@ -48,6 +51,10 @@ services:
     environment:
       - VITE_API_URL=http://flag-management/api
       # - VITE_DISABLE_USER_REGISTRATION=true
+
+secrets:
+  jwt_signing_secret:
+    file: ./.secrets/jwt.secret.txt
 
 volumes:
   db-data:

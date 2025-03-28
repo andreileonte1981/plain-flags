@@ -8,6 +8,7 @@ import { settingsRoutes } from "./routes/settings.route";
 import { constraintRoutes } from "./routes/constraint.route";
 import cors from "@fastify/cors"
 import Users from "./logic/user-logic/users";
+import Config from "./utils/config";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === "production") ?
@@ -17,6 +18,8 @@ const server = fastify({
 
 async function start() {
     try {
+        await Config.init(server.log);
+
         await Data.init(server.log)
 
         await Users.makeAdminIfNone()
