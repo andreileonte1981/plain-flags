@@ -1,5 +1,6 @@
 import User, { Role } from "../../entities/user";
 import * as bcrypt from "bcrypt";
+import Config from "../../utils/config";
 
 export default class Users {
     static async makeAdminIfNone() {
@@ -13,7 +14,7 @@ export default class Users {
 
         const salt = await bcrypt.genSalt(10)
 
-        admin.password = await bcrypt.hash(process.env.SUPERADMIN_PASSWORD || "password", salt)
+        admin.password = await bcrypt.hash(Config.superAdminPassword, salt)
 
         admin.role = Role.SUPERADMIN
 

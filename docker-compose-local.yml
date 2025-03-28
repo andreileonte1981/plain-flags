@@ -23,10 +23,14 @@ services:
       - STALE_FLAG_DAYS=20
       # - SUPERADMIN_EMAIL
       # - SUPERADMIN_PASSWORD
+      - SUPERADMIN_PASSWORD_FILE=/run/secrets/superadmin_password
       # - DEFAULT_USER_PASSWORD
+      - DEFAULT_USER_PASSWORD_FILE=/run/secrets/default_user_password
       # - DISABLE_USER_REGISTRATION=true
     secrets:
       - jwt_signing_secret
+      - superadmin_password
+      - default_user_password
     volumes:
       - db-data:/data/:rw
 
@@ -55,6 +59,10 @@ services:
 secrets:
   jwt_signing_secret:
     file: ./.secrets/jwt.secret.txt
+  superadmin_password:
+    file: ./.secrets/password.super.txt
+  default_user_password:
+    file: ./.secrets/password.user.txt
 
 volumes:
   db-data:

@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import User, { Role } from "../entities/user";
 import * as bcrypt from "bcrypt";
+import Config from "../utils/config";
 
 export async function userRoutes(server: FastifyInstance) {
     server.get("", { onRequest: [(server as any).jwtAuth] }, async (
@@ -65,7 +66,7 @@ export async function userRoutes(server: FastifyInstance) {
             newUser.role = request.body.role as Role || Role.USER;
 
             const salt = await bcrypt.genSalt(10)
-            newUser.password = await bcrypt.hash(process.env.DEFAULT_USER_PASSWORD || "password", salt)
+            newUser.password = await bcrypt.hash(Config.defaultUserPassword, salt)
 
             newUsers.push(newUser)
         }
