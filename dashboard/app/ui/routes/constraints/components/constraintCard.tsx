@@ -76,13 +76,17 @@ export default function ConstraintCard(props: {
     >
       <div className="flex justify-between my-2 pb-4 border-b">
         <div className="flex items-center gap-2">
-          <HandIcon />
-          <div className="font-bold text-gray-700">{props.description}</div>
+          <div className="md:block hidden">
+            <HandIcon />
+          </div>
+          <div className="break-all font-bold text-gray-700">
+            {props.description}
+          </div>
         </div>
-        <div className="text-xs text-gray-400">id: {props.id}</div>
+        <div className="break-all text-xs text-gray-400">id: {props.id}</div>
       </div>
 
-      <div className="flex justify-between">
+      <div className="break-all flex justify-between">
         <div>
           <div className="my-2">
             For:{" "}
@@ -148,11 +152,13 @@ export default function ConstraintCard(props: {
               return (
                 <li key={f.id} className={cn}>
                   <Link
-                    className="relative group inline-flex items-center gap-1 hover:text-green-600"
+                    className="relative group inline-flex flex-wrap items-center gap-1 hover:text-green-600"
                     to={`/flags/${f.id}`}
                   >
                     <LinkIcon />
-                    <div className="group-hover:underline">{f.name}</div>
+                    <div className="break-all group-hover:underline">
+                      {f.name}
+                    </div>
                     {f.isOn && (
                       <Badge text="on" color="green" tooltip="">
                         <FlagIcon />

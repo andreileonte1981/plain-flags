@@ -5,7 +5,7 @@ export default function ConstraintFilters(props: {
   filters: any;
 }) {
   return (
-    <div className="flex flex-col items-end text-gray-600 font-semibold border-r-2 px-3 py-1">
+    <div className="flex flex-col items-end text-gray-600 font-semibold border-r-2 md:px-3 py-1">
       <FilterEdit
         onChange={(e) => {
           props.setFilters({ ...props.filters, description: e.target.value });

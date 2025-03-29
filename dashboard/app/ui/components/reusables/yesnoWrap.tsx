@@ -144,7 +144,7 @@ export default function YesNoWrap(props: {
 
               <div className="flex mt-2 justify-center gap-5 w-full text-gray-700 font-semibold">
                 <div
-                  className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-green-900 border-2 cursor-pointer hover:shadow-inner hover:border-green-700 active:bg-gray-200"
+                  className="break-normal rounded w-1/3 max-w-16 text-center py-1 px-3 border-green-900 border-2 cursor-pointer hover:shadow-inner hover:border-green-700 active:bg-gray-200"
                   onClick={() => {
                     setTimeout(() => {
                       props.onYes();
@@ -156,7 +156,7 @@ export default function YesNoWrap(props: {
                 </div>
 
                 <div
-                  className="rounded w-1/3 max-w-16 text-center py-1 px-3 border-red-900 border-2 cursor-pointer hover:shadow-inner hover:border-red-700 active:bg-gray-200"
+                  className="break-normal rounded w-1/3 max-w-16 text-center py-1 px-3 border-red-900 border-2 cursor-pointer hover:shadow-inner hover:border-red-700 active:bg-gray-200"
                   onClick={() => {
                     setOpen(false);
                   }}

@@ -12,7 +12,7 @@ export default function PurplePlusButton(props: {
       onClick={() => props.onClick()}
     >
       <PlusIcon></PlusIcon>
-      {props.text}
+      <div className="md:block hidden">{props.text}</div>
     </button>
   );
 }

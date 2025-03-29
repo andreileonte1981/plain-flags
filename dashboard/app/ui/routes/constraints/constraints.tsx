@@ -65,15 +65,15 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 bg-white mx-2">
+      <div className="sticky md:top-0 top-12 z-10 bg-white md:mx-2">
         <div className="flex flex-wrap gap-4 items-center border-b-4 border-magenta/20">
           <ConstraintFilters filters={filters} setFilters={setFilters} />
           <AnimatePresence initial={false}>
             {!isCreateOpen && (
               <motion.div
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ scaleX: 1, opacity: 1 }}
-                exit={{ scaleX: 0, opacity: 0 }}
+                initial={{ scale: 0, opacity: 0, height: 0 }}
+                animate={{ scale: 1, opacity: 1, height: "auto" }}
+                exit={{ scale: 0, opacity: 0, height: 0 }}
                 transition={{ ease: "easeInOut", duration: 0.2 }}
               >
                 <PurplePlusButton
