@@ -5,10 +5,14 @@ import HandIcon from "~/ui/components/icons/handIcon";
 import UserSection from "../components/reusables/userSection";
 import { Role } from "~/domain/user";
 import UsersIcon from "../components/icons/usersIcon";
+import UserIcon from "../components/icons/userIcon";
+import { useState } from "react";
+import UserPanel from "../components/reusables/userPanel";
 
 export default function Dashboard() {
   const myRole = localStorage.getItem("role");
   const isAdmin = myRole === Role.ADMIN || myRole === Role.SUPERADMIN;
+  const [userShown, setUserShown] = useState(false);
   return (
     <div className="flex md:flex-row flex-col items-stretch w-full min-h-screen">
       <div id="sidebar" className="flex-none md:w-52 md:h-screen h-12 m-0 z-20">
@@ -27,7 +31,7 @@ export default function Dashboard() {
 
           <div
             id="navArea"
-            className="h-full flex md:flex-col md:justify-between justify-center"
+            className="h-full flex md:flex-col md:justify-between justify-between"
           >
             <div
               id="navLinks"
@@ -86,6 +90,16 @@ export default function Dashboard() {
               )}
             </div>
 
+            <div
+              id="userSmall"
+              className="md:hidden m-3 bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center active:border-gray-400 active:bg-white active:border cursor-pointer"
+              onClick={() => {
+                setUserShown(!userShown);
+              }}
+            >
+              <UserIcon />
+            </div>
+
             <div id="UserSection" className="md:block hidden my-2">
               <UserSection />
             </div>
@@ -94,6 +108,16 @@ export default function Dashboard() {
       </div>
       <div className="bg-gray-50 bg-opacity-25 flex-auto">
         <Outlet></Outlet>
+        <div
+          id="userPanel"
+          className="md:hidden absolute top-16 left-4 right-4 bottom-16 z-50"
+        >
+          <UserPanel
+            expanded={userShown}
+            setExpanded={setUserShown}
+            originY={0}
+          />
+        </div>
       </div>
     </div>
   );

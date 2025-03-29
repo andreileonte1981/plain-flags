@@ -39,7 +39,7 @@ export default function Modal(props: {
             initial={{ scale: 0, opacity: 0.5 }}
             animate={{ scale: 1, opacity: 1 }}
             id="modalWindow"
-            className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 w-1/2 h-1/4"
+            className="flex-0 flex flex-col items-center justify-around rounded bg-slate-100 md:w-1/2 md:h-1/4 w-11/12 h-1/3"
             onClick={(e) => {
               e.stopPropagation();
             }}
