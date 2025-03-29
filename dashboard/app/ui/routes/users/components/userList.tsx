@@ -16,7 +16,7 @@ export default function UserList(props: { users: User[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-[75%,15%,10%] items-center p-2 text-gray-600">
+      <div className="grid md:grid-cols-[75%,15%,10%] grid-cols-[60%,25%,15%] items-center p-2 text-gray-600">
         <AnimatePresence initial={false} presenceAffectsLayout={true}>
           {props.users.map((u) => (
             <Fragment key={`user_${u.id}`}>
@@ -42,14 +42,14 @@ export default function UserList(props: { users: User[] }) {
                 exit="exit"
                 key={`role_${u.id}`}
               >
-                <div className="pb-2">
+                <div className="pb-2 text-xs">
                   {u.role === Role.ADMIN || u.role === Role.SUPERADMIN ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex justify-center items-center gap-1">
                       <AdminIcon />
                       <span className="font-bold">{u.role}</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="flex justify-center items-center gap-1">
                       <UserIcon />
                       <span>{u.role}</span>
                     </div>

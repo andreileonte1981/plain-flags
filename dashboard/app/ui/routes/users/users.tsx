@@ -51,8 +51,8 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   );
 
   return (
-    <div className="mx-2 flex flex-col">
-      <div id="usersHeader" className="sticky top-0 z-10 bg-white">
+    <div className="md:mx-2 flex flex-col">
+      <div id="usersHeader" className="sticky md:top-0 top-12 z-10 bg-white">
         <div className="flex flex-col flex-wrap items-center justify-center border-b-4">
           <CreateUsersPanel />
           <CreateAdminPanel />

@@ -55,7 +55,7 @@ export default function CreateAdminPanel() {
   return (
     <div
       id="adminCreatePanel"
-      className="flex items-center justify-between flex-wrap w-full font-semibold text-gray-600 px-3 border-b-4"
+      className="flex items-center justify-between flex-wrap gap-2 w-full font-semibold text-gray-600 px-3 border-b-4"
     >
       <div className="flex flex-col grow flex-1 items-start my-2">
         <input
