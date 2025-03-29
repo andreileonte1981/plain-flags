@@ -46,7 +46,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   );
 
   return (
-    <div className="mx-2 flex flex-col">
+    <div className="md:mx-2 flex flex-col">
       <div id="archivedHeader" className="sticky top-0 z-10 bg-white">
         <div className="flex justify-between items-center border-b-4 py-2 ">
           <FilterEdit

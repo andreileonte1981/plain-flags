@@ -23,12 +23,12 @@ export default function ArchivedFlag(props: { id: string; name: string }) {
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-[45%,45%,10%] items-center">
+      <div className="grid grid-cols-[40%,40%,15%] gap-x-2 items-center">
         <div className="break-all pb-2">
           <span>{props.name}</span>
         </div>
 
-        <div className="pb-2">
+        <div className="pb-2 break-all">
           <span>{props.id}</span>
         </div>
 
@@ -36,20 +36,20 @@ export default function ArchivedFlag(props: { id: string; name: string }) {
           <div className="flex flex-col pb-2">
             <div
               onClick={() => setExpanded(!expanded)}
-              className="flex items-center gap-2 cursor-pointer hover:text-red-500"
+              className="flex flex-wrap items-center md:gap-2 cursor-pointer hover:text-red-500"
             >
               <ClockIcon />
-              <span>History</span>
+              <span className="md:inline hidden">History</span>
               <CollapseIcon />
             </div>
           </div>
         ) : (
           <div
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-2 cursor-pointer hover:text-red-500 pb-2"
+            className="flex flex-wrap items-center md:gap-2 cursor-pointer hover:text-red-500 pb-2"
           >
             <ClockIcon />
-            <span>History</span>
+            <span className="md:inline hidden">History</span>
             <ExpandIcon />
           </div>
         )}

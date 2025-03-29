@@ -32,7 +32,7 @@ export default function FilterEdit(props: {
         </svg>
       </button>
       {props.tooltip && (
-        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 bg-black/90 rounded top-1 left-full md:w-full w-2/3 text-white text-sm font-bold z-5">
+        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 bg-black/90 rounded md:top-1 md:left-full md:w-full w-2/3 text-white text-sm font-bold z-5">
           {props.tooltip}
         </div>
       )}
