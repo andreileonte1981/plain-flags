@@ -121,8 +121,8 @@ export default function YesNoWrap(props: {
             exit={{ scale: 0, height: 0, opacity: 0 }}
             transition={{ duration: animDuration, type: "spring" }}
           >
-            <div className="break-all relative flex flex-col border-2 border-gray-400 rounded shadow-inner m-1 p-2 min-w-44 items-center z-50 bg-white">
-              <div className="text-gray-700 font-semibold text-center">
+            <div className="relative flex flex-col border-2 border-gray-400 rounded shadow-inner m-1 p-2 min-w-44 items-center z-50 bg-white">
+              <div className="break-all text-gray-700 font-semibold text-center">
                 {props.question}
               </div>
 
@@ -130,7 +130,7 @@ export default function YesNoWrap(props: {
 
               {props.hint && (
                 <div className="w-full">
-                  <div className="flex gap-2 justify-center items-center">
+                  <div className="break-all flex gap-2 justify-center items-center">
                     <InfoIcon />
 
                     <div className="text-gray-500 text-sm font-semibold py-2">

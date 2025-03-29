@@ -18,8 +18,8 @@ export default function ConstraintSection(props: {
     transition: { duration: 0.2, ease: "easeInOut" },
   };
   return (
-    <div className="flex gap-1 m-2 border-b-4 pb-2">
-      <div className="flex flex-col items-center w-1/2 text-center border-r-2 pr-1">
+    <div className="flex md:flex-row flex-col md:gap-1 gap-4 m-2 border-b-4 pb-2">
+      <div className="flex flex-col items-center md:w-1/2 text-center md:border-r-2 pr-1">
         {props.linkableConstraints.length ? (
           <>
             <h1>Available constraints</h1>
@@ -56,7 +56,7 @@ export default function ConstraintSection(props: {
         )}
       </div>
 
-      <div className="w-1/2 text-center">
+      <div className="md:w-1/2 text-center">
         Applied constraints
         <ul className="p-2">
           <AnimatePresence initial={false}>

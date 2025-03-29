@@ -62,17 +62,17 @@ export default function Component({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="text-gray-500 font-semibold">
-      <div className="sticky top-0 z-10 h-32 bg-white flex gap-x-0 justify-between items-center border-b-4 m-2 mt-0">
+      <div className="sticky md:top-0 top-12 z-10 md:h-32 h-40 bg-white flex flex-wrap gap-x-0 justify-between items-center border-b-4 m-2 mt-0">
         <div className="flex flex-wrap items-center justify-between">
           <Link
-            className="flex items-center gap-1 mx-2 text-sm text-red-500 hover:underline"
+            className="hidden md:flex items-center gap-1 mx-2 text-sm text-red-500 hover:underline"
             to="/flags"
           >
             <BackIcon />
             back to flags
           </Link>
 
-          <div className="mx-2 text-lg font-bold">{details.name}</div>
+          <div className="break-all mx-2 text-lg font-bold">{details.name}</div>
 
           <div className="flex items-center justify-center mx-2">
             <FlagBadges

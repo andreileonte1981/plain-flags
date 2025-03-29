@@ -44,7 +44,7 @@ export default function LinkableConstraint(props: {
 
   return (
     <div className="flex justify-between flex-wrap items-center border-2 rounded text-left p-2 mb-2">
-      <div>
+      <div className="break-all">
         <Link
           to="/constraints"
           onClick={() => {

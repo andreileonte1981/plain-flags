@@ -72,7 +72,7 @@ export default function AppliedConstraint(props: {
           onClick={() => {
             setCurrentConstraint(props.c.id);
           }}
-          className="flex gap-1 items-center text-magenta-500 hover:underline"
+          className="break-all flex gap-1 items-center text-magenta-500 hover:underline"
         >
           <LinkIcon />
           {props.c.description}
@@ -81,7 +81,7 @@ export default function AppliedConstraint(props: {
         <div className="break-all">
           <span className="text-gray-700">Named:</span>
           <br />
-          <div className="flex flex-col">
+          <div className="break-all flex flex-col">
             {props.c.values.map((v, index) => (
               <p key={`${props.c.id}_val_${index}`}>{v}</p>
             ))}
