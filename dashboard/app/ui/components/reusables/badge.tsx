@@ -18,7 +18,7 @@ export default function Badge(props: {
       {props.children}
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-current opacity-10 rounded-full"></div>
       {props.tooltip && (
-        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 w-96 p-2 my-1 bg-black/90 rounded bottom-full text-white text-sm font-bold">
+        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 md:w-96 w-36 p-2 my-1 bg-black/90 rounded bottom-full text-white text-sm font-bold">
           {props.tooltip}
         </div>
       )}

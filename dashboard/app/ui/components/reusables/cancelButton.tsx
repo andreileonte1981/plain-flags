@@ -4,7 +4,7 @@ export default function CancelButton(props: {
 }) {
   return (
     <button
-      className="bg-red-950 text-white font-bold uppercase text-sm h-12 m-3 p-3 px-5 cursor-pointer hover:bg-red-600 active:bg-red-700 rounded flex-none flex items-center"
+      className="bg-red-950 text-white font-bold uppercase text-sm h-12 m-3 p-3 px-5 cursor-pointer hover:bg-red-600 active:bg-red-700 rounded flex-none flex gap-2 items-center"
       onClick={() => props.onClick()}
     >
       <svg
@@ -13,7 +13,7 @@ export default function CancelButton(props: {
         viewBox="0 0 24 24"
         strokeWidth="1.5"
         stroke="currentColor"
-        className="size-6 mr-2"
+        className="size-6"
       >
         <path
           strokeLinecap="round"
@@ -22,7 +22,7 @@ export default function CancelButton(props: {
         />
       </svg>
 
-      {props.text}
+      <div className="md:block hidden">{props.text}</div>
     </button>
   );
 }

@@ -3,30 +3,36 @@ import MenuItem from "~/ui/components/reusables/menuitem";
 import FlagIcon from "~/ui/components/icons/flagIcon";
 import HandIcon from "~/ui/components/icons/handIcon";
 import UserSection from "../components/reusables/userSection";
-import UserIcon from "../components/icons/userIcon";
 import { Role } from "~/domain/user";
+import UsersIcon from "../components/icons/usersIcon";
 
 export default function Dashboard() {
   const myRole = localStorage.getItem("role");
   const isAdmin = myRole === Role.ADMIN || myRole === Role.SUPERADMIN;
   return (
-    <div className="flex items-stretch w-full min-h-screen">
-      <div id="sidebar" className="flex-none w-52 m-0 border-r-4 z-20">
-        <div className="fixed w-52 h-full left-0 right-0 flex flex-col justify-between">
+    <div className="flex md:flex-row flex-col items-stretch w-full min-h-screen">
+      <div id="sidebar" className="flex-none md:w-52 md:h-screen h-12 m-0 z-20">
+        <div className="fixed md:w-52 md:h-full h-12 left-0 right-0 top-0 md:flex md:flex-col justify-between md:border-r-4 bg-white">
           <div
             id="titleLogo"
-            className="flex items-center justify-center gap-2"
+            className="md:flex hidden items-center justify-center gap-2"
           >
             <img src="/images/logo.svg" alt="logo" className="p-8" />
           </div>
 
           <div
             id="sidebarTopSeparator"
-            className="w-48 ml-2 h-1 bg-slate-500/25 rounded"
+            className="md:block hidden w-48 ml-2 h-1 bg-slate-500/25 rounded"
           ></div>
 
-          <div id="navArea" className="h-full flex flex-col justify-between">
-            <div className="pt-2 flex flex-col gap-2 items-stretch">
+          <div
+            id="navArea"
+            className="h-full flex md:flex-col md:justify-between justify-center"
+          >
+            <div
+              id="navLinks"
+              className="pt-2 flex justify-around md:flex-col md:justify-start gap-2 items-stretch"
+            >
               <MenuItem
                 text="Flags"
                 linkto="/flags"
@@ -74,13 +80,13 @@ export default function Dashboard() {
                   tooltip="Create and delete users (admin only)"
                 >
                   <div className="text-gray-500">
-                    <UserIcon />
+                    <UsersIcon />
                   </div>
                 </MenuItem>
               )}
             </div>
 
-            <div id="UserSection" className="my-2">
+            <div id="UserSection" className="md:block hidden my-2">
               <UserSection />
             </div>
           </div>

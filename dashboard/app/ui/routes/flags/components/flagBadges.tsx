@@ -12,7 +12,7 @@ export default function FlagBadges(props: {
   showTips: boolean;
 }) {
   return (
-    <div className="flex">
+    <div className="flex flex-wrap">
       {props.isOn && (
         <Badge
           text="on"

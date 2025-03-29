@@ -160,7 +160,7 @@ export default function UserSection() {
               transition={{ duration: 0.2, ease: "easeIn" }}
             >
               <div
-                onMouseEnter={() => {
+                onClick={() => {
                   setExpanded(true);
                 }}
                 className="flex gap-1 items-center justify-center text-gray-500 hover:text-red-500 active:text-red-800 cursor-pointer"

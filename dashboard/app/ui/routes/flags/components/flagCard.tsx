@@ -78,8 +78,10 @@ export default function FlagCard(props: {
       }}
     >
       <div className="flex justify-between border-b-2 border-gray-100 mb-2">
-        <h1 className="my-2 font-bold text-gray-700 text-lg flex items-center gap-1">
-          <FlagIcon />
+        <h1 className="break-all my-2 font-bold text-gray-700 text-lg flex items-center gap-1">
+          <div className="md:block hidden">
+            <FlagIcon />
+          </div>
           {props.name}
         </h1>
 
@@ -95,7 +97,7 @@ export default function FlagCard(props: {
         </Link>
       </div>
 
-      <div className="flex justify-between items-end">
+      <div className="flex flex-wrap justify-between items-end">
         <FlagBadges
           isOn={props.isOn}
           stale={props.stale}
@@ -149,7 +151,7 @@ export default function FlagCard(props: {
                 <Link
                   to={`/constraints`}
                   onClick={() => setCurrentConstraint(constraint.id)}
-                  className="inline-flex items-center gap-1 mb-2 text-magenta-500 hover:underline"
+                  className="break-all inline-flex items-center gap-1 mb-2 text-magenta-500 hover:underline"
                 >
                   <HandIcon />
                   <h1>{constraint.description}</h1>

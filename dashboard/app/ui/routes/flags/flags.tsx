@@ -74,16 +74,16 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   }, []);
 
   return (
-    <div className="mx-2 flex flex-col">
-      <div className="sticky top-0 z-10 bg-white">
-        <div className="flex flex-wrap items-center border-b-4 border-green-600/30 py-2 ">
+    <div className="md:mx-2 flex flex-col">
+      <div className="sticky md:top-0 top-12 w-full z-10 bg-white">
+        <div className="flex flex-wrap items-center border-b-4 border-green-600/30 md:py-2 md:px-2">
           <FlagFilters setFilters={setFilters} filters={filters} />
           <AnimatePresence initial={false}>
             {!isCreateOpen && (
               <motion.div
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ scaleX: 1, opacity: 1 }}
-                exit={{ scaleX: 0, opacity: 0 }}
+                initial={{ scale: 0, opacity: 0, height: 0 }}
+                animate={{ scale: 1, opacity: 1, height: "auto" }}
+                exit={{ scale: 0, opacity: 0, height: 0 }}
                 transition={{ ease: "easeInOut", duration: 0.2 }}
               >
                 <GreenPlusButton

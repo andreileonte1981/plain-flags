@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
-import ErrorIcon from "../icons/infoIcon copy";
+import ErrorIcon from "../icons/errorIcon";
 import type { ModalIconType } from "~/context/modalContext";
 import InfoIcon from "../icons/infoIcon";
 

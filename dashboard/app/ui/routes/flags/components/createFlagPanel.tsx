@@ -66,7 +66,7 @@ export default function CreateFlagPanel(props: {
           exit="hidden"
           transition={{ duration: 0.1, ease: "easeIn" }}
         >
-          <div className="flex items-center flex-wrap gap-2 bg-green-600/10 font-semibold text-gray-600 px-3 border-b-4 border-green-600/30 py-2">
+          <div className="flex items-center flex-wrap md:gap-2 bg-green-600/10 font-semibold text-gray-600 px-3 border-b-4 border-green-600/30 md:py-2">
             <div className="flex flex-col items-end my-2 mx-1">
               <div>
                 <input

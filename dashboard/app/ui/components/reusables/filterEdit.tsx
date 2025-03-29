@@ -8,7 +8,7 @@ export default function FilterEdit(props: {
       <input
         placeholder={props.placeholder}
         type="search"
-        className="m-1 border-2 rounded p-1 focus:ring-0 focus:border-current placeholder-gray-300"
+        className="md:w-64 w-48 m-1 border-2 rounded p-1 focus:ring-0 focus:border-current placeholder-gray-300"
         onChange={props.onChange}
       />
       <button
@@ -32,7 +32,7 @@ export default function FilterEdit(props: {
         </svg>
       </button>
       {props.tooltip && (
-        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 bg-black/90 rounded top-1 left-full w-full text-white text-sm font-bold z-5">
+        <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 bg-black/90 rounded top-1 left-full md:w-full w-2/3 text-white text-sm font-bold z-5">
           {props.tooltip}
         </div>
       )}
