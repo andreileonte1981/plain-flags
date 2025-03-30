@@ -13,6 +13,10 @@ import type { Flag } from "~/domain/flag";
 import YesNoWrap from "~/ui/components/reusables/yesnoWrap";
 import { ToastContext } from "~/context/toastContext";
 import { scrollToElement } from "~/utils/scrollTo";
+import EditIcon from "~/ui/components/icons/editIcon";
+import SaveIcon from "~/ui/components/icons/saveIcon";
+import LocalError from "~/ui/components/reusables/localError";
+import CancelIcon from "~/ui/components/icons/cancelIcon";
 
 export default function ConstraintCard(props: {
   id: string;
@@ -24,11 +28,45 @@ export default function ConstraintCard(props: {
   const ynElementId = `yn${props.id}`;
 
   const [deleteWaitOpen, setDeleteWaitOpen] = useState(false);
+  const [editWaitOpen, setEditWaitOpen] = useState(false);
+
+  const [editing, setEditing] = useState(false);
+  const [values, setValues] = useState(props.values.join(",\n"));
+  const [error, setError] = useState("");
+
+  function checkValid(): boolean {
+    // debugger;
+    if (values.split(",").some((v) => v.trim() === "")) {
+      setError("Values required");
+      return false;
+    }
+    return true;
+  }
 
   const { showMessage } = useContext(ModalContext);
   const { queueToast } = useContext(ToastContext);
 
   const revalidator = useRevalidator();
+
+  async function saveValues() {
+    try {
+      setEditWaitOpen(true);
+      await Client.post("constraints/values", {
+        id: props.id,
+        values,
+      });
+
+      setEditWaitOpen(false);
+
+      revalidator.revalidate();
+
+      setEditing(false);
+    } catch (error: any) {
+      setEditWaitOpen(false);
+
+      showMessage(error.response?.data?.message || "Constraint edit error");
+    }
+  }
 
   async function deleteConstraint() {
     try {
@@ -86,7 +124,7 @@ export default function ConstraintCard(props: {
         <div className="break-all text-xs text-gray-400">id: {props.id}</div>
       </div>
 
-      <div className="break-all flex justify-between">
+      <div className="break-all flex flex-wrap justify-between">
         <div>
           <div className="my-2">
             For:{" "}
@@ -95,51 +133,122 @@ export default function ConstraintCard(props: {
             </span>
           </div>
 
-          <div className="break-all">
-            <span className="text-gray-500">Named:</span>
-            <br />
-            <div className="flex flex-col text-gray-700">
-              {props.values.map((v, index) => (
-                <p key={`${props.id}_val_${index}`}>{v}</p>
-              ))}
+          <span className="text-gray-500">Named:</span>
+
+          {editing ? (
+            <div className="flex items-start">
+              <div className="flex flex-col mx-1">
+                <textarea
+                  id="newConstraintValues"
+                  name="newConstraintValues"
+                  className="border-2 rounded p-1 md:min-w-64 h-full focus:ring-0 focus:border-current placeholder-gray-300 resize"
+                  defaultValue={values}
+                  placeholder="Comma separated values required"
+                  spellCheck={false}
+                  onChange={(e) => {
+                    setValues(e.target.value);
+                    setError("");
+                  }}
+                />
+                <LocalError error={error} />
+              </div>
+              <div
+                className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                id={`ynDeleteConstraint_${props.id}`}
+                onClick={() => {
+                  setEditing(false);
+                  setError("");
+                  setValues(props.values.join(",\n"));
+                }}
+              >
+                <CancelIcon />
+              </div>
             </div>
-          </div>
-        </div>
-
-        <YesNoWrap
-          clickId={`ynDeleteConstraint_${props.id}`}
-          question={`Delete constraint?`}
-          onYes={() => {
-            deleteConstraint();
-          }}
-          id={ynElementId}
-        >
-          {mayDelete() ? (
-            <>
-              {deleteWaitOpen && (
-                <div className="animate-bounce">Deleting...</div>
-              )}
-              {!deleteWaitOpen && (
-                <div
-                  className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-                  id={`ynDeleteConstraint_${props.id}`}
-                >
-                  <TrashIcon />
-                </div>
-              )}
-            </>
           ) : (
-            <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 font-bold cursor-not-allowed">
-              <TrashIcon />
-
-              <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold">
-                Constrains active flags, can't delete.
-                <br />
-                Unlink constraint from flag first
+            <div className="break-all">
+              <div className="flex flex-col text-gray-700">
+                {props.values.map((v, index) => (
+                  <p key={`${props.id}_val_${index}`}>{v}</p>
+                ))}
               </div>
             </div>
           )}
-        </YesNoWrap>
+        </div>
+
+        <div id="rightbuttons" className="flex flex-col items-end gap-4">
+          <YesNoWrap
+            clickId={`ynDeleteConstraint_${props.id}`}
+            question={`Delete constraint?`}
+            onYes={() => {
+              deleteConstraint();
+            }}
+            id={ynElementId}
+          >
+            {mayDelete() ? (
+              <>
+                {deleteWaitOpen && (
+                  <div className="animate-bounce">Deleting...</div>
+                )}
+                {!deleteWaitOpen && (
+                  <div
+                    className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                    id={`ynDeleteConstraint_${props.id}`}
+                  >
+                    <TrashIcon />
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="relative group border-2 border-gray-200 text-gray-200 rounded p-1 font-bold cursor-not-allowed">
+                <TrashIcon />
+
+                <div className="absolute invisible group-hover:visible transition-opacity duration-300 opacity-0 group-hover:opacity-100 p-2 m-1 bg-black/90 rounded top-full -left-64 text-white text-sm font-bold">
+                  Constrains active flags, can't delete.
+                  <br />
+                  Unlink constraint from flag first
+                </div>
+              </div>
+            )}
+          </YesNoWrap>
+
+          {editing ? (
+            <YesNoWrap
+              clickId={`ynSave_${props.id}`}
+              question={`Save values?`}
+              hint={
+                props.flags.length
+                  ? "Value changes are recorded in flag history"
+                  : undefined
+              }
+              onYes={async () => {
+                await saveValues();
+              }}
+              preDialogValidator={checkValid}
+              key={values}
+              id="ynEdit"
+            >
+              {editWaitOpen ? (
+                <div className="animate-bounce">Saving...</div>
+              ) : (
+                <div>
+                  <button
+                    id={`ynSave_${props.id}`}
+                    className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                  >
+                    <SaveIcon />
+                  </button>
+                </div>
+              )}
+            </YesNoWrap>
+          ) : (
+            <button
+              className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+              onClick={() => setEditing(true)}
+            >
+              <EditIcon />
+            </button>
+          )}
+        </div>
       </div>
 
       {props.flags.length > 0 && (
