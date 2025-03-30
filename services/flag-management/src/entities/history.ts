@@ -19,7 +19,7 @@ export default class History extends BaseEntity {
     userEmail: string = ""
 
     @Column()   // See enums. Try to store as numbers for saving space, these will get numerous
-    what!: "create" | "archive" | "turnon" | "turnoff" | "link" | "unlink"
+    what!: "create" | "archive" | "turnon" | "turnoff" | "link" | "unlink" | "cvedit"
 
     @Column({ nullable: true })
     constraintId?: string

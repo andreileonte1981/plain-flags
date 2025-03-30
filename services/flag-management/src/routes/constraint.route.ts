@@ -42,6 +42,35 @@ export async function constraintRoutes(server: FastifyInstance) {
         reply.code(201).send(constraint)
     })
 
+    server.post("/values", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest<{
+            Body: {
+                id: string
+                values: string
+            }
+        }>,
+        reply: FastifyReply
+    ) => {
+        const constraints = await Constraint.find({ where: { id: request.body.id }, relations: ["flags"] })
+        if (constraints.length === 0) {
+            throw new Error(`Constraint ${request.body.id} not found`)
+        }
+        const c = constraints[0]
+
+        const oldValues = c.values;
+
+        c.values = request.body.values.split(",").map(s => s.trim())
+
+        const promises = []
+        for (const f of c.flags) {
+            promises.push(Recorder.recordConstraintEdit(request.user as User, f, c, oldValues))
+        }
+
+        await Promise.all(promises)
+
+        await c.save()
+    })
+
     /**
      * Reply with list of all constraints.
      */
