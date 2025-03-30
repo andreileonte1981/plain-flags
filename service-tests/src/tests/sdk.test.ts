@@ -194,4 +194,62 @@ describe("SDK operation", () => {
             region: "Elbonia"
         }))
     })
+
+    test("Users lose and gain access to features after constraint details are edited to add and remove the users", async () => {
+        const client = new Client()
+
+        const token = await tokenForLoggedInUser(client)
+
+        const description = Salt.uniqued("test-link")
+
+        const constraint = {
+            description,
+            key: "userId",
+            commaSeparatedValues: "John001, Steve002"
+        }
+
+        const constraintCreationResponse: any = await client.post("/api/constraints", constraint, token)
+
+        const flagName = Salt.uniqued("test-link")
+
+        const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
+
+        const flagId = flagCreationResponse.data.id
+        const constraintId = constraintCreationResponse.data.id
+
+        const linkResponse = await client.post(
+            "/api/constraints/link",
+            { flagId, constraintId },
+            token
+        )
+
+        const turnOnResponse: any = await client.post("/api/flags/turnon", { id: flagId }, token)
+
+        assert(turnOnResponse?.status === 200)
+
+        const sdk = new PlainFlags(
+            {
+                policy: "manual",
+                serviceUrl: Config.stateServiceUrl(),
+                apiKey: process.env.APIKEY_SDK || ""
+            },
+            null, null
+        )
+
+        await sdk.init();
+
+        assert(sdk.isOn(flagName, undefined, { userId: "Steve002" }))
+        assert(!sdk.isOn(flagName, undefined, { userId: "Bob003" }))
+
+        const editConstraintResponse = await client.post(
+            "/api/constraints/values",
+            { id: constraintId, values: "John001, Bob003" },
+            token
+        )
+
+        await sdk.updateState()
+
+        assert(!sdk.isOn(flagName, undefined, { userId: "Steve002" }))
+        assert(sdk.isOn(flagName, undefined, { userId: "Bob003" }))
+    })
 })
