@@ -24,6 +24,10 @@ export default function HistoryItem(props: {
             unconstrained the feature from{" "}
           </span>
         );
+      case "cvedit":
+        return (
+          <span className="text-magenta-500">changed constraint values </span>
+        );
     }
   }
   return (
