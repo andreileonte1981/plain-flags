@@ -136,41 +136,92 @@ export default function ConstraintCard(props: {
           <span className="text-gray-500">Named:</span>
 
           {editing ? (
-            <div className="flex items-start">
+            <div className="flex flex-wrap items-start">
               <div className="flex flex-col mx-1">
                 <textarea
                   id="newConstraintValues"
                   name="newConstraintValues"
-                  className="border-2 rounded p-1 md:min-w-64 h-full focus:ring-0 focus:border-current placeholder-gray-300 resize"
+                  className="border-2 rounded p-1 md:min-w-64 min-h-20 focus:ring-0 focus:border-current placeholder-gray-300 md:resize"
                   defaultValue={values}
                   placeholder="Comma separated values required"
                   spellCheck={false}
+                  autoFocus
                   onChange={(e) => {
                     setValues(e.target.value);
                     setError("");
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      setEditing(false);
+                    }
+                  }}
                 />
                 <LocalError error={error} />
               </div>
-              <div
-                className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-                id={`ynDeleteConstraint_${props.id}`}
-                onClick={() => {
-                  setEditing(false);
-                  setError("");
-                  setValues(props.values.join(",\n"));
+
+              <YesNoWrap
+                clickId={`ynSave_${props.id}`}
+                question={`Save values?`}
+                hint={
+                  props.flags.length
+                    ? "Value changes are recorded in flag history"
+                    : undefined
+                }
+                onYes={async () => {
+                  await saveValues();
                 }}
+                preDialogValidator={checkValid}
+                key={values}
+                id="ynEdit"
               >
-                <CancelIcon />
-              </div>
+                {editWaitOpen ? (
+                  <div className="animate-bounce">Saving...</div>
+                ) : (
+                  <div
+                    id="editbuttons"
+                    className="flex flex-col items-start gap-2"
+                  >
+                    <div
+                      id="canceledit"
+                      className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                      onClick={() => {
+                        setEditing(false);
+                        setError("");
+                        setValues(props.values.join(",\n"));
+                      }}
+                    >
+                      <CancelIcon />
+                    </div>
+                    <div>
+                      <button
+                        id={`ynSave_${props.id}`}
+                        className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
+                      >
+                        <SaveIcon />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </YesNoWrap>
             </div>
           ) : (
-            <div className="break-all">
-              <div className="flex flex-col text-gray-700">
-                {props.values.map((v, index) => (
-                  <p key={`${props.id}_val_${index}`}>{v}</p>
-                ))}
+            <div
+              id="valuesreadonly"
+              className="flex flex-wrap items-start gap-8 bg-gray-500/5 rounded p-2"
+            >
+              <div className="break-all">
+                <div className="flex flex-col text-gray-700">
+                  {props.values.map((v, index) => (
+                    <p key={`${props.id}_val_${index}`}>{v}</p>
+                  ))}
+                </div>
               </div>
+              <button
+                className="border-2 border-gray-500 rounded p-1 font-bold bg-white hover:bg-gray-600 hover:text-white active:scale-95"
+                onClick={() => setEditing(true)}
+              >
+                <EditIcon />
+              </button>
             </div>
           )}
         </div>
@@ -210,44 +261,6 @@ export default function ConstraintCard(props: {
               </div>
             )}
           </YesNoWrap>
-
-          {editing ? (
-            <YesNoWrap
-              clickId={`ynSave_${props.id}`}
-              question={`Save values?`}
-              hint={
-                props.flags.length
-                  ? "Value changes are recorded in flag history"
-                  : undefined
-              }
-              onYes={async () => {
-                await saveValues();
-              }}
-              preDialogValidator={checkValid}
-              key={values}
-              id="ynEdit"
-            >
-              {editWaitOpen ? (
-                <div className="animate-bounce">Saving...</div>
-              ) : (
-                <div>
-                  <button
-                    id={`ynSave_${props.id}`}
-                    className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-                  >
-                    <SaveIcon />
-                  </button>
-                </div>
-              )}
-            </YesNoWrap>
-          ) : (
-            <button
-              className="border-2 border-gray-500 rounded p-1 font-bold hover:bg-gray-600 hover:text-white active:scale-95"
-              onClick={() => setEditing(true)}
-            >
-              <EditIcon />
-            </button>
-          )}
         </div>
       </div>
 
