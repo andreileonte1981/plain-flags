@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, EntitySubscriberInterface, EventSubscriber, Index, InsertEvent, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export default class History extends BaseEntity {

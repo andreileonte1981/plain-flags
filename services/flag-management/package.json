@@ -14,7 +14,11 @@
     "typeorm:generate": "npm run typeorm migration:generate -- --dataSource ./src/data.ts",
     "typeorm:create": "npm run typeorm migration:create -- --dataSource ./src/data.ts",
     "typeorm:migrate": "npm run typeorm migration:run -- --dataSource ./src/data.ts",
-    "typeorm:revert": "npm run typeorm migration:revert -- --dataSource ./src/data.ts"
+    "typeorm:revert": "npm run typeorm migration:revert -- --dataSource ./src/data.ts",
+    "dev:generate": "dotenv npm run typeorm migration:generate -- -- --dataSource ./src/data.ts",
+    "dev:create": "dotenv npm run typeorm migration:create -- -- --dataSource ./src/data.ts",
+    "dev:migrate": "dotenv npm run typeorm migration:run -- -- --dataSource ./src/data.ts",
+    "dev:revert": "dotenv npm run typeorm migration:revert -- -- --dataSource ./src/data.ts"
   },
   "author": "Andrei Leonte",
   "license": "ISC",
@@ -22,6 +26,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/luxon": "^3.4.2",
     "@types/node": "^22.9.0",
+    "dotenv-cli": "^8.0.0",
     "fastify-plugin": "^5.0.1",
     "pino-pretty": "^13.0.0",
     "ts-node": "^10.9.2",
@@ -35,8 +40,9 @@
     "env-cmd": "^10.1.0",
     "fastify": "^5.1.0",
     "luxon": "^3.5.0",
+    "pg": "^8.14.1",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.22",
     "typeorm-naming-strategies": "^4.1.0",
     "upath": "^2.0.1",
     "ws": "^8.18.0"

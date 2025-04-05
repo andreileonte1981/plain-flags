@@ -13,6 +13,11 @@ export default function Dashboard() {
   const myRole = localStorage.getItem("role");
   const isAdmin = myRole === Role.ADMIN || myRole === Role.SUPERADMIN;
   const [userShown, setUserShown] = useState(false);
+
+  const cn = userShown
+    ? `md:hidden absolute top-16 left-4 right-4 bottom-16 z-50`
+    : `hidden absolute top-16 left-4 right-4 bottom-16 z-50`;
+
   return (
     <div className="flex md:flex-row flex-col items-stretch w-full min-h-screen">
       <div id="sidebar" className="flex-none md:w-52 md:h-screen h-12 m-0 z-20">
@@ -108,10 +113,7 @@ export default function Dashboard() {
       </div>
       <div className="bg-gray-50 bg-opacity-25 flex-auto">
         <Outlet></Outlet>
-        <div
-          id="userPanel"
-          className="md:hidden absolute top-16 left-4 right-4 bottom-16 z-50"
-        >
+        <div id="userPanel" className={cn}>
           <UserPanel
             expanded={userShown}
             setExpanded={setUserShown}

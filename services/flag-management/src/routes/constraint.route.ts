@@ -124,6 +124,7 @@ export async function constraintRoutes(server: FastifyInstance) {
         const qr = await AppDataSource.createQueryRunner();
         await qr.query(
             `INSERT INTO flag_constraints_constraint (flag_id, constraint_id) VALUES ('${flag.id}', '${constraint.id}');`)
+        await qr.release()
 
         reply.code(200).send(input)
     })

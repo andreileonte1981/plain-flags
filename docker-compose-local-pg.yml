@@ -9,45 +9,69 @@ services:
       - 5001:5001
       - 8081:8081
 
+  db:
+    image: postgres:17.4-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - POSTGRES_USER=plainflags
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    secrets:
+      - postgres_password
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
   flag-management:
+    depends_on:
+      - db
     build: ./services/flag-management
     ports:
       - 5000:5000
-    env_file:
-      - ./services/flag-management/.env
     environment:
-      # - JWT_SIGNING_SECRET
+      - DATABASE_TYPE=pg
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=plainflags
+      - DATABASE_USER=plainflags
+      - DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+
       - JWT_SIGNING_SECRET_FILE=/run/secrets/jwt_signing_secret
       - SERVICE_PORT=5000
-      # - APIKEY
+      - APIKEY_FILE=/run/secrets/apikey_mgt
       - STALE_FLAG_DAYS=20
-      # - SUPERADMIN_EMAIL
-      # - SUPERADMIN_PASSWORD
       - SUPERADMIN_PASSWORD_FILE=/run/secrets/superadmin_password
-      # - DEFAULT_USER_PASSWORD
       - DEFAULT_USER_PASSWORD_FILE=/run/secrets/default_user_password
-      # - DISABLE_USER_REGISTRATION=true
+      - SUPERADMIN_EMAIL=boss@plainflags.com
     secrets:
       - jwt_signing_secret
       - superadmin_password
       - default_user_password
-    volumes:
-      - db-data:/data/:rw
+      - apikey_mgt
+      - postgres_password
 
   flag-states:
     build: ./services/flag-states
-    env_file:
-      - ./services/flag-states/.env
     environment:
+      - DATABASE_TYPE=pg
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=plainflags
+      - DATABASE_USER=plainflags
+      - DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+
       - SERVICE_PORT=5001
-      # - APIKEY
       - APIKEY_FILE=/run/secrets/apikey_states
     secrets:
       - apikey_states
-    volumes:
-      - db-data:/data:ro
+      - postgres_password
     depends_on:
       - flag-management
+      - db
     deploy:
       replicas: 3
 
@@ -68,6 +92,10 @@ secrets:
     file: ./.secrets/password.user.txt
   apikey_states:
     file: ./.secrets/apikey.states.txt
+  apikey_mgt:
+    file: ./.secrets/apikey.mgt.txt
+  postgres_password:
+    file: ./.secrets/password.pg.txt
 
 volumes:
-  db-data:
+  pgdata:

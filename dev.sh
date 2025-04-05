@@ -1,9 +1,10 @@
+# PostgreSQL is started as containers
+docker compose -f docker-compose-pg.yml up -d
+
 cd services/flag-management
 
-# Assumes data folder for development is "data"
-if [ ! -d "data" ]; then
-  npm run typeorm:migrate
-fi
+# Migrates the PG or SQLite data; it depends on which database type is configured.
+npm run dev:migrate
 
 npm run build &
 npm run dev &

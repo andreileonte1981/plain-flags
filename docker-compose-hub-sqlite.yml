@@ -1,0 +1,66 @@
+services:
+
+#  The nginx image is not essential to run Plain Flags.
+#  It is here in order to facilitate scaling and load balancing
+#   for the flag-states service.
+#  You may choose any scaling strategy you prefer or none at all for your installation
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - flag-states
+    ports:
+      - 5001:5001   # The port where flag state updates are requested by clients.
+      - 8081:8081
+
+  # This service writes to a SQLite database file.
+  # If you run it in multiple instances, it may behave unpredictably.
+  flag-management:
+    image: andreileonte011/plain-flags-management   # Uses latest. Add version tag for production usage.
+    ports:
+      - 5000:5000
+    env_file:
+      - ./services/flag-management/.env
+    # Some env variables are commented out because they are secret.
+    # These are taken from the env file specified above.
+    environment:
+      # - JWT_SIGNING_SECRET=jwt_replaceme
+      - SERVICE_PORT=5000
+      # - APIKEY=apikey_replaceme
+      - STALE_FLAG_DAYS=20
+      # - SUPERADMIN_EMAIL=superadmin@email.com
+      # - SUPERADMIN_PASSWORD=password
+      # - DEFAULT_USER_PASSWORD=password
+      # - DISABLE_USER_REGISTRATION=true
+    volumes:
+      - db-data:/data/:rw   # Writes to the SQLite database.
+
+  flag-states:
+    image: andreileonte011/plain-flags-states   # Uses latest. Add version tag for production usage.
+    env_file:
+      - ./services/flag-states/.env
+    # Some env variables are commented out because they are secret.
+    # These are taken from the env file specified above.
+    environment:
+      - SERVICE_PORT=5001
+      # - APIKEY=apikey_replaceme
+    volumes:
+      - db-data:/data:ro
+    depends_on:
+      - flag-management
+    deploy:
+      replicas: 3
+    # ports:  # Enable this port mapping if you don't use a proxy such as nginx above.
+    #   - 5001:5001
+
+  flags-dashboard:
+    image: andreileonte011/plain-flags-dashboard   # Uses latest. Add version tag for production usage.
+    ports:
+      - 3000:3000   # Access the dashboard at port 3000 on the host
+    environment:
+      - VITE_API_URL=http://flag-management/api
+      # - VITE_DISABLE_USER_REGISTRATION=true
+
+volumes:
+  db-data:

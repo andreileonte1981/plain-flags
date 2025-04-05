@@ -8,7 +8,7 @@ export async function historyRoutes(server: FastifyInstance) {
     ) => {
         const { flagId } = request.body;
 
-        const allEntriesForFlag = await History.findBy({ flagId })
+        const allEntriesForFlag = await History.find({ where: { flagId }, order: { when: "ASC" } })
 
         const details = allEntriesForFlag.map(entry => {
             return {
