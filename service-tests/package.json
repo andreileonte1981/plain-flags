@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -w",
     "slowtest": "env-cmd -f .env node --test --test-concurrency=1",
-    "test": "env-cmd -f .env node --test"
+    "test": "env-cmd -f .env node --test",
+    "report": "env-cmd -f .env node --test --test-reporter=tap --test-reporter-destination=$REPORTFILE --test-reporter=tap --test-reporter-destination=stdout"
   },
   "author": "Andrei Leonte",
   "license": "ISC",
