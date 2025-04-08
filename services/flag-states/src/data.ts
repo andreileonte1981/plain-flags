@@ -5,12 +5,14 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import Constraint from "./entities/constraint"
 import * as path from "upath"
 import * as fs from "fs"
+import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions"
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions"
 
 const entities = [
     Flag, Constraint
 ]
 
-const sqliteConfig: DataSourceOptions = {
+const sqliteConfig: SqliteConnectionOptions = {
     type: "sqlite",
     database: path.join(process.env.DATA_FOLDER_PATH || "../../data", "plain-flags.sqlite"),
     logging: true,
@@ -27,7 +29,7 @@ if (pwdPath) {
     password = pwdFromFile.toString()
 }
 
-const pgConfig: DataSourceOptions = {
+const pgConfig: PostgresConnectionOptions = {
     type: "postgres",
     host: process.env.DATABASE_HOST,
     port: +(process.env.DATABASE_PORT || 5432),
