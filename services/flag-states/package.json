@@ -1,6 +1,6 @@
 {
   "name": "plain-flags-states",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Plain flags state service",
   "main": "bin/index.js",
   "scripts": {

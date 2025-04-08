@@ -45,6 +45,7 @@ const pgConfig: PostgresConnectionOptions = {
     host: process.env.DATABASE_HOST,
     port: +(process.env.DATABASE_PORT || 5432),
     username: process.env.DATABASE_USER,
+    database: process.env.DATABASE_NAME,
     password,
     logging: true,
     synchronize: false,
