@@ -35,7 +35,7 @@ export default class Recorder {
         await h.save()
     }
 
-    static async recordCreation(user: { id: string, email: string }, flag: Flag) {
+    static recordCreation(user: { id: string, email: string }, flag: Flag): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -44,7 +44,7 @@ export default class Recorder {
         h.userEmail = user.email
         h.what = "create"
 
-        await h.save()
+        return h
     }
 
     static async recordArchive(user: { id: string, email: string }, flag: Flag) {

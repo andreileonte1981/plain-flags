@@ -1,19 +1,19 @@
-import { DataSource, DataSourceOptions } from "typeorm"
+import { DataSource } from "typeorm"
 import Flag from "./entities/flag"
 import { FastifyBaseLogger } from "fastify"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import Constraint from "./entities/constraint"
 import * as path from "upath"
 import * as fs from "fs"
-import { SqliteConnectionOptions } from "typeorm/driver/sqlite/SqliteConnectionOptions"
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions"
+import { BetterSqlite3ConnectionOptions } from "typeorm/driver/better-sqlite3/BetterSqlite3ConnectionOptions"
 
 const entities = [
     Flag, Constraint
 ]
 
-const sqliteConfig: SqliteConnectionOptions = {
-    type: "sqlite",
+const sqliteConfig: BetterSqlite3ConnectionOptions = {
+    type: "better-sqlite3",
     database: path.join(process.env.DATA_FOLDER_PATH || "../../data", "plain-flags.sqlite"),
     logging: true,
     synchronize: false,

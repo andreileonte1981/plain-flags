@@ -2,16 +2,19 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Flag from "../entities/flag";
 import Recorder from "../logic/flag-history/recorder";
 import User from "../entities/user";
+import { AppDataSource } from "../data";
 
 export async function flagRoutes(server: FastifyInstance) {
     /**
      * Create a flag
      */
     server.post("", { onRequest: [(server as any).jwtAuth] }, async (
-        request: FastifyRequest<{ Body: Flag }>,
+        request: FastifyRequest<{ Body: { name: string } }>,
         reply: FastifyReply
     ) => {
-        const flag = request.body;
+        const flag = new Flag();
+
+        flag.name = request.body.name;
         flag.isOn = false;
         flag.isArchived = false;
 
@@ -24,10 +27,12 @@ export async function flagRoutes(server: FastifyInstance) {
             )
         }
 
-        await Flag.insert(flag)
+        await AppDataSource.transaction(async (transactionEntityManager) => {
+            await transactionEntityManager.save(flag)
 
-        await Recorder.recordCreation(request.user as User, flag).catch((error) => {
-            server.log.error(`Flag was created but the event failed to be recorded.`, error)
+            const h = Recorder.recordCreation(request.user as User, flag)
+
+            await transactionEntityManager.save(h)
         })
 
         reply.code(201).send(flag)
