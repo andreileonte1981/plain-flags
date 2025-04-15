@@ -59,7 +59,7 @@ export default class Recorder {
         return h
     }
 
-    static async recordActivation(user: { id: string, email: string }, flag: Flag) {
+    static recordActivation(user: { id: string, email: string }, flag: Flag): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -68,10 +68,10 @@ export default class Recorder {
         h.userEmail = user.email
         h.what = "turnon"
 
-        await h.save()
+        return h
     }
 
-    static async recordDeactivation(user: { id: string, email: string }, flag: Flag) {
+    static recordDeactivation(user: { id: string, email: string }, flag: Flag): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -80,7 +80,7 @@ export default class Recorder {
         h.userEmail = user.email
         h.what = "turnoff"
 
-        await h.save()
+        return h
     }
 
     static async recordConstraintEdit(

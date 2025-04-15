@@ -63,7 +63,7 @@ export async function constraintRoutes(server: FastifyInstance) {
 
         const promises = []
         for (const f of c.flags) {
-            promises.push(Recorder.recordConstraintEdit(request.user as User, f, c, oldValues))
+            promises.push(Recorder.recordConstraintEdit((request as any).user as User, f, c, oldValues))
         }
 
         await Promise.all(promises)
@@ -115,7 +115,7 @@ export async function constraintRoutes(server: FastifyInstance) {
         if (!flag.constraints) { flag.constraints = [] }
         flag.constraints.push(constraint)
 
-        await Recorder.recordLink(request.user as User, flag, constraint)
+        await Recorder.recordLink((request as any).user as User, flag, constraint)
 
         /**
          * Entity.save and Repository.save are unreliable for junction tables when called concurrently;
@@ -149,7 +149,7 @@ export async function constraintRoutes(server: FastifyInstance) {
         flag.unlinkConstraint(input.constraintId)
         constraint.unlinkFlag(input.flagId)
 
-        await Recorder.recordUnlink(request.user as User, flag, constraint)
+        await Recorder.recordUnlink((request as any).user as User, flag, constraint)
 
         await flag.save()
         await constraint.save()

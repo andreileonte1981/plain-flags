@@ -154,11 +154,17 @@ export async function flagRoutes(server: FastifyInstance) {
         if (!flag.isOn) {
             flag.isOn = true;
 
-            await Recorder.recordActivation((request as any).user as User, flag).catch((error) => {
-                server.log.error(`Flag was turned on but the event failed to be recorded.`, error)
-            });
+            const h = Recorder.recordActivation((request as any).user as User, flag)
 
-            await flag.save();
+            await AppDataSource.transaction(async (transactionEntityManager) => {
+                await transactionEntityManager.save(h)
+
+                await transactionEntityManager.save(flag)
+            }).catch((error) => {
+                server.log.error(error)
+
+                throw error
+            })
         }
         else {
             server.log.warn(`Requested turn on for flag ${flag.id}, was already on`)
@@ -180,11 +186,17 @@ export async function flagRoutes(server: FastifyInstance) {
         if (flag.isOn !== false) {
             flag.isOn = false;
 
-            await Recorder.recordDeactivation((request as any).user as User, flag).catch((error) => {
-                server.log.error(`Flag was turned off but the event failed to be recorded.`, error)
-            })
+            const h = Recorder.recordDeactivation((request as any).user as User, flag)
 
-            await flag.save();
+            await AppDataSource.transaction(async (transactionEntityManager) => {
+                await transactionEntityManager.save(h)
+
+                await transactionEntityManager.save(flag)
+            }).catch((error) => {
+                server.log.error(error)
+
+                throw error
+            })
         }
         else {
             server.log.warn(`Requested turn off for flag ${flag.id}, was already off`)
