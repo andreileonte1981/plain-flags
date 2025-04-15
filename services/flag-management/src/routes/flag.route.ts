@@ -30,9 +30,13 @@ export async function flagRoutes(server: FastifyInstance) {
         await AppDataSource.transaction(async (transactionEntityManager) => {
             await transactionEntityManager.save(flag)
 
-            const h = Recorder.recordCreation(request.user as User, flag)
+            const h = Recorder.recordCreation((request as any).user as User, flag)
 
             await transactionEntityManager.save(h)
+        }).catch((error) => {
+            server.log.error(error)
+
+            throw error
         })
 
         reply.code(201).send(flag)
@@ -122,11 +126,17 @@ export async function flagRoutes(server: FastifyInstance) {
 
         flag.isArchived = true;
 
-        await Recorder.recordArchive(request.user as User, flag).catch((error) => {
-            server.log.error(`Flag was archived but the event failed to be recorded.`, error)
-        })
+        const h = Recorder.recordArchive((request as any).user as User, flag)
 
-        await flag.save();
+        await AppDataSource.transaction(async (transactionEntityManager) => {
+            await transactionEntityManager.save(h)
+
+            await transactionEntityManager.save(flag)
+        }).catch((error) => {
+            server.log.error(error)
+
+            throw error
+        })
 
         reply.code(200).send(flag)
     })
@@ -144,7 +154,7 @@ export async function flagRoutes(server: FastifyInstance) {
         if (!flag.isOn) {
             flag.isOn = true;
 
-            await Recorder.recordActivation(request.user as User, flag).catch((error) => {
+            await Recorder.recordActivation((request as any).user as User, flag).catch((error) => {
                 server.log.error(`Flag was turned on but the event failed to be recorded.`, error)
             });
 
@@ -170,7 +180,7 @@ export async function flagRoutes(server: FastifyInstance) {
         if (flag.isOn !== false) {
             flag.isOn = false;
 
-            await Recorder.recordDeactivation(request.user as User, flag).catch((error) => {
+            await Recorder.recordDeactivation((request as any).user as User, flag).catch((error) => {
                 server.log.error(`Flag was turned off but the event failed to be recorded.`, error)
             })
 
