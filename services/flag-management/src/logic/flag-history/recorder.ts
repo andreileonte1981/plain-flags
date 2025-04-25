@@ -19,9 +19,9 @@ export default class Recorder {
         return h
     }
 
-    static async recordUnlink(
+    static recordUnlink(
         user: { id: string, email: string }, flag: Flag, constraint: Constraint
-    ) {
+    ): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -32,7 +32,7 @@ export default class Recorder {
         h.constraintId = constraint.id;
         h.constraintInfo = `${constraint.description}|${constraint.key}|${constraint.values.join(",")}`
 
-        await h.save()
+        return h
     }
 
     static recordCreation(user: { id: string, email: string }, flag: Flag): History {

@@ -150,11 +150,17 @@ export async function constraintRoutes(server: FastifyInstance) {
         flag.unlinkConstraint(input.constraintId)
         constraint.unlinkFlag(input.flagId)
 
-        await Recorder.recordUnlink((request as any).user as User, flag, constraint)
+        const h = Recorder.recordUnlink((request as any).user as User, flag, constraint)
 
-        await flag.save()
-        await constraint.save()
+        await AppDataSource.transaction(async (transactionEntityManager) => {
+            await transactionEntityManager.save(flag)
 
+            await transactionEntityManager.save(h)
+        }).catch((error) => {
+            server.log.error(error)
+
+            throw error
+        })
         reply.code(200).send(input)
     })
 
