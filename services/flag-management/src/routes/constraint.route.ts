@@ -61,14 +61,21 @@ export async function constraintRoutes(server: FastifyInstance) {
 
         c.values = request.body.values.split(",").map(s => s.trim())
 
-        const promises = []
-        for (const f of c.flags) {
-            promises.push(Recorder.recordConstraintEdit((request as any).user as User, f, c, oldValues))
-        }
+        await AppDataSource.transaction(async (transactionEntityManager) => {
+            const promises = []
+            for (const f of c.flags) {
+                const h = Recorder.recordConstraintEdit((request as any).user as User, f, c, oldValues)
+                promises.push(transactionEntityManager.save(h))
+            }
 
-        await Promise.all(promises)
+            await Promise.all(promises)
 
-        await c.save()
+            await transactionEntityManager.save(c)
+        }).catch((error) => {
+            server.log.error(error)
+
+            throw error
+        })
     })
 
     /**

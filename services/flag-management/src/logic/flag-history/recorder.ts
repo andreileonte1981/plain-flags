@@ -83,11 +83,11 @@ export default class Recorder {
         return h
     }
 
-    static async recordConstraintEdit(
+    static recordConstraintEdit(
         user: { id: string, email: string },
         flag: Flag, constraint: Constraint,
         oldValues: string[]
-    ) {
+    ): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -98,6 +98,6 @@ export default class Recorder {
         h.constraintId = constraint.id;
         h.constraintInfo = `${constraint.description}|${constraint.key}|${oldValues.join(",")}>${constraint.values.join(",")}`
 
-        await h.save()
+        return h
     }
 }
