@@ -26,11 +26,27 @@ Run the dev script to start all components:
 ./dev.sh
 ```
 
+### Tests
+
+The fastest tests run a behaviour test suite on the currently running services (the services must be started either on the local host or in containers.)
+
 In the **service-tests** folder, run the behaviour tests:
 
 ```bash
 npm run test
 ```
+
+For more complete tests, run the test script in the project root
+
+```bash
+./test.sh
+```
+
+This script starts the services as containers and runs the tests successively for each database type.
+
+> **_Expected failures:_** When run as containers, the services behave as in production. Expect all tests that rely on development mode, such as the stale detection tests, to fail when testing with containers.
+
+### Debugging
 
 The components have launch configurations included for **Visual Studio Code**. If you use it as your IDE, you can use those configurations. See the **launch.json** files under the respective **.vscode** folders. To debug each component, open it in a separate Visual Studio code window.
 

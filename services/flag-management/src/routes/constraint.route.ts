@@ -115,16 +115,17 @@ export async function constraintRoutes(server: FastifyInstance) {
         if (!flag.constraints) { flag.constraints = [] }
         flag.constraints.push(constraint)
 
-        await Recorder.recordLink((request as any).user as User, flag, constraint)
+        const h = Recorder.recordLink((request as any).user as User, flag, constraint)
 
-        /**
-         * Entity.save and Repository.save are unreliable for junction tables when called concurrently;
-         *  have to raw SQL here to allow stress tests to constrain many flags fast.
-         */
-        const qr = await AppDataSource.createQueryRunner();
-        await qr.query(
-            `INSERT INTO flag_constraints_constraint (flag_id, constraint_id) VALUES ('${flag.id}', '${constraint.id}');`)
-        await qr.release()
+        await AppDataSource.transaction(async (transactionEntityManager) => {
+            await transactionEntityManager.save(flag)
+
+            await transactionEntityManager.save(h)
+        }).catch((error) => {
+            server.log.error(error)
+
+            throw error
+        })
 
         reply.code(200).send(input)
     })

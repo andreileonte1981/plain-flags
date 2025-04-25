@@ -3,9 +3,9 @@ import Flag from "../../entities/flag";
 import History from "../../entities/history";
 
 export default class Recorder {
-    static async recordLink(
+    static recordLink(
         user: { id: string, email: string }, flag: Flag, constraint: Constraint
-    ) {
+    ): History {
         const h = new History()
 
         h.flagId = flag.id
@@ -16,7 +16,7 @@ export default class Recorder {
         h.constraintId = constraint.id;
         h.constraintInfo = `${constraint.description}|${constraint.key}|${constraint.values.join(",")}`
 
-        await h.save()
+        return h
     }
 
     static async recordUnlink(
