@@ -1,8 +1,7 @@
 import { redirect } from "react-router";
-import type { Flag } from "~/domain/flag";
 import Client from "~/client/client";
 import type { Route } from "../../../+types/root";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import FilterEdit from "~/ui/components/reusables/filterEdit";
 import ArchivedList from "./components/archived/archivedList";
@@ -18,44 +17,93 @@ export async function clientLoader({}) {
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");
   }
-
-  const response = await Client.get("flags/archived");
-
-  return response?.data;
 }
 
-export default function Component({ loaderData }: Route.ComponentProps) {
-  const unfilteredFlags: Flag[] | undefined = loaderData as Flag[] | undefined;
-
-  if (!unfilteredFlags) {
-    return <div>Loading...</div>;
-  }
-
-  if (unfilteredFlags.length === 0) {
-    return (
-      <div className="flex items-center justify-center">
-        <h1 className="text-gray-400 my-10">No flags were archived</h1>
-      </div>
-    );
-  }
-
+export default function Component() {
+  let pageSize = 20;
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(-1);
+  const [flags, setFlags] = useState([]);
   const [filter, setFilter] = useState("");
 
-  const flags = unfilteredFlags?.filter(
-    (f) => f.name.toLowerCase().indexOf(filter.toLowerCase()) >= 0
-  );
+  useEffect(() => {
+    async function fetchFlags() {
+      const response = await Client.get(
+        `flags/archivedpage?page=${page}&pageSize=${pageSize}&filter=${filter}`
+      );
+
+      setFlags(response?.data.flags);
+      setTotalCount(response?.data.count);
+    }
+
+    fetchFlags();
+  }, [page, filter]);
+
+  if (totalCount < 0) {
+    return <div>Loading flags...</div>;
+  }
+
+  if (totalCount === 0) {
+    return <div>No archived flags</div>;
+  }
+
+  const currentIndices = `${(page - 1) * pageSize + 1} to ${Math.min(
+    page * pageSize,
+    totalCount
+  )} of ${totalCount}`;
 
   return (
     <div className="md:mx-2 flex flex-col">
       <div id="archivedHeader" className="sticky top-0 z-10 bg-white">
-        <div className="flex justify-between items-center border-b-4 py-2 ">
-          <FilterEdit
-            onChange={(e) => {
-              setFilter(e.target.value);
-            }}
-            placeholder="Name"
-            tooltip="Search for archived features by name"
-          />
+        <div className="flex items-center gap-10 border-b-4 py-2">
+          <div
+            id="pagination"
+            className="flex items-center gap-1 text-gray-600"
+          >
+            <button
+              id="first"
+              className="bg-gray-200 p-2 rounded hover:bg-gray-300 active:bg-gray-500"
+              onClick={() => setPage(1)}
+            >
+              {"<<"}
+            </button>
+            <button
+              id="prev"
+              className="bg-gray-200 p-2 rounded hover:bg-gray-300 active:bg-gray-500"
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            >
+              {"<"}
+            </button>
+            <p>{currentIndices}</p>
+            <button
+              id="next"
+              className="bg-gray-200 p-2 rounded hover:bg-gray-300 active:bg-gray-500"
+              onClick={() =>
+                setPage((p) =>
+                  Math.min(p + 1, Math.ceil(totalCount / pageSize))
+                )
+              }
+            >
+              {">"}
+            </button>
+            <button
+              id="first"
+              className="bg-gray-200 p-2 rounded hover:bg-gray-300 active:bg-gray-500"
+              onClick={() => setPage(Math.ceil(totalCount / pageSize))}
+            >
+              {">>"}
+            </button>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <FilterEdit
+              onChange={(e) => {
+                setFilter(e.target.value);
+              }}
+              placeholder="Name"
+              tooltip="Search for archived features by name"
+            />
+          </div>
         </div>
       </div>
 

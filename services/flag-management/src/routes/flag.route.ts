@@ -71,7 +71,39 @@ export async function flagRoutes(server: FastifyInstance) {
         });
     })
 
-    server.get("/archived", { onRequest: [(server as any).jwtAuth] }, async () => {
+    server.get("/archivedpage", { onRequest: [(server as any).jwtAuth] }, async (
+        request: FastifyRequest, reply
+    ) => {
+        const q: any = request.query;
+
+        const all = await Flag.createQueryBuilder("flag").select()
+            .where("flag.isArchived = :isArchived", { isArchived: true })
+            .andWhere("name LIKE :filter", { filter: `%${q.filter}%` })
+            .orderBy("flag.updatedAt", "DESC")
+            .skip((q.page - 1) * q.pageSize)
+            .take(q.pageSize)
+            .getMany()
+
+        const count = await Flag.createQueryBuilder("flag").select()
+            .where("flag.isArchived = :isArchived", { isArchived: true })
+            .andWhere("name LIKE :filter", { filter: `%${q.filter}%` })
+            .getCount()
+
+        const flags = all.map((flag) => {
+            return {
+                ...flag,
+                updatedAt: undefined
+            }
+        });
+
+        return { count, flags }
+    })
+
+    /**
+     * TODO: Deprecate this on next major update
+     */
+    server.get("/archived", { onRequest: [(server as any).jwtAuth] }, async (
+    ) => {
         const all = await Flag.find({ where: { isArchived: true } })
 
         return all.map((flag) => {
