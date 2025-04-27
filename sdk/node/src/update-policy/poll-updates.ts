@@ -1,9 +1,12 @@
 import { Client } from "../utils/client"
+import { sleep } from "../utils/sleep";
 import { PollStateUpdateConfig } from "./update-policy"
 import Updates from "./updates";
 
 export default class PollUpdates extends Updates {
-    private client?: Client;
+    private client?: Client
+    private polling = false
+    private pollHandle: any;
 
     async init(config: PollStateUpdateConfig) {
         this.client = new Client(
@@ -26,23 +29,39 @@ export default class PollUpdates extends Updates {
         this.startPolling(config.pollInterval, this.client)
     }
 
-    private startPolling(pollInterval: number, client: Client) {
-        setInterval(async () => {
-            try {
-                const flagStates = (await client.get(`/api/sdk`)).data
+    private async startPolling(pollInterval: number, client: Client) {
+        this.polling = true
 
-                this.log(`Feature flags state updated from service`)
-                this.log(flagStates)
+        try {
+            const flagStates = (await client.get(`/api/sdk`)).data
 
-                this.setFlagStates(flagStates)
+            this.log(`Feature flags state updated from service`)
+            this.log(flagStates)
+
+            this.setFlagStates(flagStates)
+        }
+        catch (error) {
+            this.error(
+                `Had a problem polling for flag states. Next poll in ${pollInterval * 1000} seconds`,
+                error
+            )
+        }
+        finally {
+            if (!this.polling) {
+                if (this.pollHandle) {
+                    clearTimeout(this.pollHandle)
+                }
+                return
             }
-            catch (error) {
-                this.error(
-                    `Had a problem polling for flag states. Next poll in ${pollInterval * 1000} seconds`,
-                    error
-                )
-            }
-        }, pollInterval).unref()
+
+            this.pollHandle = setTimeout(() => {
+                this.startPolling(pollInterval, client)
+            }, pollInterval).unref()
+        }
+    }
+
+    stopUpdates(): void {
+        this.polling = false
     }
 
     async updateState() {
