@@ -43,10 +43,6 @@ export default function Component() {
     return <div>Loading flags...</div>;
   }
 
-  if (totalCount === 0) {
-    return <div>No archived flags</div>;
-  }
-
   const currentIndices = `${(page - 1) * pageSize + 1} to ${Math.min(
     page * pageSize,
     totalCount
