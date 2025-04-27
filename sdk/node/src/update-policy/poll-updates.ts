@@ -8,7 +8,9 @@ export default class PollUpdates extends Updates {
     async init(config: PollStateUpdateConfig) {
         this.client = new Client(
             config.apiKey,
-            config.serviceUrl)
+            config.serviceUrl,
+            config.timeout
+        )
 
         this.log(`Feature flags HTTP client initialized.` +
             ` Will poll for updated feature state every ${config.pollInterval} milliseconds`

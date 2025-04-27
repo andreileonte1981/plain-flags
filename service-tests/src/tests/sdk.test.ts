@@ -31,6 +31,7 @@ describe("SDK operation", () => {
             {
                 policy: "manual",
                 serviceUrl: Config.stateServiceUrl(),
+                timeout: 20000,
                 apiKey: process.env.APIKEY_SDK || ""
             },
             null, null
@@ -56,6 +57,7 @@ describe("SDK operation", () => {
             {
                 policy: "manual",
                 serviceUrl: Config.stateServiceUrl(),
+                timeout: 20000,
                 apiKey: process.env.APIKEY_SDK || ""
             },
             null, null
@@ -94,7 +96,8 @@ describe("SDK operation", () => {
                 policy: "poll",
                 serviceUrl: Config.stateServiceUrl(),
                 apiKey: process.env.APIKEY_SDK || "",
-                pollInterval: 1000
+                pollInterval: 1000,
+                timeout: 950
             },
             null, null
         )
@@ -168,6 +171,7 @@ describe("SDK operation", () => {
             {
                 policy: "manual",
                 serviceUrl: Config.stateServiceUrl(),
+                timeout: 20000,
                 apiKey: process.env.APIKEY_SDK || ""
             },
             null, null
@@ -231,6 +235,7 @@ describe("SDK operation", () => {
             {
                 policy: "manual",
                 serviceUrl: Config.stateServiceUrl(),
+                timeout: 20000,
                 apiKey: process.env.APIKEY_SDK || ""
             },
             null, null

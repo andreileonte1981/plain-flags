@@ -10,6 +10,11 @@ interface IStateUpdateConfig {
 export interface ManualStateUpdateConfig extends IStateUpdateConfig {
     readonly policy: "manual"
     readonly serviceUrl: string
+
+    /**
+     * Defaults to 2000 ms
+     */
+    readonly timeout?: number
     readonly apiKey: string
 }
 
@@ -20,6 +25,12 @@ export interface ManualStateUpdateConfig extends IStateUpdateConfig {
 export interface PollStateUpdateConfig extends IStateUpdateConfig {
     readonly policy: "poll"
     readonly serviceUrl: string
+
+    /**
+     * Timeout for each polling request. Defaults to 2000 ms
+     */
+    readonly timeout?: number
+
     /**
      * In milliseconds
      */

@@ -8,7 +8,9 @@ export default class ManualUpdates extends Updates {
     async init(config: ManualStateUpdateConfig) {
         this.client = new Client(
             config.apiKey,
-            config.serviceUrl)
+            config.serviceUrl,
+            config.timeout
+        )
 
         this.log(
             `Feature flags HTTP client initialized.` +

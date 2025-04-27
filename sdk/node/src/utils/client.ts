@@ -5,12 +5,13 @@ export class Client {
 
     constructor(
         private apiKey: string,
-        baseurl: string = "http:/127.0.0.1:5000"
+        baseurl: string = "http:/127.0.0.1:5000",
+        timeout: number = 2000
     ) {
         try {
             this.instance = axios.create({
                 baseURL: baseurl,
-                timeout: 2000
+                timeout
             });
         } catch (error) {
             throw error
