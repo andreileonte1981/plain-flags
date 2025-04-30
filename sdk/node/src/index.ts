@@ -90,12 +90,14 @@ export default class PlainFlags {
     /**
      * Initializes the Plain Flags SDK
      */
-    async init() {
+    async init(throwOnError: boolean = false) {
         try {
             await this.updates?.init(this.stateUpdateConfig)
         }
         catch (error) {
             this.error(`Feature flags initialization error`, error)
+
+            if (throwOnError) { throw error }
         }
     }
 
