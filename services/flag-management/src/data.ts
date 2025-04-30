@@ -47,9 +47,9 @@ const pgConfig: PostgresConnectionOptions = {
     username: process.env.DATABASE_USER,
     database: process.env.DATABASE_NAME,
     password,
-    logging: true,
+    logging: false,
     synchronize: false,
-    poolSize: 64,
+    poolSize: +(process.env.DATABASE_POOL_SIZE || 32),
     connectTimeoutMS: 15000,
     poolErrorHandler: (error) => {
         console.error("DB Pool Error", error)

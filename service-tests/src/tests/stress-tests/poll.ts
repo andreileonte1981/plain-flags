@@ -5,6 +5,7 @@ import * as upath from "upath"
 import PlainFlags from "feature-flags-node-sdk"
 import Config from "../../utils/config"
 import assert from "assert"
+import { sleep } from "../../utils/sleep"
 
 const dotenv = require('dotenv');
 dotenv.config({ path: upath.resolve(__dirname, '../../../.env') });
@@ -102,6 +103,8 @@ async function main() {
             serviceUrl: Config.stateServiceUrl()
         }, null, null))
     }
+
+    await sleep(1200)   // State service cache is 1 second (see state service configuration)
 
     const initRequests: Function[] = []
     for (let i = 0; i < nClients; i++) {

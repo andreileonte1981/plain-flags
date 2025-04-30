@@ -34,6 +34,7 @@ services:
     environment:
       - SERVICE_PORT=5001
       - APIKEY_FILE=/run/secrets/apikey_states
+      - CACHE_TTL=1000
     secrets:
       - apikey_states
     volumes:
@@ -41,7 +42,7 @@ services:
     depends_on:
       - flag-management
     deploy:
-      replicas: 3
+      replicas: 10
 
   flags-dashboard:
     build: ./dashboard

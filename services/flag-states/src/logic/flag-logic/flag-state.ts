@@ -11,7 +11,37 @@ export type FlagState = {
     }[]
 }
 
+class Cache {
+    static data: any
+    static lastUpdated: number = 0
+
+    static valid(): boolean {
+        if (!process.env.CACHE_TTL) {
+            return false
+        }
+
+        if (!this.data) {
+            return false
+        }
+
+        return (Date.now() - this.lastUpdated) < +(process.env.CACHE_TTL || 0)
+    }
+
+    static get() {
+        return this.data
+    }
+
+    static set(data: any) {
+        this.data = data
+        this.lastUpdated = Date.now()
+    }
+}
+
 export async function latestFlagState() {
+    if (Cache.valid()) {
+        return Cache.get()
+    }
+
     const all = await Flag.find(
         { where: { isArchived: false }, relations: ["constraints"] }
     )
@@ -27,6 +57,8 @@ export async function latestFlagState() {
             constraints
         }
     }
+
+    Cache.set(flagStates)
 
     return flagStates
 }

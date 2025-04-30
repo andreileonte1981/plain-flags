@@ -37,6 +37,8 @@ describe("SDK operation", () => {
             null, null
         )
 
+        await sleep(1200)
+
         await sdk.init();
 
         assert(sdk.isOn(name))
@@ -63,6 +65,8 @@ describe("SDK operation", () => {
             null, null
         )
 
+        await sleep(1200)
+
         await sdk.init();
 
         assert(!sdk.isOn(name))
@@ -70,6 +74,8 @@ describe("SDK operation", () => {
         const turnOnResponse: any = await client.post("/api/flags/turnon", { id }, token)
 
         assert(turnOnResponse?.status === 200)
+
+        await sleep(1200)
 
         await sdk.updateState()
 
@@ -102,15 +108,19 @@ describe("SDK operation", () => {
             null, null
         )
 
+        await sleep(1200)
+
         await sdk.init();
 
         assert(sdk.isOn(name))
 
-        await sleep(1500)
-
         const turnOffResponse: any = await client.post("/api/flags/turnoff", { id }, token)
 
-        await sleep(1500)   // Polls at one second, see sdk.init above
+        /**
+         * Polls at one second, see sdk.init above.
+         * Assumes cache invalidates at 1 second (see CACHE_TTL in state service config)
+         */
+        await sleep(2500)
 
         assert(!sdk.isOn(name))
     })
@@ -177,6 +187,8 @@ describe("SDK operation", () => {
             null, null
         )
 
+        await sleep(1200)
+
         await sdk.init();
 
         assert(sdk.isOn(flagName, undefined, {
@@ -241,7 +253,10 @@ describe("SDK operation", () => {
             null, null
         )
 
-        await sdk.init();
+        await sleep(1200)
+
+        await sdk.init()
+
 
         assert(sdk.isOn(flagName, undefined, { userId: "Steve002" }))
         assert(!sdk.isOn(flagName, undefined, { userId: "Bob003" }))
@@ -251,6 +266,8 @@ describe("SDK operation", () => {
             { id: constraintId, values: "John001, Bob003" },
             token
         )
+
+        await sleep(1200)
 
         await sdk.updateState()
 
