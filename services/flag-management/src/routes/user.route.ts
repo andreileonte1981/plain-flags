@@ -41,11 +41,12 @@ export async function userRoutes(server: FastifyInstance) {
         }
 
         const salt = await bcrypt.genSalt(10)
+        const plainPassword = user.password
         user.password = await bcrypt.hash(user.password, salt)
 
         await User.insert(user)
 
-        reply.code(201).send(user)
+        reply.code(201).send({ ...user, password: undefined })
     })
 
     server.post("/bulk", { onRequest: [(server as any).jwtAuth] }, async (

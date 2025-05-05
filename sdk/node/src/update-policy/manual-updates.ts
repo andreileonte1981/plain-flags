@@ -13,8 +13,7 @@ export default class ManualUpdates extends Updates {
         )
 
         this.log(
-            `Feature flags HTTP client initialized.` +
-            ` Call 'updateState' when you want a recent state of your features`
+            `Feature flags HTTP client initialized.`
         )
 
         const flagStates = (await this.client.get(`/api/sdk`)).data
