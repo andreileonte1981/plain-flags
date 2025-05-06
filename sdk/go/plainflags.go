@@ -40,11 +40,20 @@ func (pf *PlainFlags) IsOn(flagName string, defaultValue bool, context *map[stri
 	return isTurnedOnInContext(flagState, context)
 }
 
-func (pf *PlainFlags) Init() {
-	pf.UpdateState()
+// Pass a channel to the function to be notified when the update is done, if you call Init as a goroutine.
+// Pass nil otherwise.
+func (pf *PlainFlags) Init(done chan bool) {
+	pf.UpdateState(nil)
+
+	if done != nil {
+		done <- true
+	}
 }
 
-func (pf *PlainFlags) UpdateState() {
+// UpdateState calls the state service to get up to date feature flag values.
+// Pass a channel to the function to be notified when the update is done, if you call UpdateState as a goroutine.
+// Pass nil otherwise.
+func (pf *PlainFlags) UpdateState(done chan bool) {
 	url := fmt.Sprintf("%v/api/sdk", pf.config.ServiceUrl)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -80,6 +89,10 @@ func (pf *PlainFlags) UpdateState() {
 	}
 
 	fmt.Println("Plain Flags state updated")
+
+	if done != nil {
+		done <- true
+	}
 }
 
 func NewPlainFlags(config PlainFlagsConfig) PlainFlags {

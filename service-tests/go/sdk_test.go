@@ -48,7 +48,10 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		featureFlags.Init()
+		initialized := make(chan bool, 1)
+
+		featureFlags.Init(initialized)
+		<-initialized
 
 		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache")
 	})
@@ -76,7 +79,7 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		featureFlags.Init()
+		featureFlags.Init(nil)
 
 		assert.False(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be off in SDK cache before update")
 
@@ -87,9 +90,9 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		go featureFlags.UpdateState()
-
-		time.Sleep(time.Millisecond * 200)
+		updated := make(chan bool, 1)
+		go featureFlags.UpdateState(updated)
+		<-updated
 
 		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after update")
 	})
