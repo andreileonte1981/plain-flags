@@ -8,24 +8,14 @@ import (
 	"time"
 )
 
-type FlagState struct {
-	IsOn        bool `json:"isOn"`
-	Constraints []struct {
-		Key    string   `json:"key"`
-		Values []string `json:"values"`
-	} `json:"constraints"`
-}
-
-type PlainFlagsConfig struct {
-	// Where your instance of PlainFlags state service can be reached
-	ServiceUrl string
-	Timeout    time.Duration
-	ApiKey     string
-}
-
 type PlainFlags struct {
 	flagStates map[string]FlagState
 	config     PlainFlagsConfig
+}
+
+type DoneResult struct {
+	Done bool
+	Err  error
 }
 
 func (pf *PlainFlags) IsOn(flagName string, defaultValue bool, context *map[string]string) bool {
@@ -40,26 +30,57 @@ func (pf *PlainFlags) IsOn(flagName string, defaultValue bool, context *map[stri
 	return isTurnedOnInContext(flagState, context)
 }
 
-// Pass a channel to the function to be notified when the update is done, if you call Init as a goroutine.
-// Pass nil otherwise.
-func (pf *PlainFlags) Init(done chan bool) {
-	pf.UpdateState(nil)
+func (pf *PlainFlags) Init(initCh chan DoneResult) {
+	updateCh := make(chan DoneResult)
 
-	if done != nil {
-		done <- true
+	if pf.config.PollInterval == 0 {
+		go pf.UpdateState(updateCh)
+
+		updateResult := <-updateCh
+
+		if initCh != nil {
+			initCh <- updateResult
+		}
+
+		return
+	}
+
+	go pf.startPolling()
+
+	initCh <- DoneResult{Done: true, Err: nil}
+}
+
+func (pf *PlainFlags) startPolling() {
+	updateCh := make(chan DoneResult)
+
+	for {
+		go pf.UpdateState(updateCh)
+
+		updateResult := <-updateCh
+
+		if updateResult.Err != nil {
+			fmt.Printf("Error updating flag state: %v\n", updateResult.Err)
+		}
+
+		if pf.config.PollInterval > 0 {
+			time.Sleep(pf.config.PollInterval)
+		}
 	}
 }
 
-// UpdateState calls the state service to get up to date feature flag values.
-// Pass a channel to the function to be notified when the update is done, if you call UpdateState as a goroutine.
-// Pass nil otherwise.
-func (pf *PlainFlags) UpdateState(done chan bool) {
+func (pf *PlainFlags) UpdateState(result chan DoneResult) {
+	defer func() {
+		if r := recover(); r != nil {
+			result <- DoneResult{Done: false, Err: fmt.Errorf("panicked while updating feature flag state: %v", r)}
+		}
+	}()
+
 	url := fmt.Sprintf("%v/api/sdk", pf.config.ServiceUrl)
 
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		result <- DoneResult{Done: false, Err: err}
 		return
 	}
 
@@ -70,28 +91,27 @@ func (pf *PlainFlags) UpdateState(done chan bool) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println("Error sending request:", err)
+		result <- DoneResult{Done: false, Err: err}
 		return
 	}
-
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		result <- DoneResult{Done: false, Err: err}
 		return
 	}
 
 	if err := json.Unmarshal(body, &pf.flagStates); err != nil {
-		fmt.Println("Error unmarshalling response body JSON:", err)
+		result <- DoneResult{Done: false, Err: err}
 		return
 	}
 
 	fmt.Println("Plain Flags state updated")
 
-	if done != nil {
-		done <- true
+	if result != nil {
+		result <- DoneResult{Done: true, Err: nil}
 	}
 }
 

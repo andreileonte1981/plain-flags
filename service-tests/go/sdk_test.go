@@ -41,17 +41,20 @@ func TestSdk(t *testing.T) {
 		assert.Equal(t, 200, statusCodeTurnOn)
 
 		featureFlags := plainflags.NewPlainFlags(plainflags.PlainFlagsConfig{
-			ServiceUrl: os.Getenv("SERVICE_URL"),
-			Timeout:    time.Second * 20,
-			ApiKey:     os.Getenv("APIKEY"),
+			ServiceUrl:   os.Getenv("SERVICE_URL"),
+			Timeout:      time.Second * 20,
+			ApiKey:       os.Getenv("APIKEY"),
+			PollInterval: 0,
 		})
 
 		time.Sleep(time.Millisecond * 1200)
 
-		initialized := make(chan bool, 1)
+		initialized := make(chan plainflags.DoneResult, 1)
 
-		featureFlags.Init(initialized)
-		<-initialized
+		go featureFlags.Init(initialized)
+
+		r := <-initialized
+		assert.Nil(t, r.Err)
 
 		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache")
 	})
@@ -72,14 +75,18 @@ func TestSdk(t *testing.T) {
 		id := fmt.Sprintf("%v", createResp["id"])
 
 		featureFlags := plainflags.NewPlainFlags(plainflags.PlainFlagsConfig{
-			ServiceUrl: os.Getenv("SERVICE_URL"),
-			Timeout:    time.Second * 20,
-			ApiKey:     os.Getenv("APIKEY"),
+			ServiceUrl:   os.Getenv("SERVICE_URL"),
+			Timeout:      time.Second * 20,
+			ApiKey:       os.Getenv("APIKEY"),
+			PollInterval: 0,
 		})
 
 		time.Sleep(time.Millisecond * 1200)
 
-		featureFlags.Init(nil)
+		initialized := make(chan plainflags.DoneResult, 1)
+		go featureFlags.Init(initialized)
+		r := <-initialized
+		assert.Nil(t, r.Err)
 
 		assert.False(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be off in SDK cache before update")
 
@@ -90,10 +97,64 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		updated := make(chan bool, 1)
+		updated := make(chan plainflags.DoneResult, 1)
 		go featureFlags.UpdateState(updated)
-		<-updated
+		u := <-updated
+
+		assert.Nil(t, u.Err)
 
 		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after update")
+	})
+
+	t.Run("The SDK polls for updates at the specified interval", func(t *testing.T) {
+		t.Parallel()
+
+		client := NewClient()
+
+		token := userToken(client)
+
+		flagName := saltUniqued("tgo-o")
+
+		createResp, statusCodeCreate, err := client.post("/api/flags", map[string]any{"name": flagName}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 201, statusCodeCreate)
+		id := fmt.Sprintf("%v", createResp["id"])
+
+		featureFlags := plainflags.NewPlainFlags(plainflags.PlainFlagsConfig{
+			ServiceUrl:   os.Getenv("SERVICE_URL"),
+			Timeout:      time.Second * 20,
+			ApiKey:       os.Getenv("APIKEY"),
+			PollInterval: time.Second,
+		})
+
+		time.Sleep(time.Millisecond * 1200)
+
+		initialized := make(chan plainflags.DoneResult, 1)
+		go featureFlags.Init(initialized)
+		r := <-initialized
+		assert.Nil(t, r.Err)
+
+		time.Sleep(time.Millisecond * 200)
+
+		assert.False(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be off in SDK cache before update")
+
+		_, statusCodeTurnOn, err := client.post("/api/flags/turnon", map[string]any{"id": id}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 200, statusCodeTurnOn)
+
+		time.Sleep(time.Millisecond * 1200)
+
+		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after poll interval")
+
+		_, statusCodeTurnOff, err := client.post("/api/flags/turnoff", map[string]any{"id": id}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 200, statusCodeTurnOff)
+
+		time.Sleep(time.Millisecond * 1200)
+
+		assert.False(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after poll interval")
 	})
 }
