@@ -66,7 +66,7 @@ func TestSdk(t *testing.T) {
 
 		token := userToken(client)
 
-		flagName := saltUniqued("tgo-o")
+		flagName := saltUniqued("tgo-m")
 
 		createResp, statusCodeCreate, err := client.post("/api/flags", map[string]any{"name": flagName}, token)
 
@@ -113,7 +113,7 @@ func TestSdk(t *testing.T) {
 
 		token := userToken(client)
 
-		flagName := saltUniqued("tgo-o")
+		flagName := saltUniqued("tgo-p")
 
 		createResp, statusCodeCreate, err := client.post("/api/flags", map[string]any{"name": flagName}, token)
 
@@ -156,5 +156,79 @@ func TestSdk(t *testing.T) {
 		time.Sleep(time.Millisecond * 1200)
 
 		assert.False(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after poll interval")
+	})
+
+	t.Run("A constrained activated flag will be on only for the constrained context", func(t *testing.T) {
+		t.Parallel()
+
+		client := NewClient()
+
+		token := userToken(client)
+
+		flagName := saltUniqued("tgo-c")
+
+		createResp, statusCodeCreate, err := client.post("/api/flags", map[string]any{"name": flagName}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 201, statusCodeCreate)
+		flagId := fmt.Sprintf("%v", createResp["id"])
+
+		_, statusCodeTurnOn, err := client.post("/api/flags/turnon", map[string]any{"id": flagId}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 200, statusCodeTurnOn)
+
+		userConstraintResp, statusCode, err := client.post("/api/constraints", map[string]any{
+			"description":          saltUniqued("tgo-cu"),
+			"key":                  "user",
+			"commaSeparatedValues": "John, Steve",
+		}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 201, statusCode)
+		userConstraintId := fmt.Sprintf("%v", userConstraintResp["id"])
+
+		brandConstraintResp, statusCode, err := client.post("/api/constraints", map[string]any{
+			"description":          saltUniqued("tgo-cb"),
+			"key":                  "brand",
+			"commaSeparatedValues": "Initech, Acme",
+		}, token)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 201, statusCode)
+		brandConstraintId := fmt.Sprintf("%v", brandConstraintResp["id"])
+
+		client.post("/api/constraints/link", map[string]any{"flagId": flagId, "constraintId": userConstraintId}, token)
+		client.post("/api/constraints/link", map[string]any{"flagId": flagId, "constraintId": brandConstraintId}, token)
+
+		featureFlags := plainflags.NewPlainFlags(plainflags.PlainFlagsConfig{
+			ServiceUrl:   os.Getenv("SERVICE_URL"),
+			Timeout:      time.Second * 20,
+			ApiKey:       os.Getenv("APIKEY"),
+			PollInterval: 0,
+		})
+
+		time.Sleep(time.Millisecond * 1200)
+
+		initialized := make(chan plainflags.DoneResult, 1)
+		go featureFlags.Init(initialized)
+		r := <-initialized
+		assert.Nil(t, r.Err)
+
+		assert.True(t, featureFlags.IsOn(flagName, false, &map[string]string{
+			"user": "John", "brand": "Initech",
+		}), "Expected true for complete context match")
+
+		assert.False(t, featureFlags.IsOn(flagName, false, &map[string]string{
+			"user": "Dave", "brand": "Initech",
+		}), "Expected false for partial context match")
+
+		assert.False(t, featureFlags.IsOn(flagName, false, &map[string]string{
+			"user": "John", "brand": "TBC",
+		}), "Expected false for partial context match")
+
+		assert.True(t, featureFlags.IsOn(flagName, false, &map[string]string{
+			"region": "Elbonia",
+		}), "Expected true for irrelevant context")
 	})
 }
