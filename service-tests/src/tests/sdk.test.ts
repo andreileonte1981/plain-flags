@@ -257,7 +257,6 @@ describe("SDK operation", () => {
 
         await sdk.init()
 
-
         assert(sdk.isOn(flagName, undefined, { userId: "Steve002" }))
         assert(!sdk.isOn(flagName, undefined, { userId: "Bob003" }))
 

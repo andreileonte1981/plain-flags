@@ -32,11 +32,17 @@ echo "Running tests"
 
 REPORTFILE=report_pg.txt npm run report
 
-cd ..
+cd go
+echo "Running tests for go SDK..."
+go test -v > ../report_go.txt
+
+cd ../..
 
 echo "Test summary:"
 echo "SQLite:"
 cat ./service-tests/report_sqlite.txt | tail -n 8
 echo "PG:"
 cat ./service-tests/report_pg.txt | tail -n 8
+echo "go SDK:"
+cat "./service-tests/report_go.txt" | tail -n 2
 echo "Test reports are in service-tests"

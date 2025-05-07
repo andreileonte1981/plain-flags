@@ -45,7 +45,7 @@ func TestSdk(t *testing.T) {
 			Timeout:      time.Second * 20,
 			ApiKey:       os.Getenv("APIKEY"),
 			PollInterval: 0,
-		})
+		}, nil, nil)
 
 		time.Sleep(time.Millisecond * 1200)
 
@@ -79,7 +79,7 @@ func TestSdk(t *testing.T) {
 			Timeout:      time.Second * 20,
 			ApiKey:       os.Getenv("APIKEY"),
 			PollInterval: 0,
-		})
+		}, nil, nil)
 
 		time.Sleep(time.Millisecond * 1200)
 
@@ -102,6 +102,7 @@ func TestSdk(t *testing.T) {
 		u := <-updated
 
 		assert.Nil(t, u.Err)
+		assert.True(t, u.Done)
 
 		assert.True(t, featureFlags.IsOn(flagName, false, nil), "Expected flag to be on in SDK cache after update")
 	})
@@ -126,7 +127,7 @@ func TestSdk(t *testing.T) {
 			Timeout:      time.Second * 20,
 			ApiKey:       os.Getenv("APIKEY"),
 			PollInterval: time.Second,
-		})
+		}, nil, nil)
 
 		time.Sleep(time.Millisecond * 1200)
 
@@ -206,7 +207,7 @@ func TestSdk(t *testing.T) {
 			Timeout:      time.Second * 20,
 			ApiKey:       os.Getenv("APIKEY"),
 			PollInterval: 0,
-		})
+		}, nil, nil)
 
 		time.Sleep(time.Millisecond * 1200)
 
