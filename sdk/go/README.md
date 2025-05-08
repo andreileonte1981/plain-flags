@@ -57,11 +57,12 @@ if featureFlags.IsOn(flagName, false, nil) {
 }
 ```
 
-If your features are constrained to subsets of your users, you must specify which user is currently using the software.
+If your features are constrained to subsets of your users, you must specify which user is currently using the software (and other context you constrain your feature for, if applicable).
 
 ```go
 if featureFlags.IsOn(flagName, false, &map[string]string{
-    "userId": currentUser().id, "countryCode": currentCountryCode(),
+    "userId": currentUser().id,
+    "countryCode": currentCountryCode(),
 }) {
    // Include your code for your feature
 }
