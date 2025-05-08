@@ -6,10 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/andreileonte1981/plain-flags/sdk/go/plainflags"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/andreileonte1981/plain-flags-go-sdk/plainflags"
 )
 
 func TestSdk(t *testing.T) {
