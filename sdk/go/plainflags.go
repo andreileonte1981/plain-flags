@@ -38,7 +38,7 @@ func (pf *PlainFlags) IsOn(flagName string, defaultValue bool, context *map[stri
 	flagState, ok := pf.flagStates[flagName]
 
 	if !ok {
-		pf.Error("Flag %v not in local cache, using default\n", flagName)
+		pf.error("Flag %v not in local cache, using default\n", flagName)
 
 		return defaultValue
 	}
@@ -49,6 +49,14 @@ func (pf *PlainFlags) IsOn(flagName string, defaultValue bool, context *map[stri
 // Initializes the PlainFlags instance.
 //
 // If PollInterval is set to 0, the state will be updated as soon as Done is present in the channel argument.
+//
+// Example:
+//
+//	initialized := make(chan plainflags.DoneResult)
+//
+//	go featureFlags.Init(initialized)
+//
+//	r := <-initialized
 func (pf *PlainFlags) Init(initCh chan DoneResult) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -84,7 +92,7 @@ func (pf *PlainFlags) startPolling() {
 		updateResult := <-updateCh
 
 		if updateResult.Err != nil {
-			pf.Error("Error updating flag state: %v\n", updateResult.Err)
+			pf.error("Error updating flag state: %v\n", updateResult.Err)
 		}
 
 		if pf.config.PollInterval > 0 {
@@ -98,10 +106,21 @@ func (pf *PlainFlags) startPolling() {
 // If your PlainFlags instance is configured with a positive PollInterval value, it will be called automatically.
 //
 // State will finish updating when the channel argument contains Done: true.
+//
+// Example:
+//
+//	updated := make(chan plainflags.DoneResult)
+//
+//	go featureFlags.UpdateState(updated)
+//
+//	u := <-updated
 func (pf *PlainFlags) UpdateState(result chan DoneResult) {
 	defer func() {
 		if r := recover(); r != nil {
-			result <- DoneResult{Done: false, Err: fmt.Errorf("panicked while updating feature flag state: %v", r)}
+			err := fmt.Errorf("panicked while updating feature flag state: %v", r)
+			pf.error("Error updating flag state: %v\n", err)
+
+			result <- DoneResult{Done: false, Err: err}
 		}
 	}()
 
@@ -110,6 +129,8 @@ func (pf *PlainFlags) UpdateState(result chan DoneResult) {
 	req, err := http.NewRequest("GET", url, nil)
 
 	if err != nil {
+		pf.error("Error updating flag state: %v\n", err)
+
 		result <- DoneResult{Done: false, Err: err}
 		return
 	}
@@ -121,6 +142,8 @@ func (pf *PlainFlags) UpdateState(result chan DoneResult) {
 	resp, err := client.Do(req)
 
 	if err != nil {
+		pf.error("Error updating flag state: %v\n", err)
+
 		result <- DoneResult{Done: false, Err: err}
 		return
 	}
@@ -134,24 +157,26 @@ func (pf *PlainFlags) UpdateState(result chan DoneResult) {
 	}
 
 	if err := json.Unmarshal(body, &pf.flagStates); err != nil {
+		pf.error("Error updating flag state: %v\n", err)
+
 		result <- DoneResult{Done: false, Err: err}
 		return
 	}
 
-	pf.Info("Plain Flags state has updated")
+	pf.info("Plain Flags state has updated")
 
 	if result != nil {
 		result <- DoneResult{Done: true, Err: nil}
 	}
 }
 
-func (pf *PlainFlags) Info(msg string, args ...any) {
+func (pf *PlainFlags) info(msg string, args ...any) {
 	if pf.infoFunction != nil {
 		pf.infoFunction(msg, args...)
 	}
 }
 
-func (pf *PlainFlags) Error(msg string, args ...any) {
+func (pf *PlainFlags) error(msg string, args ...any) {
 	if pf.errorFunction != nil {
 		pf.errorFunction(msg, args...)
 	}

@@ -42,7 +42,7 @@ Create and configure an object of type PlainFlags at the start of your software'
 Initialize the object:
 
 ```go
-    initialized := make(chan plainflags.DoneResult, 1)
+    initialized := make(chan plainflags.DoneResult)
 
     go featureFlags.Init(initialized)
 

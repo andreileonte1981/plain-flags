@@ -44,11 +44,14 @@ func TestSdk(t *testing.T) {
 			Timeout:      time.Second * 20,
 			ApiKey:       os.Getenv("APIKEY"),
 			PollInterval: 0,
-		}, nil, nil)
+		},
+			nil, nil,
+			// log.Printf, log.Printf,
+		)
 
-		time.Sleep(time.Millisecond * 1200)
+		time.Sleep(time.Millisecond * 1200) // There's a one second cache TTL configured on the state service
 
-		initialized := make(chan plainflags.DoneResult, 1)
+		initialized := make(chan plainflags.DoneResult)
 
 		go featureFlags.Init(initialized)
 
@@ -82,7 +85,7 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		initialized := make(chan plainflags.DoneResult, 1)
+		initialized := make(chan plainflags.DoneResult)
 		go featureFlags.Init(initialized)
 		r := <-initialized
 		assert.Nil(t, r.Err)
@@ -96,7 +99,7 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		updated := make(chan plainflags.DoneResult, 1)
+		updated := make(chan plainflags.DoneResult)
 		go featureFlags.UpdateState(updated)
 		u := <-updated
 
@@ -130,7 +133,7 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		initialized := make(chan plainflags.DoneResult, 1)
+		initialized := make(chan plainflags.DoneResult)
 		go featureFlags.Init(initialized)
 		r := <-initialized
 		assert.Nil(t, r.Err)
@@ -210,7 +213,7 @@ func TestSdk(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 1200)
 
-		initialized := make(chan plainflags.DoneResult, 1)
+		initialized := make(chan plainflags.DoneResult)
 		go featureFlags.Init(initialized)
 		r := <-initialized
 		assert.Nil(t, r.Err)
