@@ -22,7 +22,7 @@ Import the Plain Flags SDK package:
 
 ```go
 import (
-	"github.com/andreileonte1981/plain-flags-go-sdk/plainflags"
+	plainflags "github.com/andreileonte1981/plain-flags/sdk/go"
 )
 ```
 
