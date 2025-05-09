@@ -89,6 +89,9 @@ export default class PlainFlags {
 
     /**
      * Initializes the Plain Flags SDK
+     * 
+     * @param throwOnError pass true if you want the initialization to throw an error on failure.
+     * By default Plain Flags prefers to keep your app running and use the default values you provide.
      */
     async init(throwOnError: boolean = false) {
         try {
