@@ -44,6 +44,7 @@ services:
       - DATABASE_NAME=plainflags
       - DATABASE_USER=plainflags
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+      - DATABASE_POOL_SIZE=512
 
       - JWT_SIGNING_SECRET_FILE=/run/secrets/jwt_signing_secret
       - SERVICE_PORT=5000
@@ -68,9 +69,11 @@ services:
       - DATABASE_NAME=plainflags
       - DATABASE_USER=plainflags
       - DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+      - DATABASE_POOL_SIZE=512
 
       - SERVICE_PORT=5001
       - APIKEY_FILE=/run/secrets/apikey_states
+      - CACHE_TTL=1000
     secrets:
       - apikey_states
       - postgres_password

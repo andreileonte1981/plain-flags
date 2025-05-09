@@ -45,6 +45,7 @@ services:
     environment:
       - SERVICE_PORT=5001
       # - APIKEY=apikey_replaceme
+      - CACHE_TTL=1000
     volumes:
       - db-data:/data:ro
     depends_on:
