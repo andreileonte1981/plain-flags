@@ -15,4 +15,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/andreileonte1981/plain-flags/sdk/go/plainflags => ../../sdk/go
+replace github.com/andreileonte1981/plain-flags/sdk/go/plainflags => ../../../sdk/go

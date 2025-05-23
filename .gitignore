@@ -138,3 +138,5 @@ deploy.sh
 .secrets
 
 report_*.txt
+
+.venv
