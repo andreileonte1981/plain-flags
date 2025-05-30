@@ -14,7 +14,6 @@ import (
 
 type Client struct {
 	baseUrl string
-	apiKey  string
 }
 
 func (client Client) post(url string, payload any, token string) (map[string]any, int, error) {
@@ -69,6 +68,5 @@ func (client Client) post(url string, payload any, token string) (map[string]any
 func NewClient() Client {
 	return Client{
 		baseUrl: "http://127.0.0.1:5000",
-		apiKey:  "orpefei0-9834ytu120fcvnjt23-09484urtfmj",
 	}
 }
