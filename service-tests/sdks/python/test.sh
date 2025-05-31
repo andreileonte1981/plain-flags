@@ -1,0 +1,1 @@
+pytest -n 8 -r sdk_test.py

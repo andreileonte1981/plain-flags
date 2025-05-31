@@ -30,5 +30,5 @@ class Client:
             ) as response:
                 return Response(
                     response.status,
-                    await response.json() if response.status == 200 else await response.text()
+                    await response.json()
                 )
