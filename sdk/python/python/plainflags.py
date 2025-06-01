@@ -1,4 +1,3 @@
-from pprint import pprint
 import aiohttp
 import asyncio
 
@@ -23,16 +22,49 @@ class PlainFlags():
         self.__api_key = api_key
         self.__timeout_ms = timeout_ms
         self.__poll_interval_ms = poll_interval_ms
+
         self.__flag_states = {}
+        self.__ispolling = False
+        self.__polling_task = None
 
     async def init(self):
         if self.__poll_interval_ms <= 0:
             await self.update_state()
             return
-        await self._start_polling()
 
-    async def _start_polling(self):
-        pass
+        # Start polling in a background task and store the reference
+        self.__polling_task = asyncio.create_task(self.__start_polling())
+
+        # Ensure the task doesn't get garbage collected by adding a done callback
+        self.__polling_task.add_done_callback(
+            lambda t: t.exception() if t.done() and not t.cancelled() else None)
+
+    async def __start_polling(self):
+        if self.__ispolling:
+            return
+
+        self.__ispolling = True
+
+        try:
+            while self.__ispolling:
+                await self.update_state()
+                await asyncio.sleep(self.__poll_interval_ms / 1000.0)
+        except Exception as e:
+            print(f"Error during polling: {e}")
+        except asyncio.CancelledError:
+            # Handle task cancellation gracefully
+            pass
+
+    async def stop_updates(self):
+        """Stop the background polling if it is active"""
+        self.__ispolling = False
+        if self.__polling_task and not self.__polling_task.done():
+            self.__polling_task.cancel()
+            try:
+                await self.__polling_task
+            except asyncio.CancelledError:
+                pass
+        self.__polling_task = None
 
     async def update_state(self):
         try:
@@ -61,18 +93,3 @@ class PlainFlags():
             print(
                 f"Flag '{flag_name}' not found, returning default: {default}")
         return default
-
-
-# REMOVE
-if __name__ == "__main__":
-    pf = PlainFlags(service_url="http://localhost:5001",
-                    api_key="345fg-1r9vu342-0r91uvnm-102394u-v14mj-20951",
-                    timeout_ms=20000,
-                    poll_interval_ms=0)
-
-    async def f(pf):
-        await pf.init()
-        on = pf.is_on("Flag001", default=False)
-        print(on)
-
-    asyncio.run(f(pf))

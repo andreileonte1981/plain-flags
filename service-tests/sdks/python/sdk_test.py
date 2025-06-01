@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import time
 from client import Client
 import os
 import pytest
 from dotenv import load_dotenv
 from utils.usertoken import user_token
 from utils.salt import salt_uniqued
+import asyncio
+
 
 # If this import is unrecognized, add ../../../sdk/python to PYTHONPATH.
 # For VSCode's Pylance extension, you can add this to imports in settings.
@@ -33,18 +34,18 @@ async def test_turning_on_a_flag_shows_it_as_on_in_the_sdk_after_initialization(
 
     flag_id = create_resp.data["id"]
 
-    activateResp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
+    activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
 
-    assert activateResp.status == 200, "Failed to activate flag"
+    assert activate_resp.status == 200, "Failed to activate flag"
 
     flags = PlainFlags(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
-            "APIKEY", "345fg-1r9vu342-0r91uvnm-102394u-v14mj-20951"),
+            "APIKEY", ""),
         timeout_ms=10000,
         poll_interval_ms=0)
 
-    time.sleep(1.2)  # Allow some time for the flag state to propagate
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
     await flags.init()
 
@@ -60,7 +61,7 @@ async def test_flag_state_shows_differently_after_manual_state_updates():
 
     token = await user_token(client)
 
-    flag_name = salt_uniqued("tpy-o")
+    flag_name = salt_uniqued("tpy-m")
 
     create_resp = await client.post("/api/flags", {"name": flag_name}, token)
 
@@ -71,26 +72,78 @@ async def test_flag_state_shows_differently_after_manual_state_updates():
     flags = PlainFlags(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
-            "APIKEY", "345fg-1r9vu342-0r91uvnm-102394u-v14mj-20951"),
+            "APIKEY", ""),
         timeout_ms=10000,
         poll_interval_ms=0)
 
-    time.sleep(1.2)  # Allow some time for the flag state to propagate
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
     await flags.init()
 
     assert not flags.is_on(
         flag_name), "Expected flag to be off in sdk cache before manual update"
 
-    activateResp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
+    activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
 
-    assert activateResp.status == 200, "Failed to activate flag"
+    assert activate_resp.status == 200, "Failed to activate flag"
 
-    time.sleep(1.2)  # Allow some time for the flag state to propagate
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
     await flags.update_state()
     assert flags.is_on(
         flag_name), "Expected flag to be on in sdk cache after manual update"
+
+
+@pytest.mark.asyncio
+async def test_polls_for_updates_at_specified_interval():
+
+    client = Client(
+        base_url=os.getenv("MANAGEMENT_URL", "http://localhost:5000"))
+
+    token = await user_token(client)
+
+    flag_name = salt_uniqued("tpy-p")
+
+    create_resp = await client.post("/api/flags", {"name": flag_name}, token)
+
+    assert create_resp.status == 201, "Failed to create flag"
+
+    flag_id = create_resp.data["id"]
+
+    flags = PlainFlags(
+        service_url=os.getenv("STATES_URL", "http://localhost:5001"),
+        api_key=os.getenv(
+            "APIKEY", ""),
+        timeout_ms=20000,
+        poll_interval_ms=1000)
+
+    await asyncio.sleep(1.2)  # Allow some time for the cache to invalidate
+
+    await flags.init()
+
+    await asyncio.sleep(.8)
+
+    assert not flags.is_on(
+        flag_name), "Expected flag to be on in sdk cache after activation"
+
+    activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
+
+    assert activate_resp.status == 200, "Failed to activate flag"
+
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
+
+    assert flags.is_on(
+        flag_name), "Expected flag to be on in sdk cache after poll interval time elapsed"
+
+    desctivate_resp = await client.post("/api/flags/turnoff", {"id": flag_id}, token)
+    assert desctivate_resp.status == 200, "Failed to deactivate flag"
+
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
+
+    assert not flags.is_on(
+        flag_name), "Expected flag to be off in sdk cache after deactivation and time elapsed"
+
+    await flags.stop_updates()  # Stop polling to clean up after the test
 
 
 if __name__ == "__main__":
