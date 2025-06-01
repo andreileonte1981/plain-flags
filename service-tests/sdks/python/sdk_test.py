@@ -146,6 +146,75 @@ async def test_polls_for_updates_at_specified_interval():
     await flags.stop_updates()  # Stop polling to clean up after the test
 
 
+@pytest.mark.asyncio
+async def test_a_constrained_flag_is_on_only_for_the_constrained_context():
+
+    client = Client(
+        base_url=os.getenv("MANAGEMENT_URL", "http://localhost:5000"))
+
+    token = await user_token(client)
+
+    flag_name = salt_uniqued("tpy-m")
+
+    create_resp = await client.post("/api/flags", {"name": flag_name}, token)
+
+    assert create_resp.status == 201, "Failed to create flag"
+
+    flag_id = create_resp.data["id"]
+
+    activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
+
+    assert activate_resp.status == 200, "Failed to activate flag"
+
+    user_constraint_resp = await client.post(
+        "/api/constraints",
+        {
+            "description": salt_uniqued("tgo-cu"),
+            "key": "user",
+            "commaSeparatedValues": "John, Steve"
+        }, token)
+
+    assert user_constraint_resp.status == 201, "Failed to create user constraint"
+    user_constraint_id = user_constraint_resp.data["id"]
+
+    brand_constraint_resp = await client.post(
+        "/api/constraints",
+        {
+            "description": salt_uniqued("tgo-cb"),
+            "key": "brand",
+            "commaSeparatedValues": "Acme, Initech"
+        }, token)
+
+    assert brand_constraint_resp.status == 201, "Failed to create brand constraint"
+    brand_constraint_id = brand_constraint_resp.data["id"]
+
+    await client.post("/api/constraints/link", {"flagId": flag_id, "constraintId": user_constraint_id}, token)
+    await client.post("/api/constraints/link", {"flagId": flag_id, "constraintId": brand_constraint_id}, token)
+
+    flags = PlainFlags(
+        service_url=os.getenv("STATES_URL", "http://localhost:5001"),
+        api_key=os.getenv(
+            "APIKEY", ""),
+        timeout_ms=10000,
+        poll_interval_ms=0)
+
+    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
+
+    await flags.init()
+
+    assert flags.is_on(flag_name, False, {
+        "user": "John", "brand": "Initech"}), "Expected flag to be on for complete context match"
+
+    assert not flags.is_on(flag_name, False, {
+        "user": "Dave", "brand": "Initech"}), "Expected flag to be off for partial context match"
+
+    assert not flags.is_on(flag_name, False, {
+        "user": "John", "brand": "TBC"}), "Expected flag to be off for partial context match"
+
+    assert flags.is_on(flag_name, False, {
+        "region": "Elbonia"}), "Expected flag to be on for irrelevant context"
+
+
 if __name__ == "__main__":
     # Run the test
     pytest.main([__file__])

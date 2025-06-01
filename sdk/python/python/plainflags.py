@@ -1,19 +1,7 @@
 import aiohttp
 import asyncio
-
-
-class Constraint:
-    def __init__(self, raw_data: dict):
-        self.key = raw_data.get("key", "")
-        self.values = raw_data.get("values", [])
-
-
-class FlagState:
-    def __init__(self, raw_data: dict):
-        self.is_on = raw_data.get("isOn", False)
-        constraints = raw_data.get("constraints", [])
-        self.constraints = [Constraint(c)
-                            for c in constraints] if constraints else []
+from flagstate import FlagState
+from constrainer import is_turned_on_in_context
 
 
 class PlainFlags():
@@ -86,10 +74,8 @@ class PlainFlags():
         except Exception as e:
             print(f"Error fetching flags: {e}")
 
-    def is_on(self, flag_name: str, default: bool = False) -> bool:
-        if flag_name in self.__flag_states:
-            return self.__flag_states[flag_name].is_on
-        else:
-            print(
-                f"Flag '{flag_name}' not found, returning default: {default}")
-        return default
+    def is_on(self, flag_name: str, default: bool = False, context: dict[str, str] | None = None) -> bool:
+        if not flag_name in self.__flag_states:
+            return default
+
+        return is_turned_on_in_context(self.__flag_states[flag_name], context)
