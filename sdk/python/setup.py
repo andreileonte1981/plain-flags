@@ -8,8 +8,19 @@ setup(
     version="1.0.0",
     packages=find_packages(where="python"),
     author="Andrei Leonte",
+    author_email="your.email@example.com",  # Add your email
+    url="https://github.com/andreileonte1981/plain-flags",
+    description="Python SDK for the Plain Flags feature flag system",
     package_dir={"": "python"},
-    install_requires=[],
+    install_requires=["aiohttp"],
     long_description=description,
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",  # Adjust according to your license
+        "Operating System :: OS Independent",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Libraries :: Python Modules"
+    ],
+    python_requires=">=3.6"  # Specify minimum Python version
 )

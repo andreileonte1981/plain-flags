@@ -65,20 +65,35 @@ class PlainFlags():
             lambda t: t.exception() if t.done() and not t.cancelled() else None)
 
     async def __start_polling(self):
+        """
+        Private method that starts a polling loop to periodically update flag states.
+        This method is called by init() when polling is enabled.
+        """
         if self.__ispolling:
             return
 
         self.__ispolling = True
+        self.__info(
+            f"Starting polling with interval {self.__config.poll_interval_ms}ms")
 
         try:
             while self.__ispolling:
-                await self.update_state()
+                try:
+                    await self.update_state()
+                except Exception as e:
+                    self.__error(f"Error updating state during polling: {e}")
+                    # Continue polling even if an update fails
+
                 await asyncio.sleep(self.__config.poll_interval_ms / 1000.0)
-        except Exception as e:
-            self.__error(f"Error during polling: {e}")
         except asyncio.CancelledError:
             # Handle task cancellation gracefully
-            pass
+            self.__info("Polling cancelled")
+            raise
+        except Exception as e:
+            self.__error(f"Fatal error in polling loop: {e}")
+        finally:
+            self.__ispolling = False
+            self.__info("Polling stopped")
 
     async def stop_updates(self):
         """

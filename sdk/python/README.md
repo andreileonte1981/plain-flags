@@ -27,25 +27,41 @@ from plainflags import PlainFlags, PlainFlagsConfig
 Create and configure an object of type PlainFlags at the start of your software's execution:
 
 ```python
-    feature_flags = PlainFlags(PlainFlagsConfig(
+    config = PlainFlagsConfig(
         service_url="http://my-plainflags-states.dev",
         api_key="mySharedSecret",
         timeout_ms=10000,
-        poll_interval_ms=0),
-        logging.info,
-        logging.error)
+        poll_interval_ms=30000)  # Poll every 30 seconds, or set to 0 to disable polling
+
+    feature_flags = PlainFlags(config,
+                              infoFunc=logging.info,  # Optional: provide custom logging functions
+                              errorFunc=logging.error)
 ```
 
 Initialize the object. The init() method is a coroutine:
 
 ```python
-    await flags.init()
+    await feature_flags.init()
+```
+
+When your application is shutting down, stop the background polling if enabled:
+
+```python
+    await feature_flags.stop_updates()
 ```
 
 Any feature code you wish to enable and disable with feature flags will be within conditions like this:
 
 ```python
-if feature_flags.is_on("My feature")
+if feature_flags.is_on("My feature"):
+    # Your feature code here
+    pass
+```
+
+You can provide a default value to return if the flag is not found:
+
+```python
+if feature_flags.is_on("My feature", default=False):
     # Your feature code here
     pass
 ```
@@ -53,10 +69,10 @@ if feature_flags.is_on("My feature")
 If your features are constrained to subsets of your users, you must specify which user is currently using the software (and other context you constrain your feature for, if applicable).
 
 ```python
-if feature_flags.is_on("My Feature", False, {
+if feature_flags.is_on("My Feature", default=False, context={
     "userId": current_user().id,
     "countryCode": current_country_code(),
-})
+}):
     # Your feature code here
     pass
 ```
