@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 from client import Client
 import os
 import pytest
@@ -10,12 +11,13 @@ import asyncio
 
 # If this import is unrecognized, add ../../../sdk/python to PYTHONPATH.
 # For VSCode's Pylance extension, you can add this to imports in settings.
-from plainflags import PlainFlags
+from plainflags import PlainFlags, PlainFlagsConfig
 
 
 @pytest.fixture(scope="module")
 def setup():
     load_dotenv()
+    logging.basicConfig(level=logging.INFO)
 
 
 @pytest.mark.asyncio
@@ -38,12 +40,12 @@ async def test_turning_on_a_flag_shows_it_as_on_in_the_sdk_after_initialization(
 
     assert activate_resp.status == 200, "Failed to activate flag"
 
-    flags = PlainFlags(
+    flags = PlainFlags(PlainFlagsConfig(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
             "APIKEY", ""),
         timeout_ms=10000,
-        poll_interval_ms=0)
+        poll_interval_ms=0), None, None)
 
     await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
@@ -69,12 +71,12 @@ async def test_flag_state_shows_differently_after_manual_state_updates():
 
     flag_id = create_resp.data["id"]
 
-    flags = PlainFlags(
+    flags = PlainFlags(PlainFlagsConfig(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
             "APIKEY", ""),
         timeout_ms=10000,
-        poll_interval_ms=0)
+        poll_interval_ms=0), None, None)
 
     await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
@@ -110,12 +112,12 @@ async def test_polls_for_updates_at_specified_interval():
 
     flag_id = create_resp.data["id"]
 
-    flags = PlainFlags(
+    flags = PlainFlags(PlainFlagsConfig(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
             "APIKEY", ""),
         timeout_ms=20000,
-        poll_interval_ms=1000)
+        poll_interval_ms=1000), None, None)
 
     await asyncio.sleep(1.2)  # Allow some time for the cache to invalidate
 
@@ -191,12 +193,12 @@ async def test_a_constrained_flag_is_on_only_for_the_constrained_context():
     await client.post("/api/constraints/link", {"flagId": flag_id, "constraintId": user_constraint_id}, token)
     await client.post("/api/constraints/link", {"flagId": flag_id, "constraintId": brand_constraint_id}, token)
 
-    flags = PlainFlags(
+    flags = PlainFlags(PlainFlagsConfig(
         service_url=os.getenv("STATES_URL", "http://localhost:5001"),
         api_key=os.getenv(
             "APIKEY", ""),
         timeout_ms=10000,
-        poll_interval_ms=0)
+        poll_interval_ms=0), None, None)
 
     await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 

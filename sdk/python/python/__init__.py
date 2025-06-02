@@ -1,1 +1,1 @@
-from plainflags import PlainFlags
+from plainflags import PlainFlags, PlainFlagsConfig
