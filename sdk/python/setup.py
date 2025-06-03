@@ -9,7 +9,7 @@ setup(
     packages=find_packages(where="python"),
     author="Andrei Leonte",
     author_email="andrei.leonte.dev@gmail.com",
-    url="https://polainflags.dev",
+    url="https://plainflags.dev",
     description="Python SDK for the Plain Flags free feature flag system",
     package_dir={"": "python"},
     install_requires=["aiohttp"],
