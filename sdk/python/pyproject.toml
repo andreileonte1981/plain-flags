@@ -2,10 +2,12 @@
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-line-length = 88
-target-version = ['py36', 'py37', 'py38', 'py39', 'py310']
+[tool.autopep8]
+max_line_length = 88
+aggressive = 1
+# You can adjust the settings based on your preferences
+# aggressive levels: 0 (default), 1, 2, or 3 (most aggressive)
 
 [tool.isort]
-profile = "black"
+profile = "pep8"
 multi_line_output = 3

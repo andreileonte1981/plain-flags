@@ -8,9 +8,9 @@ setup(
     version="1.0.0",
     packages=find_packages(where="python"),
     author="Andrei Leonte",
-    author_email="your.email@example.com",  # Add your email
-    url="https://github.com/andreileonte1981/plain-flags",
-    description="Python SDK for the Plain Flags feature flag system",
+    author_email="andrei.leonte.dev@gmail.com",
+    url="https://polainflags.dev",
+    description="Python SDK for the Plain Flags free feature flag system",
     package_dir={"": "python"},
     install_requires=["aiohttp"],
     long_description=description,
