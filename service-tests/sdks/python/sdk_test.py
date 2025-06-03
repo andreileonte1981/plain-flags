@@ -17,6 +17,7 @@ from plainflags import PlainFlags, PlainFlagsConfig
 @pytest.fixture(scope="module")
 def setup():
     load_dotenv()
+
     logging.basicConfig(level=logging.INFO)
 
 
@@ -45,7 +46,8 @@ async def test_turning_on_a_flag_shows_it_as_on_in_the_sdk_after_initialization(
         api_key=os.getenv(
             "APIKEY", ""),
         timeout_ms=10000,
-        poll_interval_ms=0), None, None)
+        poll_interval_ms=0), logging.info, logging.error)
+    logging.info(os.getenv("APIKEY", "no apikey!"))
 
     await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
 
@@ -123,29 +125,32 @@ async def test_polls_for_updates_at_specified_interval():
 
     await flags.init()
 
-    await asyncio.sleep(.8)
+    try:
+        await asyncio.sleep(.8)
 
-    assert not flags.is_on(
-        flag_name), "Expected flag to be on in sdk cache after activation"
+        assert not flags.is_on(
+            flag_name), "Expected flag to be on in sdk cache after activation"
 
-    activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
+        activate_resp = await client.post("/api/flags/turnon", {"id": flag_id}, token)
 
-    assert activate_resp.status == 200, "Failed to activate flag"
+        assert activate_resp.status == 200, "Failed to activate flag"
 
-    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
+        # Allow some time for the flag state to propagate
+        await asyncio.sleep(1.2)
 
-    assert flags.is_on(
-        flag_name), "Expected flag to be on in sdk cache after poll interval time elapsed"
+        assert flags.is_on(
+            flag_name), "Expected flag to be on in sdk cache after poll interval time elapsed"
 
-    desctivate_resp = await client.post("/api/flags/turnoff", {"id": flag_id}, token)
-    assert desctivate_resp.status == 200, "Failed to deactivate flag"
+        desctivate_resp = await client.post("/api/flags/turnoff", {"id": flag_id}, token)
+        assert desctivate_resp.status == 200, "Failed to deactivate flag"
 
-    await asyncio.sleep(1.2)  # Allow some time for the flag state to propagate
+        # Allow some time for the flag state to propagate
+        await asyncio.sleep(1.2)
 
-    assert not flags.is_on(
-        flag_name), "Expected flag to be off in sdk cache after deactivation and time elapsed"
-
-    await flags.stop_updates()  # Stop polling to clean up after the test
+        assert not flags.is_on(
+            flag_name), "Expected flag to be off in sdk cache after deactivation and time elapsed"
+    finally:
+        await flags.stop_updates()  # Stop polling to clean up after the test
 
 
 @pytest.mark.asyncio
