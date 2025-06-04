@@ -4,20 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plain-flags-sdk"
-version = "1.0.0"
+version = "1.0.2"
 description = "Python SDK for the Plain Flags free feature flag system"
 readme = "README.md"
 authors = [
     {name = "Andrei Leonte", email = "andrei.leonte.dev@gmail.com"}
 ]
-license = {text = "MIT"}
+license-files = [
+    "LICENSE.txt"
+]
 requires-python = ">=3.6"
 dependencies = [
     "aiohttp",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules"
@@ -25,6 +26,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://plainflags.dev"
+
+[tool.setuptools]
+packages = ["plainflags"]
 
 [tool.autopep8]
 max_line_length = 88

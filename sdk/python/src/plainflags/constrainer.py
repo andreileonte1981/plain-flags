@@ -1,7 +1,8 @@
-from flagstate import FlagState
+from .flagstate import FlagState
 
 
-def is_turned_on_in_context(flag_state: FlagState, context: dict[str, str] | None) -> bool:
+def is_turned_on_in_context(flag_state: FlagState,
+                            context: dict[str, str] | None) -> bool:
     if not flag_state.is_on:
         return False
 

@@ -5,13 +5,13 @@ with open("README.md", "r") as f:
 
 setup(
     name="plain-flags-sdk",
-    version="1.0.0",
-    packages=find_packages(where="python"),
+    version="1.0.2",
+    packages=find_packages(where="src"),
     author="Andrei Leonte",
     author_email="andrei.leonte.dev@gmail.com",
     url="https://plainflags.dev",
     description="Python SDK for the Plain Flags free feature flag system",
-    package_dir={"": "python"},
+    package_dir={"": "src"},
     install_requires=["aiohttp"],
     long_description=description,
     long_description_content_type="text/markdown",

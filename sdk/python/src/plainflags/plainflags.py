@@ -1,12 +1,12 @@
-import logging
 import aiohttp
 import asyncio
-from flagstate import FlagState
-from constrainer import is_turned_on_in_context
+from .flagstate import FlagState
+from .constrainer import is_turned_on_in_context
 
 
 class PlainFlagsConfig():
-    def __init__(self, service_url: str, api_key: str, timeout_ms: int, poll_interval_ms: int = 0):
+    def __init__(self, service_url: str, api_key: str,
+                 timeout_ms: int, poll_interval_ms: int = 0):
         """
         Params:
         service_url: str - the URL of your PlainFlags flag states service.
@@ -136,14 +136,15 @@ class PlainFlags():
         except Exception as e:
             self.__error(f"Error fetching flags: {e}")
 
-    def is_on(self, flag_name: str, default: bool = False, context: dict[str, str] | None = None) -> bool:
+    def is_on(self, flag_name: str, default: bool = False,
+              context: dict[str, str] | None = None) -> bool:
         """
         Checks if a feature flag is turned on in the given context.
         Params:
         flag_name: str - the name of the feature flag to check.
         default: bool - the default value to return if the flag is not found.
         context: dict[str, str] | None - the context in which to check the flag state,
-            such as user identity or other constraints. When you pass a context, 
+            such as user identity or other constraints. When you pass a context,
             a flag is only on if it is activated in the dashboard, and the context matches the constraints.
             If None, the state is the same as you set in the PlainFlags dashboard for all contexts.
 
