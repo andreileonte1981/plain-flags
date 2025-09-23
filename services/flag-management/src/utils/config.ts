@@ -6,6 +6,7 @@ export default class Config {
     static apiKey = "";
     static superAdminPassword = "";
     static defaultUserPassword = "";
+    static defaultDashboardPasskey = "";
 
     static async init(log: FastifyBaseLogger) {
         try {
@@ -39,6 +40,14 @@ export default class Config {
                 this.defaultUserPassword = defaultUserPassword.trim();
             } else {
                 this.defaultUserPassword = process.env.DEFAULT_USER_PASSWORD || "password";
+            }
+
+            const defaultDashboardPasskeyFile = process.env.DASHBOARD_PASSKEY_FILE;
+            if (defaultDashboardPasskeyFile) {
+                const defaultDashboardPasskey = (await fs.readFile(defaultDashboardPasskeyFile)).toString();
+                this.defaultDashboardPasskey = defaultDashboardPasskey.trim();
+            } else {
+                this.defaultDashboardPasskey = process.env.DASHBOARD_PASSKEY || "passkey";
             }
         }
         catch (error) {

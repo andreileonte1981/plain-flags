@@ -49,12 +49,15 @@ services:
       - SUPERADMIN_PASSWORD_FILE=/run/secrets/superadmin_password
       - DEFAULT_USER_PASSWORD_FILE=/run/secrets/default_user_password
       - SUPERADMIN_EMAIL=boss@plainflags.com
+      - DASHBOARD_PASSKEY_FILE=/run/secrets/dashboard_passkey
+
     secrets:
       - jwt_signing_secret
       - superadmin_password
       - default_user_password
       - apikey_mgt
       - postgres_password
+      - dashboard_passkey
 
   flag-states:
     build: ./services/flag-states
@@ -100,6 +103,8 @@ secrets:
     file: ./.secrets/apikey.mgt.txt
   postgres_password:
     file: ./.secrets/password.pg.txt
+  dashboard_passkey:
+    file: ./.secrets/dashboard.passkey.txt
 
 volumes:
   pgdata:

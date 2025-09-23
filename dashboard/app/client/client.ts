@@ -1,7 +1,11 @@
 import axios from "axios";
 
 export default class Client {
-    private static baseUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api/"
+    private static baseUrl: string;
+
+    static setApiUrl(url: string) {
+        this.baseUrl = url;
+    }
 
     static async post(url: string, data: any) {
         const token = localStorage.getItem("jwt");

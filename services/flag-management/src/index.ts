@@ -9,6 +9,7 @@ import { constraintRoutes } from "./routes/constraint.route";
 import cors from "@fastify/cors"
 import Users from "./logic/user-logic/users";
 import Config from "./utils/config";
+import { dashauthRoutes } from "./routes/dashauth.route";
 
 const server = fastify({
     logger: (process.env.NODE_ENV === "production") ?
@@ -40,6 +41,7 @@ async function start() {
         server.register(userRoutes, { prefix: "/api/users" })
         server.register(historyRoutes, { prefix: "/api/history" })
         server.register(settingsRoutes, { prefix: "/api/settings" })
+        server.register(dashauthRoutes, { prefix: "/api/dashauth" })
 
         await server.listen({ port: +(process.env.SERVICE_PORT || "5000"), host: "0.0.0.0" })
         server.log.info("Flag management service listening")
