@@ -59,9 +59,6 @@ services:
     image: andreileonte011/plain-flags-dashboard   # Uses latest. Add version tag for production usage.
     ports:
       - 3000:3000   # Access the dashboard at port 3000 on the host
-    environment:
-      - VITE_API_URL=http://flag-management/api
-      # - VITE_DISABLE_USER_REGISTRATION=true
 
 volumes:
   db-data:

@@ -50,9 +50,6 @@ services:
     build: ./dashboard
     ports:
       - 3000:3000   # Access the dashboard at port 3000 on the host
-    environment:
-      - VITE_API_URL=http://flag-management/api
-      # - VITE_DISABLE_USER_REGISTRATION=true
 
 secrets:
   jwt_signing_secret:
