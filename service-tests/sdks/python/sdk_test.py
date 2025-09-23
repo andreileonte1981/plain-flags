@@ -221,6 +221,15 @@ async def test_a_constrained_flag_is_on_only_for_the_constrained_context():
     assert flags.is_on(flag_name, False, {
         "region": "Elbonia"}), "Expected flag to be on for irrelevant context"
 
+    if flags.is_on("User can log in with social media",
+                   False,
+                   {
+                       "userId": "12345",
+                       "countryCode": "RO",
+                   }):
+        # Your feature code here
+        pass
+
 
 if __name__ == "__main__":
     # Run the test

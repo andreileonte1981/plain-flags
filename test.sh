@@ -47,10 +47,10 @@ cd ../../..
 echo "============================"
 echo "Test summary:"
 echo ""
-echo "SQLite:"
+echo "SQLite: (expect 2 to fail; test outside docker to see them pass)"
 cat ./service-tests/report_sqlite.txt | tail -n 8
 echo ""
-echo "PG:"
+echo "PG: (expect 2 to fail; test outside docker to see them pass)"
 cat ./service-tests/report_pg.txt | tail -n 8
 echo ""
 echo "go SDK:"
