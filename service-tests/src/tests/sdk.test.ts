@@ -103,7 +103,8 @@ describe("SDK operation", () => {
                 serviceUrl: Config.stateServiceUrl(),
                 apiKey: process.env.APIKEY_SDK || "",
                 pollInterval: 1000,
-                timeout: 950
+                timeout: 950,
+                logStateUpdatesOnPoll: false
             },
             null, null
         )
