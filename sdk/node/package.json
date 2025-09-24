@@ -1,6 +1,6 @@
 {
   "name": "plain-flags-node-sdk",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The part of Plain Flags you embed in your application to tell which features are active and for which users",
   "main": "dist/index.js",
   "exports": {

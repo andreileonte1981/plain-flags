@@ -93,8 +93,8 @@ The keys **userId** and **countryCode** must match the constraint keys you creat
 If your log functions are unavailable at the time you construct the PlainFlags object, then you can set the callbacks for logs and errors later:
 
 ```typescript
-plainFlags.setLogCallback(server.log.info);
-plainFlags.setLogCallback(server.log.error);
+plainFlags.setLogCallback((...args: any) => server.log.info(args));
+plainFlags.setLogCallback((...args: any) => server.log.error(args));
 ```
 
 ## Source code
