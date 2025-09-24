@@ -50,6 +50,22 @@ export default class PlainFlags {
     }
 
     /**
+     * @param logCallback Custom method of your choice to log regular messages.
+     *  Pass null to mute.
+     */
+    setLogCallback(logCallback: ((...args: any) => void) | null) {
+        this.logCallback = logCallback
+    }
+
+    /**
+     * @param errorCallback Custom method of your choice to log errors.
+     *  Pass null to mute.
+     */
+    setErrorCallback(errorCallback: ((...args: any) => void) | null) {
+        this.errorCallback = errorCallback
+    }
+
+    /**
      * @param flagName - name of your feature
      * @param defaultValue - what to return on failure to query state
      * @param context - what and who this is, as defined in the Constraints page in the dashboard

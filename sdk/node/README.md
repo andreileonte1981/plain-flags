@@ -33,6 +33,7 @@ const plainFlags = new PlainFlags(
     pollInterval: 1000, // Will update feature flag state at this interval
     serviceUrl: "http://my-url.dev", // Depends on where you host
     apiKey: "mySharedSecret", // Must be the same as the one configured on the back end
+    logStateUpdatesOnPoll: false,
   },
 
   /**
@@ -88,6 +89,13 @@ if (
 The **userService** and **regionService** objects in the code above are fictitious examples of how your app can know who is using it and where.
 
 The keys **userId** and **countryCode** must match the constraint keys you created in the dashboard
+
+If your log functions are unavailable at the time you construct the PlainFlags object, then you can set the callbacks for logs and errors later:
+
+```typescript
+plainFlags.setLogCallback(server.log.info);
+plainFlags.setLogCallback(server.log.error);
+```
 
 ## Source code
 

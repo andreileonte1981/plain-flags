@@ -1,12 +1,12 @@
 import { Client } from "../utils/client"
-import { sleep } from "../utils/sleep";
 import { PollStateUpdateConfig } from "./update-policy"
 import Updates from "./updates";
 
 export default class PollUpdates extends Updates {
     private client?: Client
     private polling = false
-    private pollHandle: any;
+    private pollHandle: any
+    private logUpdatesOnPoll: boolean = false
 
     async init(config: PollStateUpdateConfig) {
         this.client = new Client(
@@ -14,6 +14,8 @@ export default class PollUpdates extends Updates {
             config.serviceUrl,
             config.timeout
         )
+
+        this.logUpdatesOnPoll = config.logStateUpdatesOnPoll
 
         this.log(`Feature flags HTTP client initialized.` +
             ` Will poll for updated feature state every ${config.pollInterval} milliseconds`
@@ -35,8 +37,10 @@ export default class PollUpdates extends Updates {
         try {
             const flagStates = (await client.get(`/api/sdk`)).data
 
-            this.log(`Feature flags state updated from service`)
-            this.log(flagStates)
+            if (this.logUpdatesOnPoll) {
+                this.log(`Feature flags state updated from service`)
+                this.log(flagStates)
+            }
 
             this.setFlagStates(flagStates)
         }
