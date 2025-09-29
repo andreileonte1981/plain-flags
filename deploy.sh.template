@@ -2,31 +2,34 @@
 # You must be logged in locally to be able to push the images.
 
 DOCKER_USER=your_user_name
-
 CURRENT_DIR=$(pwd)
 
+docker buildx use mybuilder
+
 cd services/flag-management
+
 MGT_VERSION=$(npm pkg get version -workspaces=false |tr -d \")
-docker build . \
--t andreileonte011/plain-flags-management:$MGT_VERSION \
--t andreileonte011/plain-flags-management:latest
+
+docker buildx build --platform linux/amd64,linux/arm64 \
+-t $DOCKER_USER/plain-flags-management:$MGT_VERSION \
+-t $DOCKER_USER/plain-flags-management:latest \
+--push .
 
 cd $CURRENT_DIR
 
 cd services/flag-states
+
 STATES_VERSION=$(npm pkg get version -workspaces=false |tr -d \")
-docker build . \
--t andreileonte011/plain-flags-states:$STATES_VERSION \
--t andreileonte011/plain-flags-states:latest
+docker buildx build --platform linux/amd64,linux/arm64 \
+-t $DOCKER_USER/plain-flags-states:$STATES_VERSION \
+-t $DOCKER_USER/plain-flags-states:latest \
+--push .
 
 cd $CURRENT_DIR
 
 cd dashboard
 DASHBOARD_VERSION=$(npm pkg get version -workspaces=false |tr -d \")
-docker build . \
--t andreileonte011/plain-flags-dashboard:$DASHBOARD_VERSION \
--t andreileonte011/plain-flags-dashboard:latest
-
-docker push -a andreileonte011/plain-flags-management
-docker push -a andreileonte011/plain-flags-states
-docker push -a andreileonte011/plain-flags-dashboard
+docker buildx build --platform linux/amd64,linux/arm64 \
+-t $DOCKER_USER/plain-flags-dashboard:$DASHBOARD_VERSION \
+-t $DOCKER_USER/plain-flags-dashboard:latest \
+--push .
