@@ -18,13 +18,13 @@ npm install plain-flags-node-sdk
 
 ## Usage
 
-Import the Plain Flags SDK library:
+### Import the library
 
 ```typescript
 import PlainFlags from "plain-flags-node-sdk";
 ```
 
-Create and configure an object of type PlainFlags at the start of your software's execution:
+### Create and configure an object of type PlainFlags at the start of your software's execution:
 
 ```typescript
 const plainFlags = new PlainFlags(
@@ -45,11 +45,13 @@ const plainFlags = new PlainFlags(
 );
 ```
 
-Initialize the object:
+### Initialize the object:
 
 ```typescript
 await plainFlags.init();
 ```
+
+### Run your code conditionally
 
 Any feature code you wish to enable and disable with feature flags will be within conditions like this:
 
@@ -90,11 +92,52 @@ The **userService** and **regionService** objects in the code above are fictitio
 
 The keys **userId** and **countryCode** must match the constraint keys you created in the dashboard
 
+### Set your log callbacks separately
+
 If your log functions are unavailable at the time you construct the PlainFlags object, then you can set the callbacks for logs and errors later:
 
 ```typescript
-plainFlags.setLogCallback((...args: any) => server.log.info(args));
-plainFlags.setLogCallback((...args: any) => server.log.error(args));
+plainFlags.setLogCallback((...args: any) =>
+  server.log.info(args[0], ...args.slice(1))
+);
+plainFlags.setErrorCallback((...args: any) =>
+  server.log.error(args[0], ...args.slice(1))
+);
+```
+
+### Obtain all flag states directly from the SDK and set them
+
+Supposing you have a client-server application, you want your server to handle the updating of feature flag states, not your client. This lets you control access to your PlainFlags services more securely.
+
+Your client can then obtain the state from your server and set it directly in the client-side SDK as follows:
+
+```Typescript
+// Server side:
+
+// Ask the SDK what the flag states are
+const flagStates = plainFlags.getCurrentStates()
+
+// Make this data available to your client, for example via a REST HTTP endpoint
+```
+
+```Typescript
+// Client side:
+
+// Obtain the plain flag data from your server, for example with an HTTP GET request to a secure endpoint
+
+// Tell the client-side SDK that you want to use that flag state collection:
+
+plainFlags.setCurrentStates(flagStateData)
+
+// Use the feature flags as documented above:
+if(plainFlags.isOn(
+  "My feature",
+  undefined,
+  /* Pass constraints optionally */
+  {}
+)) {
+  // Run conditional client code
+}
 ```
 
 ## Source code

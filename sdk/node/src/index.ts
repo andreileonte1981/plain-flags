@@ -104,6 +104,27 @@ export default class PlainFlags {
     }
 
     /**
+     * Useful for passing the state to a client app from the server side.
+     * 
+     * @returns the current cached states of all feature flags
+     */
+    currentStates(): FlagStates {
+        return this.flagStates
+    }
+
+    /**
+     * Sets the current cached states all feature flags to a custom value.
+     * 
+     * If you obtain flag states indirectly, such as from your server app,
+     *  set them with this method in your client.
+     * 
+     * @param flagStates a collection of flag states
+     */
+    setCurrentStates(flagStates: FlagStates) {
+        this.flagStates = flagStates
+    }
+
+    /**
      * Initializes the Plain Flags SDK
      * 
      * @param throwOnError pass true if you want the initialization to throw an error on failure.
