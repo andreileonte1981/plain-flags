@@ -17,6 +17,10 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({}) {
+  if (!Client.checkApiUrl()) {
+    // debugger;
+    return redirect("/");
+  }
   const myRole = localStorage.getItem("role");
   if (myRole !== Role.ADMIN && myRole !== Role.SUPERADMIN) {
     localStorage.removeItem("jwt");

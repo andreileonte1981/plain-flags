@@ -7,6 +7,23 @@ export default class Client {
         this.baseUrl = url;
     }
 
+    static checkApiUrl(): boolean {
+        // debugger
+        if (this.baseUrl === undefined) {
+            const apiUrl = localStorage.getItem("apiurl");
+            if (apiUrl) {
+                Client.setApiUrl(apiUrl);
+                return true
+            }
+            else {
+                alert("API URL not set");
+                return false
+            }
+        }
+
+        return true
+    }
+
     static async post(url: string, data: any) {
         const token = localStorage.getItem("jwt");
 

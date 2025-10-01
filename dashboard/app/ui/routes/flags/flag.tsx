@@ -22,6 +22,10 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
+  if (!Client.checkApiUrl()) {
+    // debugger;
+    return redirect("/");
+  }
   if (!localStorage.getItem("jwt")) {
     return redirect("/login");
   }
