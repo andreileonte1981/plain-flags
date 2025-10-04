@@ -3,7 +3,6 @@ name: plain_flags
 description: Dart SDK for the Plain Flags free feature flags system.
 
 version: 1.0.0-prerelease.1
-# repository: https://github.com/andreileonte1981/plain-flags
 
 environment:
   sdk: ^3.8.1
@@ -11,6 +10,12 @@ environment:
 homepage: https://plainflags.dev
 
 repository: https://github.com/andreileonte1981/plain-flags
+
+topics:
+  - feature-flags
+  - feature-toggles
+  - flags
+  - toggles
 
 # Add regular dependencies here.
 dependencies:

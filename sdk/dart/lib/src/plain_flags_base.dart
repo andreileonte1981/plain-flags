@@ -111,7 +111,10 @@ class PlainFlags {
   /// [defaultValue] - The default value to return if the flag is not found.
   ///
   /// [context] - The context to evaluate the flag against.
-  /// Example: {'userId': UserService.currentUser.id, 'country': LocationService.currentCountry}
+  /// Example:
+  /// ```
+  /// { 'userId': UserService.currentUser.id, 'country': LocationService.currentCountry }
+  /// ```
   bool isOn(String flagName, bool defaultValue, Map<String, String> context) {
     try {
       if (!_flags.containsKey(flagName)) {
