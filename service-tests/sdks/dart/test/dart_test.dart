@@ -91,4 +91,58 @@ void main() async {
       expect(featureFlags.isOn(flagName, false, {}), true);
     },
   );
+
+  test('The SDK polls for updates at the specified interval', () async {
+    final client = Client();
+
+    final token = await userToken(client);
+
+    final flagName = saltUniqued('tda-o');
+
+    final createResponse = await client.post('/api/flags', {
+      "name": flagName,
+    }, token);
+
+    expect(createResponse.statusCode, 201);
+
+    final flagId = createResponse.body['id'];
+
+    final featureFlags = PlainFlags(
+      config: PlainFlagsConfig(
+        serviceUrl: DotEnv.get('API_URL_STATES') ?? 'http://localhost:5001',
+        apiKey: DotEnv.get('API_KEY') ?? '',
+        pollInterval: Duration(seconds: 1),
+      ),
+      infoCallback: null,
+      errorCallback: null,
+    );
+
+    await featureFlags.init();
+
+    await Future.delayed(Duration(milliseconds: 200));
+
+    expect(featureFlags.isOn(flagName, false, {}), false);
+
+    final turnOnResponse = await client.post('/api/flags/turnon', {
+      "id": flagId,
+    }, token);
+
+    expect(turnOnResponse.statusCode, 200);
+
+    await Future.delayed(Duration(milliseconds: 1200));
+
+    await Future.delayed(Duration(milliseconds: 1200));
+
+    expect(featureFlags.isOn(flagName, false, {}), true);
+
+    final turnOffResponse = await client.post('/api/flags/turnoff', {
+      "id": flagId,
+    }, token);
+
+    expect(turnOffResponse.statusCode, 200);
+
+    await Future.delayed(Duration(milliseconds: 1200));
+
+    expect(featureFlags.isOn(flagName, false, {}), false);
+  });
 }
