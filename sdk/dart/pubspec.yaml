@@ -8,6 +8,10 @@ version: 1.0.0
 environment:
   sdk: ^3.8.1
 
+homepage: https://plainflags.dev
+
+repository: https://github.com/andreileonte1981/plain-flags
+
 # Add regular dependencies here.
 dependencies:
   json_annotation: ^4.9.0
