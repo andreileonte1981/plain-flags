@@ -42,6 +42,11 @@ cd python
 echo "Running tests for python SDK..."
 ./test.sh ../../report_python.txt
 
+cd ..
+cd dart
+echo "Running tests for dart SDK..."
+dart test --reporter=expanded --file-reporter=expanded:../../report_dart.txt --no-color
+
 cd ../../..
 
 echo "============================"
@@ -58,5 +63,8 @@ cat "./service-tests/report_go.txt" | tail -n 2
 echo ""
 echo "python SDK:"
 cat "./service-tests/report_python.txt" | tail -n 1 | tr -d "="
+echo ""
+echo "dart SDK:"
+cat "./service-tests/report_dart.txt" | tail -n 1 | tr -d "="
 echo ""
 echo "Test reports are in service-tests"
