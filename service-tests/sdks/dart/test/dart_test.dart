@@ -131,8 +131,6 @@ void main() async {
 
     await Future.delayed(Duration(milliseconds: 1200));
 
-    await Future.delayed(Duration(milliseconds: 1200));
-
     expect(featureFlags.isOn(flagName, false, {}), true);
 
     final turnOffResponse = await client.post('/api/flags/turnoff', {
@@ -145,4 +143,103 @@ void main() async {
 
     expect(featureFlags.isOn(flagName, false, {}), false);
   });
+
+  test(
+    'A constrained activated flag will be on only for the constrained context',
+    () async {
+      final client = Client();
+
+      final token = await userToken(client);
+
+      final flagName = saltUniqued('tda-o');
+
+      final createResponse = await client.post('/api/flags', {
+        "name": flagName,
+      }, token);
+
+      expect(createResponse.statusCode, 201);
+
+      final flagId = createResponse.body['id'];
+
+      final turnOnResponse = await client.post('/api/flags/turnon', {
+        "id": flagId,
+      }, token);
+
+      expect(turnOnResponse.statusCode, 200);
+
+      final userConstraintResponse = await client.post('/api/constraints', {
+        'description': saltUniqued("tda-cu"),
+        'key': 'user',
+        'commaSeparatedValues': 'John, Steve',
+      }, token);
+
+      expect(userConstraintResponse.statusCode, 201);
+
+      final userConstraintId = userConstraintResponse.body['id'];
+
+      final brandConstraintResponse = await client.post('/api/constraints', {
+        'description': saltUniqued("tda-cb"),
+        'key': 'brand',
+        'commaSeparatedValues': 'Initech, Acme',
+      }, token);
+
+      expect(brandConstraintResponse.statusCode, 201);
+
+      final brandConstraintId = brandConstraintResponse.body['id'];
+
+      await client.post('/api/constraints/link', {
+        'flagId': flagId,
+        'constraintId': userConstraintId,
+      }, token);
+
+      await client.post('/api/constraints/link', {
+        'flagId': flagId,
+        'constraintId': brandConstraintId,
+      }, token);
+
+      final featureFlags = PlainFlags(
+        config: PlainFlagsConfig(
+          serviceUrl: DotEnv.get('API_URL_STATES') ?? 'http://localhost:5001',
+          apiKey: DotEnv.get('API_KEY') ?? '',
+          pollInterval: Duration(seconds: 1),
+        ),
+        infoCallback: null,
+        errorCallback: null,
+      );
+
+      await featureFlags.init();
+
+      await Future.delayed(Duration(milliseconds: 1200));
+
+      expect(
+        featureFlags.isOn(flagName, false, {
+          'user': 'John',
+          'brand': 'Initech',
+        }),
+        true,
+        reason: "Expected true for matching context",
+      );
+
+      expect(
+        featureFlags.isOn(flagName, false, {
+          'user': 'Dave',
+          'brand': 'Initech',
+        }),
+        false,
+        reason: "Expected false for partial context match",
+      );
+
+      expect(
+        featureFlags.isOn(flagName, false, {'user': 'John', 'brand': 'TBC'}),
+        false,
+        reason: "Expected false for partial context match",
+      );
+
+      expect(
+        featureFlags.isOn(flagName, false, {'region': 'Elbonia'}),
+        true,
+        reason: "Expected true for irrelevant context",
+      );
+    },
+  );
 }
