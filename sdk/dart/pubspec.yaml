@@ -2,7 +2,7 @@ name: plain_flags
 
 description: Dart SDK for the Plain Flags free feature flags system.
 
-version: 1.0.0-prerelease.1
+version: 1.0.0-prerelease.2
 
 environment:
   sdk: ^3.8.1

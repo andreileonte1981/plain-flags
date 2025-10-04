@@ -26,7 +26,7 @@ class PlainFlagsConfig {
     required this.serviceUrl,
     this.timeout = const Duration(seconds: 20),
     this.apiKey = '',
-    this.pollInterval = const Duration(seconds: 0),
+    this.pollInterval = Duration.zero,
   });
 }
 
@@ -50,7 +50,7 @@ class PlainFlags {
 
   /// Initializes the PlainFlags instance.
   Future<void> init() async {
-    if (_config.pollInterval.inSeconds == 0) {
+    if (_config.pollInterval == Duration.zero) {
       if (await updateState()) {
         _info('Flags state initialized');
         _info(_flags.toString());

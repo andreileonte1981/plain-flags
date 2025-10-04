@@ -231,7 +231,7 @@ packages:
       path: "../../../sdk/dart"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.0.0-prerelease.1"
   pool:
     dependency: transitive
     description:
