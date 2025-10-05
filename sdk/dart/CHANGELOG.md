@@ -9,3 +9,7 @@
 ## 1.0.0-prerelease.3
 
 - Export types for using flag states directly
+
+# 1.0.0
+
+- Tested with a Dart console project (poll for state) and a Flutter project (pass state data explicitly)
