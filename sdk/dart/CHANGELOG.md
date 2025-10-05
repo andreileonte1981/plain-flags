@@ -5,3 +5,7 @@
 ## 1.0.0-prerelease.2
 
 - Fixed sub one second poll interval interpreted as zero
+
+## 1.0.0-prerelease.3
+
+- Export types for using flag states directly

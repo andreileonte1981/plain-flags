@@ -1,8 +1,5 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library;
 
 export 'src/plain_flags_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/flag_state.dart';
+export 'src/updates/config.dart';
