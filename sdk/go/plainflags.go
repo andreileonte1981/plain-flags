@@ -182,6 +182,32 @@ func (pf *PlainFlags) error(msg string, args ...any) {
 	}
 }
 
+// Sets or changes the info logging function.
+func (pf *PlainFlags) SetInfoFunction(infoFunction func(string, ...any)) {
+	pf.infoFunction = infoFunction
+}
+
+// Sets or changes the error logging function.
+func (pf *PlainFlags) SetErrorFunction(errorFunction func(string, ...any)) {
+	pf.errorFunction = errorFunction
+}
+
+// Returns the current flag states as a map[string]FlagState
+//
+// If you run a client-server system, you can send this data to your clients,
+// and use it to with a PlainFlags SDK instance on the client side.
+func (pf *PlainFlags) CurrentStates() map[string]FlagState {
+	return pf.flagStates
+}
+
+// Sets the current flag states from a map[string]FlagState
+//
+// If you run a client-server system, you can get this data from your server,
+// and use it to with a PlainFlags SDK instance on the client side.
+func (pf *PlainFlags) SetFlagStates(states map[string]FlagState) {
+	pf.flagStates = states
+}
+
 // Creates a PlainFlags instance
 //
 // config: PlainFlagsConfig - configure your PlainFlags instance
