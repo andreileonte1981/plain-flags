@@ -18,7 +18,7 @@ go get github.com/andreileonte1981/plain-flags/sdk/go
 
 ## Usage
 
-Import the Plain Flags SDK package:
+### Import the Plain Flags SDK package:
 
 ```go
 import (
@@ -26,7 +26,7 @@ import (
 )
 ```
 
-Create and configure an object of type PlainFlags at the start of your software's execution:
+### Create and configure an object of type PlainFlags at the start of your software's execution:
 
 ```go
     featureFlags := plainflags.NewPlainFlags(plainflags.PlainFlagsConfig{
@@ -39,7 +39,9 @@ Create and configure an object of type PlainFlags at the start of your software'
     myErrorFunction) // nil to mute error logs
 ```
 
-Initialize the object:
+You can set your info and error callback functions later if they are not available at Plain Flags creation.
+
+### Initialize the object:
 
 ```go
     initialized := make(chan plainflags.DoneResult)
@@ -48,6 +50,8 @@ Initialize the object:
 
     r := <-initialized
 ```
+
+### Run your code conditionally:
 
 Any feature code you wish to enable and disable with feature flags will be within conditions like this:
 
@@ -69,6 +73,26 @@ if featureFlags.IsOn(flagName, false, &map[string]string{
 ```
 
 The keys **userId** and **countryCode** must match the constraint keys you created in the dashboard
+
+### Get and set flag states explicitly
+
+If you run a client-server system, it is safer to obtain the Plain Flags feature flag state on the server side, and send them securely to your client apps, where you can operate a PlainFlags SDK without direct connection to the PlainFlags states service.
+
+This keeps your API key server side.
+
+You can get and set flag data, and send it from server to client with the method of your choice, for example with authenticated HTTPS requests to REST endpoints.
+
+Obtain the flag state data on your server:
+
+```go
+flagStates := featureFlags.CurrentStates()
+```
+
+If your client is using the GO Plain Flags SDK, set the flag state data in your client's instance of the SDK:
+
+```go
+featureFlags.SetFlagStates(flagStates)
+```
 
 ## Source code
 
