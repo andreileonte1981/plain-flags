@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plain-flags-sdk"
-version = "1.0.2"
+version = "1.0.3"
 description = "Python SDK for the Plain Flags free feature flag system"
 readme = "README.md"
 authors = [
@@ -28,6 +28,7 @@ classifiers = [
 Homepage = "https://plainflags.dev"
 
 [tool.setuptools]
+package-dir = {"" = "src"}
 packages = ["plainflags"]
 
 [tool.autopep8]

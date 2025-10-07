@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="plain-flags-sdk",
-    version="1.0.2",
+    version="1.0.3",
     packages=find_packages(where="src"),
     author="Andrei Leonte",
     author_email="andrei.leonte.dev@gmail.com",

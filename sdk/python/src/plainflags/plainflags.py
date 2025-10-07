@@ -161,6 +161,46 @@ class PlainFlags():
 
         return is_turned_on_in_context(self.__flag_states[flag_name], context)
 
+    def set_info_function(self, infoFunc):
+        """
+        Sets the function to be used for logging informational messages.
+        Pass None to mute informational messages.
+
+        Params:
+        infoFunc: callable - a function that takes a string message as its first argument.
+        """
+        self.__infoFunc = infoFunc
+
+    def set_error_function(self, errorFunc):
+        """
+        Sets the function to be used for logging error messages.
+        Pass None to mute error messages.
+
+        Params:
+        errorFunc: callable - a function that takes a string message as its first argument.
+        """
+        self.__errorFunc = errorFunc
+
+    def current_states(self) -> dict[str, FlagState]:
+        """
+        Returns the current states of all feature flags as a dictionary.
+        The keys are the flag names and the values are FlagState objects.
+
+        Returns:
+        dict[str, FlagState] - a dictionary of current feature flag states.
+        """
+        return self.__flag_states
+
+    def set_states(self, states: dict[str, FlagState]):
+        """
+        Sets the current states of all feature flags.
+        This method can be used for testing or to manually set flag states.
+
+        Params:
+        states: dict[str, FlagState] - a dictionary of feature flag states to set.
+        """
+        self.__flag_states = states
+
     def __info(self, message: str, *args, **kwargs):
         if self.__infoFunc:
             self.__infoFunc(message, *args, **kwargs)
