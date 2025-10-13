@@ -1,6 +1,8 @@
 # Plain Flags
 
-Basic feature flags
+Basic feature flags.
+
+Documentation at https://plainflags.dev
 
 ## Folder structure
 
@@ -51,3 +53,7 @@ This script starts the services as containers and runs the tests successively fo
 The components have launch configurations included for **Visual Studio Code**. If you use it as your IDE, you can use those configurations. See the **launch.json** files under the respective **.vscode** folders. To debug each component, open it in a separate Visual Studio code window.
 
 By default, the dashboard web app is available at http://localhost:5173/flags when all components are running.
+
+## Contributions
+
+I welcome feature requests and bug reports in the issues section of the github repository. Thank you!

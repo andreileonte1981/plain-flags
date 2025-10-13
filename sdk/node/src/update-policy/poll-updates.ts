@@ -46,7 +46,7 @@ export default class PollUpdates extends Updates {
         }
         catch (error) {
             this.error(
-                `Had a problem polling for flag states. Next poll in ${pollInterval * 1000} seconds`,
+                `Had a problem polling for flag states. Next poll in ${pollInterval / 1000} seconds`,
                 error
             )
         }
