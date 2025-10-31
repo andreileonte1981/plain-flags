@@ -14,7 +14,7 @@ export default class Config {
                 this.apiKey = process.env.APIKEY || ""
             }
         }
-        catch (error) {
+        catch (error: any) {
             log.error("Error initializing config: ", error)
             throw error
         }

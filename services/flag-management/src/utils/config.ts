@@ -50,7 +50,7 @@ export default class Config {
                 this.defaultDashboardPasskey = process.env.DASHBOARD_PASSKEY || "passkey";
             }
         }
-        catch (error) {
+        catch (error: any) {
             log.error("Error initializing config: ", error)
             throw error
         }
