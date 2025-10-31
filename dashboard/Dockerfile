@@ -9,6 +9,8 @@ WORKDIR /app
 RUN npm ci --omit=dev
 
 FROM node:20.18-alpine AS build-env
+ARG VITE_DEMO_API_URL
+ENV VITE_DEMO_API_URL=$VITE_DEMO_API_URL
 COPY . /app/
 COPY --from=development-dependencies-env /app/node_modules /app/node_modules
 WORKDIR /app
