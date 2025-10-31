@@ -3,8 +3,9 @@ import Constraint from "../entities/constraint";
 import Flag from "../entities/flag";
 import Flags from "../logic/flag-logic/flags";
 import Recorder from "../logic/flag-history/recorder";
-import User from "../entities/user";
+import User, { Role } from "../entities/user";
 import { AppDataSource } from "../data";
+import cleanString from "../utils/profanity";
 
 export async function constraintRoutes(server: FastifyInstance) {
     /**
@@ -33,9 +34,17 @@ export async function constraintRoutes(server: FastifyInstance) {
 
         const constraint: Constraint = new Constraint()
 
-        constraint.description = input.description
-        constraint.key = input.key
-        constraint.values = input.commaSeparatedValues.split(",").map(s => s.trim())
+        const user = (request as any).user as User;
+        if (user.role === Role.DEMO) {
+            constraint.description = cleanString(input.description)
+            constraint.key = cleanString(input.key)
+            constraint.values = input.commaSeparatedValues.split(",").map(s => cleanString(s.trim()))
+        }
+        else {
+            constraint.description = input.description
+            constraint.key = input.key
+            constraint.values = input.commaSeparatedValues.split(",").map(s => s.trim())
+        }
 
         await Constraint.insert(constraint)
 

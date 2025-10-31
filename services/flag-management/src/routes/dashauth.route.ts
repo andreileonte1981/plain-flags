@@ -3,6 +3,7 @@ import Config from "../utils/config";
 import Salt from "../utils/salt";
 import User, { Role } from "../entities/user";
 import * as bcrypt from "bcrypt";
+import cleanString from "../utils/profanity";
 
 export async function dashauthRoutes(server: FastifyInstance) {
     server.post("", async (
@@ -21,23 +22,24 @@ export async function dashauthRoutes(server: FastifyInstance) {
     ) => {
         const body = request.body as any;
 
+        const cleanName = cleanString(body.name)
         // Keep just letters and numbers
-        let name = (body.name.trim() || "Anonymous").replace(/[^a-zA-Z0-9]/g, "").slice(0, 20);
+        let name = (cleanName.trim() || "Anonymous").replace(/[^a-zA-Z0-9]/g, "").slice(0, 20)
 
         if (name.length < 3) {
-            name = `Anon_${name}`;
+            name = `Anon_${name}`
         }
 
         const saltedName = Salt.uniqued(name);
         const tempPassword = Math.random().toString(36).slice(-8)
 
-        const demoUser = new User();
-        demoUser.email = `${saltedName}@plainflags.demo`;
+        const demoUser = new User()
+        demoUser.email = `${saltedName}@plainflags.demo`
 
         const salt = await bcrypt.genSalt(10)
         demoUser.password = await bcrypt.hash(tempPassword, salt)
 
-        demoUser.role = Role.USER   // TODO consider a DEMO role if needed
+        demoUser.role = Role.DEMO
 
         await User.insert(demoUser)
 
@@ -47,7 +49,7 @@ export async function dashauthRoutes(server: FastifyInstance) {
             id: user.id,
             email: user.email,
             role: user.role
-        });
+        })
 
         reply.code(201).send({
             token, user: {

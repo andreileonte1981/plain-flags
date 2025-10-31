@@ -3,15 +3,15 @@ import type { Route } from "../+types";
 
 export default function Component({}: Route.ComponentProps) {
   return (
-    <div className="flex flex-col items-center text-gray-500 font-semibold p-8 text-center">
+    <div className="flex flex-col items-center gap-2 text-gray-500 font-semibold p-8 text-center">
       <p className="flex gap-2 items-center my-8 text-green-700">
-        <div className="text-gray-500 text-lg">
-          Thank you for trying
-          <br />
-          <span className="font-bold">Plain Flags</span>
-        </div>
+        Thank you for trying
+        <br />
+        <span className="font-bold">Plain Flags</span>
       </p>
-      <p>Your demo user email is {localStorage.getItem("email")}</p>
+      <p className="break-all">
+        Your demo user email is {localStorage.getItem("email")}
+      </p>
       <p>(It is not a real email address.)</p>
       <p>You can use these demo credentials to log in later if you wish.</p>
       <p>

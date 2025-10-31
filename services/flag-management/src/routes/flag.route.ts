@@ -1,8 +1,9 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import Flag from "../entities/flag";
 import Recorder from "../logic/flag-history/recorder";
-import User from "../entities/user";
+import User, { Role } from "../entities/user";
 import { AppDataSource } from "../data";
+import cleanString from "../utils/profanity";
 
 export async function flagRoutes(server: FastifyInstance) {
     /**
@@ -14,7 +15,15 @@ export async function flagRoutes(server: FastifyInstance) {
     ) => {
         const flag = new Flag();
 
-        flag.name = request.body.name;
+        const user = (request as any).user as User;
+
+        if (user.role == Role.DEMO) {
+            flag.name = cleanString(request.body.name)
+        }
+        else {
+            flag.name = request.body.name
+        }
+
         flag.isOn = false;
         flag.isArchived = false;
 
