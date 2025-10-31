@@ -13,6 +13,7 @@ export default function Dashboard() {
   const myRole = localStorage.getItem("role");
   const isAdmin = myRole === Role.ADMIN || myRole === Role.SUPERADMIN;
   const [userShown, setUserShown] = useState(false);
+  const isDemo = localStorage.getItem("isDemo") === "true";
 
   const cn = userShown
     ? `md:hidden absolute top-16 left-4 right-4 bottom-16 z-50`
@@ -27,6 +28,11 @@ export default function Dashboard() {
             className="md:flex hidden items-center justify-center gap-2"
           >
             <img src="/images/logo.svg" alt="logo" className="p-8" />
+            {isDemo && (
+              <div className="absolute top-2 left-2 bg-green-300 text-gray-900 text-xs font-bold px-2 py-1 rounded">
+                DEMO
+              </div>
+            )}
           </div>
 
           <div
@@ -40,8 +46,13 @@ export default function Dashboard() {
           >
             <div
               id="navLinks"
-              className="pt-2 flex justify-around md:flex-col md:justify-start gap-2 items-stretch"
+              className="pt-2 flex justify-around md:flex-col md:justify-start gap-2 md:items-stretch items-center"
             >
+              {isDemo && (
+                <div className="md:hidden bg-green-300 text-gray-900 text-xs font-bold mx-2 px-2 py-1 rounded">
+                  DEMO
+                </div>
+              )}
               <MenuItem
                 text="Flags"
                 linkto="/flags"

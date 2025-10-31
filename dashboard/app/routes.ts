@@ -7,8 +7,10 @@ export default [
         route("archived", "ui/routes/flags/archived.tsx"),
         route("constraints", "ui/routes/constraints/constraints.tsx"),
         route("flags/:flagId", "ui/routes/flags/flag.tsx"),
-        route("users", "ui/routes/users/users.tsx")
+        route("users", "ui/routes/users/users.tsx"),
+        route("demo/success", "ui/routes/demo/success.tsx"),
     ]),
     route("login", "ui/routes/login.tsx"),
-    route("register", "ui/routes/register.tsx")
+    route("register", "ui/routes/register.tsx"),
+    route("demo", "ui/routes/demo/demo.tsx"),
 ] satisfies RouteConfig;

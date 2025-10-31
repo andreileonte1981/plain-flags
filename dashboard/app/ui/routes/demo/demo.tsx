@@ -1,11 +1,10 @@
-import { redirect, useNavigate } from "react-router";
-import type { Route } from "../../+types/root";
-import Client from "~/client/client";
-import PasswordEdit from "../components/reusables/passwordEdit";
 import { useContext, useState } from "react";
 import { ModalContext } from "~/context/modalContext";
 import { ToastContext } from "~/context/toastContext";
 import { sleep } from "~/utils/sleep";
+import type { Route } from "../+types";
+import Client from "~/client/client";
+import { useNavigate } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,22 +13,14 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function clientLoader({}) {
-  const apiUrl = localStorage.getItem("apiurl");
-  if (apiUrl) {
-    Client.setApiUrl(apiUrl);
-
-    return redirect("/flags");
-  }
-}
+export async function clientLoader({}) {}
 
 export default function Component({ loaderData }: Route.ComponentProps) {
   const { showMessage } = useContext(ModalContext);
   const { queueToast } = useContext(ToastContext);
 
   const [formData, setFormData] = useState({
-    apiurl: "",
-    passkey: "",
+    name: "",
   });
 
   const navigate = useNavigate();
@@ -38,33 +29,36 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     event.preventDefault();
 
     try {
-      Client.setApiUrl(`${formData.apiurl}/api/`);
+      Client.setApiUrl(`${import.meta.env.VITE_DEMO_API_URL}/api/`);
+      localStorage.setItem(
+        "apiurl",
+        `${import.meta.env.VITE_DEMO_API_URL}/api/`
+      );
+      localStorage.setItem("isDemo", "true");
 
-      const response = await Client.post("dashauth", {
-        passkey: formData.passkey,
+      const response = await Client.post("dashauth/demo", {
+        name: formData.name,
       });
+      if (response.status === 201) {
+        localStorage.setItem("jwt", response.data.token);
+        localStorage.setItem("email", response.data.user.email);
+        localStorage.setItem("role", response.data.user.role);
+        localStorage.setItem("tempPassword", response.data.user.tempPassword);
 
-      if (response.status === 200) {
-        localStorage.setItem("apiurl", `${formData.apiurl}/api/`);
-
-        queueToast("Back end check successful!");
-
+        queueToast("Demo account created! Welcome");
         await sleep(1000);
-
-        navigate("/flags");
+        navigate("/demo/success");
       }
     } catch (error: any) {
       // debugger;
 
-      showMessage(error.response?.data?.message || "Auth error");
+      showMessage(error.response?.data?.message || "Demo connection error");
     }
   };
 
   const handleChange = (event: any) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
-
-  const demoAvailable = !!import.meta.env.VITE_DEMO_API_URL;
 
   return (
     <div className="bg-gray-800 w-screen h-screen flex justify-center items-center">
@@ -76,52 +70,34 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           welcome, please authenticate with backend service
         </h1>
         <form className="flex flex-col w-full" onSubmit={handleSubmit}>
-          <label
-            htmlFor="apiurl"
-            className="text-gray-500 font-semibold text-sm"
-          >
-            API URL
+          <label htmlFor="name" className="text-gray-500 font-semibold text-sm">
+            Your Name (optional)
           </label>
           <input
             className="my-2 p-2 text-gray-600 font-semibold text-sm border-2 rounded focus:border-current focus:ring-0 placeholder-gray-400"
             type="text"
-            id="apiurl"
-            name="apiurl"
-            placeholder="https://plainflags.yourdomain.com"
+            id="name"
+            name="name"
+            placeholder="John A. Doe"
             spellCheck={false}
             onChange={handleChange}
-            required
-          />
-          <label
-            htmlFor="passkey"
-            className="text-gray-500 font-semibold text-sm"
-          >
-            Pass Key
-          </label>
-          <PasswordEdit
-            placeholder="passkey"
-            handleChange={handleChange}
-            id="passkey"
-            defaultValue={formData.passkey}
-            error=""
           />
           <button
             className="flex justify-center items-center my-3 p-3 border-2 hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
             type="submit"
           >
-            Connect
+            Continue To Demo
           </button>
         </form>
-        {demoAvailable && (
-          <button
-            onClick={() => {
-              navigate("/demo");
-            }}
-            className="w-full p-3 border-2 hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
-          >
-            Demo
-          </button>
-        )}
+
+        <button
+          onClick={() => {
+            navigate("/");
+          }}
+          className="w-full p-3 border-2 hover:text-white hover:bg-gray-500 active:bg-gray-600 border-gray-500 rounded font-bold text-gray-500"
+        >
+          Connect To Real Backend
+        </button>
       </div>
     </div>
   );
