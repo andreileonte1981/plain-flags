@@ -101,4 +101,63 @@ describe
                 assert(error)
                 assert(error.response.data.message.includes("not found"))
             })
+
+        test
+            .skip
+            ("Excess constraints are deleted", async () => {
+                const client = new Client()
+
+                const token = await tokenForLoggedInUser(client)
+
+                const firstConstraintDescription = Salt.uniqued("test-link")
+
+                const firstConstraint = {
+                    description: firstConstraintDescription,
+                    key: "userId",
+                    commaSeparatedValues: "John001, Steve002"
+                }
+
+                const constraintCreationResponse: any = await client.post("/api/constraints", firstConstraint, token)
+
+                const flagName = Salt.uniqued("test-link")
+
+                const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
+
+                const firstFlagId = flagCreationResponse.data.id
+                const firstConstraintId = constraintCreationResponse.data.id
+
+                const linkResponse: any = await client.post(
+                    "/api/constraints/link",
+                    { flagId: firstFlagId, constraintId: firstConstraintId },
+                    token
+                )
+
+                assert(linkResponse.status === 200)
+
+                const turnOnResponse: any = await client.post("/api/flags/turnon", { id: firstFlagId }, token)
+
+                assert(turnOnResponse?.status === 200)
+
+                for (let i = 0; i < 35; i++) {
+                    const extraConstraintName = Salt.uniqued("extra-constraint-" + i)
+                    const extraConstraintCreationResponse: any = await client.post(
+                        "/api/constraints",
+                        {
+                            description: extraConstraintName,
+                            key: "userId",
+                            commaSeparatedValues: "John001, Steve002"
+                        }, token
+                    )
+                }
+
+                // The first constraint should be deleted now
+                let error: any
+                try {
+                    await client.post("/api/constraints/delete", { id: firstConstraintId }, token)
+                }
+                catch (e) { error = e }
+
+                assert(error)
+                assert(error.response.data.message.includes("not found"))
+            })
     });
