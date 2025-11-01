@@ -4,6 +4,7 @@ import Salt from "../utils/salt";
 import User, { Role } from "../entities/user";
 import * as bcrypt from "bcrypt";
 import cleanString from "../utils/profanity";
+import Users from "../logic/user-logic/users";
 
 export async function dashauthRoutes(server: FastifyInstance) {
     server.post("", async (
@@ -50,6 +51,9 @@ export async function dashauthRoutes(server: FastifyInstance) {
             email: user.email,
             role: user.role
         })
+
+        // await when running tests, otherwise fire and forget
+        Users.deleteExcessDemoUsers(server.log)
 
         reply.code(201).send({
             token, user: {

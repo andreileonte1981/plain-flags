@@ -100,7 +100,8 @@ async function main() {
             apiKey: process.env.APIKEY_SDK || "",
             pollInterval,
             timeout: 120000,
-            serviceUrl: Config.stateServiceUrl()
+            serviceUrl: Config.stateServiceUrl(),
+            logStateUpdatesOnPoll: true
         }, null, null))
     }
 

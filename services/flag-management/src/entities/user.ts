@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Role {
     SUPERADMIN = "superadmin",
@@ -20,4 +20,7 @@ export default class User extends BaseEntity {
 
     @Column({ default: Role.USER })
     role: Role = Role.USER
+
+    @CreateDateColumn()
+    createdAt!: Date;
 }

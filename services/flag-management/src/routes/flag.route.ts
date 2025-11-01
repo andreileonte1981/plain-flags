@@ -4,6 +4,7 @@ import Recorder from "../logic/flag-history/recorder";
 import User, { Role } from "../entities/user";
 import { AppDataSource } from "../data";
 import cleanString from "../utils/profanity";
+import Flags from "../logic/flag-logic/flags";
 
 export async function flagRoutes(server: FastifyInstance) {
     /**
@@ -47,6 +48,10 @@ export async function flagRoutes(server: FastifyInstance) {
 
             throw error
         })
+
+        if (process.env.DEMO_MODE === "true") {
+            Flags.deleteExcessFlagsAndConstraints(server.log)
+        }
 
         reply.code(201).send(flag)
     })

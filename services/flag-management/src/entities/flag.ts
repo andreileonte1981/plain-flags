@@ -1,6 +1,7 @@
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     EntitySubscriberInterface,
     EventSubscriber,
@@ -27,6 +28,9 @@ export default class Flag extends BaseEntity {
 
     @Column()
     isArchived: boolean = false
+
+    @CreateDateColumn()
+    createdAt!: Date
 
     @UpdateDateColumn()
     updatedAt!: Date

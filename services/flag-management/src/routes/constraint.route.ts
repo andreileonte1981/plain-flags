@@ -48,6 +48,10 @@ export async function constraintRoutes(server: FastifyInstance) {
 
         await Constraint.insert(constraint)
 
+        if (process.env.DEMO_MODE === "true") {
+            Flags.deleteExcessFlagsAndConstraints(server.log)
+        }
+
         reply.code(201).send(constraint)
     })
 
