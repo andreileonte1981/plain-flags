@@ -3,46 +3,102 @@ import { Client } from "../client/client";
 import Salt from "../utils/salt";
 import assert from "assert";
 import { sleep } from "../utils/sleep";
+import { tokenForLoggedInUser } from "../utils/token";
 
 describe
     .skip
     ("Demo tests", () => {
-        test("Demo users are deleted past the force count threshold", async () => {
-            const client = new Client()
+        test
+            .skip
+            ("Demo users are deleted past the force count threshold", async () => {
+                const client = new Client()
 
-            const firstUserRequest: any = await client.post("/api/dashauth/demo", {
-                name: Salt.uniqued("DemoPrimus")
-            })
-
-            const firstUserEmail = firstUserRequest.data.user.email
-            const firstUserPassword = firstUserRequest.data.user.tempPassword
-
-            const loginResponse: any = await client.post("/api/users/login", {
-                email: firstUserEmail,
-                password: firstUserPassword
-            })
-
-            assert(loginResponse.status === 200)
-
-            await sleep(1000)
-
-            for (let i = 0; i < 65; i++) {
-                await client.post("/api/dashauth/demo", {
-                    name: Salt.uniqued("DemoJoe" + i)
+                const firstUserRequest: any = await client.post("/api/dashauth/demo", {
+                    name: Salt.uniqued("DemoPrimus")
                 })
-            }
 
-            // Expect the first user to be deleted now
-            let error: any
-            try {
-                await client.post("/api/users/login", {
+                const firstUserEmail = firstUserRequest.data.user.email
+                const firstUserPassword = firstUserRequest.data.user.tempPassword
+
+                const loginResponse: any = await client.post("/api/users/login", {
                     email: firstUserEmail,
                     password: firstUserPassword
                 })
-            }
-            catch (e) { error = e }
 
-            assert(error)
-            assert(error.response.data.message.includes("Wrong email and/or password"))
-        });
+                assert(loginResponse.status === 200)
+
+                await sleep(1000)
+
+                for (let i = 0; i < 65; i++) {
+                    await client.post("/api/dashauth/demo", {
+                        name: Salt.uniqued("DemoJoe" + i)
+                    })
+                }
+
+                // Expect the first user to be deleted now
+                let error: any
+                try {
+                    await client.post("/api/users/login", {
+                        email: firstUserEmail,
+                        password: firstUserPassword
+                    })
+                }
+                catch (e) { error = e }
+
+                assert(error)
+                assert(error.response.data.message.includes("Wrong email and/or password"))
+            });
+
+        test
+            .skip
+            ("Excess flags are deleted", async () => {
+                const client = new Client()
+
+                const token = await tokenForLoggedInUser(client)
+
+                const firstConstraintDescription = Salt.uniqued("test-link")
+
+                const firstConstraint = {
+                    description: firstConstraintDescription,
+                    key: "userId",
+                    commaSeparatedValues: "John001, Steve002"
+                }
+
+                const constraintCreationResponse: any = await client.post("/api/constraints", firstConstraint, token)
+
+                const flagName = Salt.uniqued("test-link")
+
+                const flagCreationResponse: any = await client.post("/api/flags", { name: flagName }, token)
+
+                const firstFlagId = flagCreationResponse.data.id
+                const firstConstraintId = constraintCreationResponse.data.id
+
+                const linkResponse: any = await client.post(
+                    "/api/constraints/link",
+                    { flagId: firstFlagId, constraintId: firstConstraintId },
+                    token
+                )
+
+                assert(linkResponse.status === 200)
+
+                const turnOnResponse: any = await client.post("/api/flags/turnon", { id: firstFlagId }, token)
+
+                assert(turnOnResponse?.status === 200)
+
+                for (let i = 0; i < 35; i++) {
+                    const extraFlagName = Salt.uniqued("extra-flag-" + i)
+
+                    const extraFlagCreationResponse: any = await client.post("/api/flags", { name: extraFlagName }, token)
+                }
+
+                // The first flag should be deleted now
+                let error: any
+                try {
+                    await client.post("/api/flags/turnoff", { id: firstFlagId }, token)
+                }
+                catch (e) { error = e }
+
+                assert(error)
+                assert(error.response.data.message.includes("not found"))
+            })
     });
