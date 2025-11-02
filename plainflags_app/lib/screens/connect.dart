@@ -28,7 +28,7 @@ class _ConnectState extends State<Connect> {
 
   void _handleConnect() {
     final apiUrl = _apiUrlController.text.trim();
-    
+
     if (apiUrl.isNotEmpty) {
       // Save the API URL
       Client.setBaseUrl(apiUrl);
@@ -85,10 +85,7 @@ class _ConnectState extends State<Connect> {
               child: const Text('Connect'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _handleDemo,
-              child: const Text('Demo'),
-            ),
+            ElevatedButton(onPressed: _handleDemo, child: const Text('Demo')),
           ],
         ),
       ),
