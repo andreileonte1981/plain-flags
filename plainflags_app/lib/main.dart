@@ -15,9 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 215, 253, 243),
         appBarTheme: AppBarTheme(
-          backgroundColor: const Color.fromARGB(255, 0, 146, 122),
-          foregroundColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          foregroundColor: const Color.fromARGB(255, 0, 247, 185),
           titleTextStyle: const TextStyle(
+            color: Color.fromARGB(255, 0, 29, 24),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -42,6 +43,11 @@ class MyApp extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
           ),
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          selectedItemColor: const Color.fromARGB(255, 0, 147, 122),
+          unselectedItemColor: const Color.fromARGB(255, 0, 88, 29),
         ),
         useMaterial3: true,
       ),

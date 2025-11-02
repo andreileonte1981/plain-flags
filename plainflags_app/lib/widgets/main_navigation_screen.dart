@@ -12,7 +12,10 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [const Flags(), const Constraints()];
+  final List<Widget> _screens = [
+    const Flags(),
+    const Constraints(),
+  ];
 
   @override
   Widget build(BuildContext context) {

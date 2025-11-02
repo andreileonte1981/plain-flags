@@ -1,18 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:plainflags_app/utils/client.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Connect extends StatefulWidget {
+  const Connect({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Connect> createState() => _ConnectState();
 }
 
-class _HomeState extends State<Home> {
+class _ConnectState extends State<Connect> {
+  final TextEditingController _apiUrlController = TextEditingController();
+  final TextEditingController _passkeyController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+    // Pre-fill with existing API URL if available
+    _apiUrlController.text = Client.apiUrl();
+  }
 
-    // If there is an API URL stored, navigate to flags
+  @override
+  void dispose() {
+    _apiUrlController.dispose();
+    _passkeyController.dispose();
+    super.dispose();
+  }
+
+  void _handleConnect() {
+    final apiUrl = _apiUrlController.text.trim();
+    
+    if (apiUrl.isNotEmpty) {
+      // Save the API URL
+      Client.setBaseUrl(apiUrl);
+      // Return success to the calling screen
+      Navigator.pop(context, true);
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid API URL'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _handleDemo() {
+    // Set a demo API URL
+    Client.setBaseUrl('https://demo.plainflags.com/api');
+    Navigator.pop(context, true);
   }
 
   @override
@@ -27,6 +63,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                controller: _apiUrlController,
                 decoration: const InputDecoration(
                   labelText: 'API URL',
                   border: OutlineInputBorder(),
@@ -36,6 +73,7 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                controller: _passkeyController,
                 decoration: const InputDecoration(
                   labelText: 'Passkey',
                   border: OutlineInputBorder(),
@@ -43,12 +81,14 @@ class _HomeState extends State<Home> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Handle submission
-              },
+              onPressed: _handleConnect,
               child: const Text('Connect'),
             ),
-            ElevatedButton(onPressed: () {}, child: const Text('Demo')),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _handleDemo,
+              child: const Text('Demo'),
+            ),
           ],
         ),
       ),
