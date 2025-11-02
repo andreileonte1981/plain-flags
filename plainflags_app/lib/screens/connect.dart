@@ -26,14 +26,30 @@ class _ConnectState extends State<Connect> {
     super.dispose();
   }
 
+  void authenticateWithPasskey(String passkey) async {
+    final authResponse = await Client.post("dashauth", {
+      'passkey': passkey,
+    }, null);
+    if (authResponse.statusCode == 200) {
+      if (mounted) Navigator.pop(context, true);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Connected to Plain Flags service'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
+  }
+
   void _handleConnect() {
     final apiUrl = _apiUrlController.text.trim();
 
     if (apiUrl.isNotEmpty) {
-      // Save the API URL
-      Client.setBaseUrl(apiUrl);
-      // Return success to the calling screen
-      Navigator.pop(context, true);
+      Client.setBaseUrl('$apiUrl/api');
+
+      authenticateWithPasskey(_passkeyController.text.trim());
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,8 +62,10 @@ class _ConnectState extends State<Connect> {
   }
 
   void _handleDemo() {
-    // Set a demo API URL
-    Client.setBaseUrl('https://demo.plainflags.com/api');
+    Client.setBaseUrl('https://demoservice.plainflags.dev/api');
+
+    // TODO: make demo request to get a user token
+
     Navigator.pop(context, true);
   }
 
