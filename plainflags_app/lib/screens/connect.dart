@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:plainflags_app/utils/client.dart';
 
 class Connect extends StatefulWidget {
@@ -11,6 +12,8 @@ class Connect extends StatefulWidget {
 class _ConnectState extends State<Connect> {
   final TextEditingController _apiUrlController = TextEditingController();
   final TextEditingController _passkeyController = TextEditingController();
+
+  final _formGlobalKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -27,16 +30,43 @@ class _ConnectState extends State<Connect> {
   }
 
   void authenticateWithPasskey(String passkey) async {
-    final authResponse = await Client.post("dashauth", {
-      'passkey': passkey,
-    }, null);
-    if (authResponse.statusCode == 200) {
-      if (mounted) Navigator.pop(context, true);
+    try {
+      final authResponse = await Client.post("dashauth", {
+        'passkey': passkey,
+      }, null);
+      if (authResponse.statusCode == 200) {
+        final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+        storage.write(key: 'api_url', value: Client.apiUrl());
+
+        if (mounted) Navigator.pop(context, true);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Connected to Plain Flags service'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                authResponse.body['message'] ?? 'Authentication failed',
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Connected to Plain Flags service'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: Text('Connection failed: $e'),
+            backgroundColor: Colors.red,
           ),
         );
       }
@@ -46,65 +76,79 @@ class _ConnectState extends State<Connect> {
   void _handleConnect() {
     final apiUrl = _apiUrlController.text.trim();
 
-    if (apiUrl.isNotEmpty) {
-      Client.setBaseUrl('$apiUrl/api');
+    Client.setBaseUrl('$apiUrl/api');
 
-      authenticateWithPasskey(_passkeyController.text.trim());
-    } else {
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid API URL'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    authenticateWithPasskey(_passkeyController.text.trim());
   }
 
   void _handleDemo() {
     Client.setBaseUrl('https://demoservice.plainflags.dev/api');
-
-    // TODO: make demo request to get a user token
 
     Navigator.pop(context, true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Plain Flags Home')),
-      body: Center(
-        // Form for entering API URL and passkey and a demo button
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _apiUrlController,
-                decoration: const InputDecoration(
-                  labelText: 'API URL',
-                  border: OutlineInputBorder(),
+    return SafeArea(
+      child: Scaffold(
+        // resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formGlobalKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextFormField(
+                    controller: _apiUrlController,
+                    decoration: const InputDecoration(
+                      labelText: 'API URL',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the API URL';
+                      }
+                      final uri = Uri.tryParse(value);
+                      if (uri == null || !uri.isAbsolute) {
+                        return 'Please enter a valid URL';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _passkeyController,
-                decoration: const InputDecoration(
-                  labelText: 'Passkey',
-                  border: OutlineInputBorder(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextFormField(
+                    controller: _passkeyController,
+                    decoration: const InputDecoration(
+                      labelText: 'Passkey',
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please enter the Passkey'
+                        : null,
+                  ),
                 ),
-              ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formGlobalKey.currentState!.validate()) {
+                      _formGlobalKey.currentState!.save();
+                      _handleConnect();
+                    }
+                  },
+                  child: const Text('Connect'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _handleDemo,
+                  child: const Text('Demo'),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: _handleConnect,
-              child: const Text('Connect'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: _handleDemo, child: const Text('Demo')),
-          ],
+          ),
         ),
       ),
     );

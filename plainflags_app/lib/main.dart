@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:plainflags_app/utils/client.dart';
 import 'package:plainflags_app/widgets/main_navigation_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Client.init();
   runApp(const MyApp());
 }
 
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color.fromARGB(255, 215, 253, 243),
         appBarTheme: AppBarTheme(
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          foregroundColor: const Color.fromARGB(255, 0, 247, 185),
+          foregroundColor: const Color.fromARGB(255, 0, 29, 24),
           titleTextStyle: const TextStyle(
             color: Color.fromARGB(255, 0, 29, 24),
             fontSize: 20,

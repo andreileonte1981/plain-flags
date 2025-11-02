@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class Response {
@@ -9,6 +10,16 @@ class Response {
 }
 
 class Client {
+  static init() async {
+    final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+    final baseurl = await storage.read(key: 'api_url');
+
+    if (baseurl != null) {
+      setBaseUrl(baseurl);
+    }
+  }
+
   static String _baseUrl = '';
 
   static void setBaseUrl(String baseUrl) {
@@ -17,6 +28,13 @@ class Client {
 
   static String apiUrl() {
     return _baseUrl;
+  }
+
+  static String apiUrlShort() {
+    return _baseUrl
+        .replaceAll('/api', '')
+        .replaceAll('http://', '')
+        .replaceAll('https://', '');
   }
 
   static const String _apiKey =
