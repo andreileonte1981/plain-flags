@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:plainflags_app/utils/dlog.dart';
 
 class Response {
   final int statusCode;
@@ -13,7 +14,11 @@ class Client {
   static init() async {
     final FlutterSecureStorage storage = const FlutterSecureStorage();
 
+    dlog('Initializing client');
+
     final baseurl = await storage.read(key: 'api_url');
+
+    dlog('Base URL: $baseurl');
 
     if (baseurl != null) {
       setBaseUrl(baseurl);

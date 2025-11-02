@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/connect.dart';
 import 'package:plainflags_app/screens/flags/flags.dart';
 import 'package:plainflags_app/screens/constraints/constraints.dart';
+import 'package:plainflags_app/screens/user/login.dart';
 import 'package:plainflags_app/utils/client.dart';
 
-class MainNavigationScreen extends StatefulWidget {
+class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  ConsumerState<MainNavigationScreen> createState() =>
+      _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [const Flags(), const Constraints()];
@@ -20,12 +25,69 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   void initState() {
     super.initState();
 
+    final apiUrlOk = checkExistingApiUrl();
+
+    if (apiUrlOk) {
+      checkExistingUser();
+    }
+  }
+
+  Future<void> checkExistingUser() async {
+    final storage = FlutterSecureStorage(
+      aOptions: const AndroidOptions(encryptedSharedPreferences: true),
+    );
+
+    final email = await storage.read(key: 'email');
+    final password = await storage.read(key: 'password');
+
+    if (email == null || password == null) {
+      // Push modal login screen
+      showLoginScreen();
+      return;
+    }
+
+    try {
+      final response = await Client.post('users/login', {
+        'email': email,
+        'password': password,
+      }, null);
+
+      if (response.statusCode == 200) {
+        // Handle successful login
+        final data = response.body as Map<String, dynamic>;
+
+        final email = data['user']?['email'] ?? '';
+        final token = data['token'] ?? '';
+
+        ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
+
+        if (mounted) setState(() {});
+      } else {
+        throw Exception('Failed to authenticate user');
+      }
+    } catch (e) {
+      if (mounted) setState(() {});
+    }
+  }
+
+  void showLoginScreen() {
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
+  }
+
+  bool checkExistingApiUrl() {
     if (Client.apiUrl().isEmpty) {
       // Defer navigation until after the current build cycle completes
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showConnectScreen();
       });
+      return false;
     }
+    return true;
   }
 
   Future<void> showConnectScreen() async {
@@ -40,6 +102,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         if (mounted) {
           setState(() {
             // This will trigger a rebuild of the widget
+            checkExistingUser();
           });
         }
       }
@@ -93,6 +156,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     }
 
     Client.setBaseUrl('');
+
+    // TODO: also log out if there's a user
+
     setState(() {
       showConnectScreen();
     });
@@ -104,9 +170,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            apiUrl.isEmpty ? 'Not Connected' : apiUrl,
-            style: TextStyle(fontSize: 12),
+          title: Row(
+            children: [
+              Image.asset('assets/logo.png', height: 32),
+              const SizedBox(width: 8),
+              Text(
+                apiUrl.isEmpty ? 'Not Connected' : apiUrl,
+                style: TextStyle(fontSize: 12),
+              ),
+            ],
           ),
           actions: [
             IconButton(

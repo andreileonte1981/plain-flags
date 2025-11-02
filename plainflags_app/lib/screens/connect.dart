@@ -29,7 +29,7 @@ class _ConnectState extends State<Connect> {
     super.dispose();
   }
 
-  void authenticateWithPasskey(String passkey) async {
+  void authenticate(String passkey) async {
     try {
       final authResponse = await Client.post("dashauth", {
         'passkey': passkey,
@@ -78,7 +78,7 @@ class _ConnectState extends State<Connect> {
 
     Client.setBaseUrl('$apiUrl/api');
 
-    authenticateWithPasskey(_passkeyController.text.trim());
+    authenticate(_passkeyController.text.trim());
   }
 
   void _handleDemo() {
