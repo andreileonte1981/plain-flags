@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/screens/flags/flag_card.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class Flags extends ConsumerStatefulWidget {
@@ -110,7 +111,15 @@ class _FlagsState extends ConsumerState<Flags> {
                   if (isLoading) CircularProgressIndicator(),
                   if (!isLoading && flags.isEmpty) Text('No flags available'),
                   if (!isLoading && flags.isNotEmpty)
-                    ...flags.map((flag) => Text(flag.name)),
+                    Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          final flag = flags[index];
+                          return FlagCard(flag: flag);
+                        },
+                        itemCount: flags.length,
+                      ),
+                    ),
                 ],
               ),
             ),
