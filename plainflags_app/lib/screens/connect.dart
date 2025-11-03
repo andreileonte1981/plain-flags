@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
+import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/utils/dlog.dart';
-
-import '../globals/client.dart';
 
 class Connect extends StatefulWidget {
   const Connect({super.key});

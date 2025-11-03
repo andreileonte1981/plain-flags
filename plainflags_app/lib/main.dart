@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
+import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/widgets/main_navigation_screen.dart';
-
-import 'globals/client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

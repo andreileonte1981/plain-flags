@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/utils/emailcheck.dart';
-
-import '../../globals/client.dart';
 
 class Login extends ConsumerStatefulWidget {
   const Login({super.key});
@@ -53,6 +52,9 @@ class _LoginState extends ConsumerState<Login> {
         ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
 
         if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Welcome!')));
           Navigator.pop(context, email);
         }
 

@@ -7,6 +7,7 @@ import 'package:plainflags_app/screens/connect.dart';
 import 'package:plainflags_app/screens/flags/flags.dart';
 import 'package:plainflags_app/screens/constraints/constraints.dart';
 import 'package:plainflags_app/screens/user/login.dart';
+import 'package:plainflags_app/screens/user/me.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -180,6 +181,18 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             IconButton(
               icon: const Icon(Icons.link_off),
               onPressed: confirmDisconnect,
+            ),
+            IconButton(
+              icon: const Icon(Icons.account_circle),
+              onPressed: () async {
+                final currentEmail = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Me()),
+                );
+                if (currentEmail.isEmpty) {
+                  showLoginScreen();
+                }
+              },
             ),
           ],
         ),
