@@ -33,7 +33,7 @@ class _FlagBadgesState extends State<FlagBadges> {
                     Icon(Icons.flag, color: Colors.green[800], size: 16),
                   ],
                 ),
-                backgroundColor: Colors.green[200],
+                backgroundColor: const Color.fromARGB(255, 206, 255, 207),
               )
             : Chip(
                 labelPadding: EdgeInsets.all(2),
@@ -95,7 +95,7 @@ class _FlagBadgesState extends State<FlagBadges> {
                 ),
               ],
             ),
-            backgroundColor: const Color.fromARGB(255, 255, 171, 255),
+            backgroundColor: const Color.fromARGB(255, 255, 223, 255),
           ),
       ],
     );

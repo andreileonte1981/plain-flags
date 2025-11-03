@@ -86,6 +86,24 @@ class _FlagsState extends ConsumerState<Flags> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {},
+            child: Icon(Icons.add_circle_outline),
+          ),
+          SizedBox(width: 16),
+          FloatingActionButton(onPressed: () {}, child: Icon(Icons.search)),
+          SizedBox(width: 16),
+          FloatingActionButton(
+            onPressed: () {
+              fetchFlags();
+            },
+            child: Icon(Icons.refresh),
+          ),
+        ],
+      ),
       body: failedFetching
           ? Center(
               child: Column(
