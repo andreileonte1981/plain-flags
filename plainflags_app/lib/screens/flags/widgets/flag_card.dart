@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
-import 'package:plainflags_app/screens/flags/flag_badges.dart';
+import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class FlagCard extends ConsumerStatefulWidget {
@@ -100,7 +100,7 @@ class _FlagCardState extends ConsumerState<FlagCard> {
     return Card(
       shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: const Color.fromARGB(255, 0, 61, 46),
+          color: const Color.fromARGB(255, 0, 139, 105),
           width: 2.0,
         ),
         borderRadius: BorderRadius.circular(12.0),
@@ -116,7 +116,7 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                 Flexible(child: Text(widget.flag.name, softWrap: true)),
               ],
             ),
-            Divider(height: 4, color: Colors.grey),
+            Divider(height: 4, color: const Color.fromARGB(255, 219, 219, 219)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: AppBarTheme(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          backgroundColor: const Color.fromARGB(255, 189, 255, 239),
           foregroundColor: const Color.fromARGB(255, 0, 29, 24),
           titleTextStyle: const TextStyle(
             color: Color.fromARGB(255, 0, 29, 24),
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          backgroundColor: const Color.fromARGB(255, 189, 255, 239),
           unselectedLabelStyle: TextStyle(
             color: const Color.fromARGB(255, 73, 73, 73),
           ),
@@ -74,6 +74,20 @@ class MyApp extends StatelessWidget {
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: const Color.fromARGB(255, 0, 147, 122),
           foregroundColor: Colors.white,
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color.fromARGB(255, 134, 242, 216);
+            }
+            return Colors.grey;
+          }),
+          trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color.fromARGB(255, 0, 147, 122);
+            }
+            return Colors.grey.shade400;
+          }),
         ),
         useMaterial3: true,
       ),
