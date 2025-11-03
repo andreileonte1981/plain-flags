@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
@@ -111,12 +113,21 @@ class _FlagsState extends ConsumerState<Flags> {
                   if (!isLoading && flags.isEmpty) Text('No flags available'),
                   if (flags.isNotEmpty)
                     Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          final flag = flags[index];
-                          return FlagCard(flag: flag, updateFlags: fetchFlags);
+                      child: ImplicitlyAnimatedList<Flag>(
+                        items: flags,
+                        areItemsTheSame: (a, b) => a.id == b.id,
+                        itemBuilder: (context, animation, flag, index) {
+                          return SizeFadeTransition(
+                            sizeFraction: 0.7,
+                            curve: Curves.easeInOut,
+                            animation: animation,
+                            child: FlagCard(
+                              key: ValueKey(flag.id),
+                              flag: flag,
+                              updateFlags: fetchFlags,
+                            ),
+                          );
                         },
-                        itemCount: flags.length,
                       ),
                     ),
                 ],
