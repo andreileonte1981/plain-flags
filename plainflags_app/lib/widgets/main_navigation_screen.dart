@@ -209,9 +209,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               label: 'Flags',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shield, color: Color.fromARGB(255, 110, 0, 124)),
+              icon: Icon(
+                Icons.front_hand,
+                color: Color.fromARGB(255, 110, 0, 124),
+              ),
               activeIcon: Icon(
-                Icons.shield,
+                Icons.front_hand,
                 color: Color.fromARGB(255, 173, 0, 196),
               ),
               label: 'Constraints',

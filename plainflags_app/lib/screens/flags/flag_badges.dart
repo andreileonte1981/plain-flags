@@ -53,7 +53,7 @@ class _FlagBadgesState extends State<FlagBadges> {
                 ),
                 backgroundColor: Colors.grey[400],
               ),
-        SizedBox(width: 8),
+        if (flag.stale) SizedBox(width: 8),
         if (flag.stale)
           Chip(
             labelPadding: EdgeInsets.all(2),
@@ -75,6 +75,7 @@ class _FlagBadgesState extends State<FlagBadges> {
             ),
             backgroundColor: const Color.fromARGB(255, 255, 252, 203),
           ),
+        if (flag.constraints.isNotEmpty) SizedBox(width: 8),
         if (flag.constraints.isNotEmpty)
           Chip(
             labelPadding: EdgeInsets.all(2),
@@ -88,7 +89,7 @@ class _FlagBadgesState extends State<FlagBadges> {
                 ),
                 SizedBox(width: 4),
                 Icon(
-                  Icons.hourglass_bottom,
+                  Icons.front_hand,
                   color: const Color.fromARGB(255, 179, 0, 170),
                   size: 16,
                 ),

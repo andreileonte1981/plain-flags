@@ -108,14 +108,13 @@ class _FlagsState extends ConsumerState<Flags> {
           : Center(
               child: Column(
                 children: [
-                  if (isLoading) CircularProgressIndicator(),
                   if (!isLoading && flags.isEmpty) Text('No flags available'),
-                  if (!isLoading && flags.isNotEmpty)
+                  if (flags.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, index) {
                           final flag = flags[index];
-                          return FlagCard(flag: flag);
+                          return FlagCard(flag: flag, updateFlags: fetchFlags);
                         },
                         itemCount: flags.length,
                       ),
