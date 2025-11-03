@@ -9,6 +9,8 @@ class Constraint {
   String description;
   String key;
   List<String> values;
+
+  @JsonKey(defaultValue: [])
   List<Flag> flags;
 
   Constraint({

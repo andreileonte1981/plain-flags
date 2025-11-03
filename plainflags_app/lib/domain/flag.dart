@@ -9,6 +9,8 @@ class Flag {
   final String name;
   final bool isOn;
   final bool stale;
+
+  @JsonKey(defaultValue: [])
   final List<Constraint> constraints;
 
   Flag({

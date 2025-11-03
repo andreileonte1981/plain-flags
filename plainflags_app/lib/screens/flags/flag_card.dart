@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plainflags_app/domain/flag.dart';
+import 'package:plainflags_app/screens/flags/flag_badges.dart';
 
 class FlagCard extends StatefulWidget {
   final Flag flag;
@@ -15,12 +16,27 @@ class _FlagCardState extends State<FlagCard> {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.blue, width: 2.0),
+        side: BorderSide(
+          color: const Color.fromARGB(255, 0, 61, 46),
+          width: 2.0,
+        ),
         borderRadius: BorderRadius.circular(12.0),
       ),
-      child: ListTile(
-        title: Text(widget.flag.name),
-        subtitle: Text('ID: ${widget.flag.id}'),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Icon(Icons.flag),
+                SizedBox(width: 8),
+                Flexible(child: Text(widget.flag.name, softWrap: true)),
+              ],
+            ),
+            Divider(height: 4, color: Colors.grey),
+            FlagBadges(flag: widget.flag),
+          ],
+        ),
       ),
     );
   }
