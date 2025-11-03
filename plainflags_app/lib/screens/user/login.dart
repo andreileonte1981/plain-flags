@@ -4,6 +4,7 @@ import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
+import 'package:plainflags_app/screens/user/register.dart';
 import 'package:plainflags_app/utils/emailcheck.dart';
 
 class Login extends ConsumerStatefulWidget {
@@ -160,9 +161,11 @@ class _LoginState extends ConsumerState<Login> {
                           : ElevatedButton(
                               onPressed: () async {
                                 final registerResult =
-                                    await Navigator.pushNamed(
+                                    await Navigator.push<dynamic>(
                                       context,
-                                      '/register',
+                                      MaterialPageRoute(
+                                        builder: (context) => const Register(),
+                                      ),
                                     );
 
                                 if (registerResult != null) {

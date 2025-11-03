@@ -189,7 +189,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                   context,
                   MaterialPageRoute(builder: (context) => const Me()),
                 );
-                if (currentEmail.isEmpty) {
+                if (currentEmail != null && currentEmail.isEmpty) {
                   showLoginScreen();
                 }
               },
