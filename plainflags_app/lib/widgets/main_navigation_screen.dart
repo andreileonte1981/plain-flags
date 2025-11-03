@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/connect.dart';
 import 'package:plainflags_app/screens/flags/flags.dart';
 import 'package:plainflags_app/screens/constraints/constraints.dart';
 import 'package:plainflags_app/screens/user/login.dart';
-import 'package:plainflags_app/utils/client.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -33,23 +33,18 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   Future<void> checkExistingUser() async {
-    final storage = FlutterSecureStorage(
-      aOptions: const AndroidOptions(encryptedSharedPreferences: true),
-    );
-
-    final email = await storage.read(key: 'email');
-    final password = await storage.read(key: 'password');
-
-    if (email == null || password == null) {
-      // Push modal login screen
-      showLoginScreen();
+    if (UserStorage.email == null || UserStorage.password == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Push modal login screen
+        showLoginScreen();
+      });
       return;
     }
 
     try {
       final response = await Client.post('users/login', {
-        'email': email,
-        'password': password,
+        'email': UserStorage.email,
+        'password': UserStorage.password,
       }, null);
 
       if (response.statusCode == 200) {
@@ -155,9 +150,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       return;
     }
 
-    Client.setBaseUrl('');
+    Client.clearBaseUrl();
 
-    // TODO: also log out if there's a user
+    ref.read(userStatusNotifierProvider.notifier).setLoggedOut();
+    await UserStorage.clear();
 
     setState(() {
       showConnectScreen();

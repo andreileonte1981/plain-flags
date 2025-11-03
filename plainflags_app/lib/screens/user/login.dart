@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/utils/emailcheck.dart';
 
-import '../../utils/client.dart';
+import '../../globals/client.dart';
 
 class Login extends ConsumerStatefulWidget {
   const Login({super.key});
@@ -51,17 +52,11 @@ class _LoginState extends ConsumerState<Login> {
 
         ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
 
-        final storage = FlutterSecureStorage(
-          aOptions: const AndroidOptions(encryptedSharedPreferences: true),
-        );
-
         if (mounted) {
           Navigator.pop(context, email);
         }
 
-        // Store these securely for next app start
-        await storage.write(key: 'email', value: email);
-        await storage.write(key: 'password', value: _password);
+        await UserStorage().save(email, _password);
       } else {
         // Handle error response
         final errorData = response.body as Map<String, dynamic>;
@@ -155,44 +150,47 @@ class _LoginState extends ConsumerState<Login> {
                             _signIn();
                           }
                         },
-                        child: const Text('Sign In'),
+                        child: const Text('Log In'),
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () async {
-                          final registerResult = await Navigator.pushNamed(
-                            context,
-                            '/register',
-                          );
-
-                          if (registerResult != null) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Successfully signed up! Please sign in with your new account',
-                                  ),
-                                ),
-                              );
-                            }
-                            if (registerResult is String) {
-                              if (context.mounted) {
-                                setState(() {
-                                  _email = registerResult;
-                                  _emailController.text = registerResult;
-
-                                  if (context.mounted) {
-                                    FocusScope.of(
+                      Capabilities.disableUserRegistration
+                          ? const SizedBox.shrink()
+                          : ElevatedButton(
+                              onPressed: () async {
+                                final registerResult =
+                                    await Navigator.pushNamed(
                                       context,
-                                    ).requestFocus(_passwordFocusNode);
+                                      '/register',
+                                    );
+
+                                if (registerResult != null) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Successfully signed up! Please sign in with your new account',
+                                        ),
+                                      ),
+                                    );
                                   }
-                                });
-                              }
-                            }
-                          }
-                        },
-                        child: const Text("Don't have an account? Sign Up"),
-                      ),
+                                  if (registerResult is String) {
+                                    if (context.mounted) {
+                                      setState(() {
+                                        _email = registerResult;
+                                        _emailController.text = registerResult;
+
+                                        if (context.mounted) {
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(_passwordFocusNode);
+                                        }
+                                      });
+                                    }
+                                  }
+                                }
+                              },
+                              child: const Text("Register"),
+                            ),
                     ],
                   ),
                 ),

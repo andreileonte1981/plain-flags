@@ -11,8 +11,12 @@ class Response {
 }
 
 class Client {
+  static String _baseUrl = '';
+
   static init() async {
-    final FlutterSecureStorage storage = const FlutterSecureStorage();
+    final FlutterSecureStorage storage = const FlutterSecureStorage(
+      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    );
 
     dlog('Initializing client');
 
@@ -25,10 +29,25 @@ class Client {
     }
   }
 
-  static String _baseUrl = '';
-
   static void setBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
+  }
+
+  static Future<void> saveBaseUrl() async {
+    final FlutterSecureStorage storage = const FlutterSecureStorage(
+      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    );
+
+    await storage.write(key: 'api_url', value: _baseUrl);
+  }
+
+  static void clearBaseUrl() {
+    _baseUrl = "";
+
+    final FlutterSecureStorage storage = const FlutterSecureStorage(
+      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    );
+    storage.delete(key: 'api_url');
   }
 
   static String apiUrl() {

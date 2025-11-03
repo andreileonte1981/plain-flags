@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:plainflags_app/utils/client.dart';
+import 'package:plainflags_app/globals/capabilities.dart';
+import 'package:plainflags_app/utils/dlog.dart';
+
+import '../globals/client.dart';
 
 class Connect extends StatefulWidget {
   const Connect({super.key});
@@ -20,6 +22,8 @@ class _ConnectState extends State<Connect> {
     super.initState();
     // Pre-fill with existing API URL if available
     _apiUrlController.text = Client.apiUrl();
+
+    _apiUrlController.text = 'http://192.168.0.60:5000'; // TODO: remove
   }
 
   @override
@@ -29,15 +33,19 @@ class _ConnectState extends State<Connect> {
     super.dispose();
   }
 
-  void authenticate(String passkey) async {
+  Future<void> authenticate(String passkey) async {
     try {
       final authResponse = await Client.post("dashauth", {
         'passkey': passkey,
       }, null);
       if (authResponse.statusCode == 200) {
-        final FlutterSecureStorage storage = const FlutterSecureStorage();
+        dlog('Auth response: ${authResponse.body}');
 
-        storage.write(key: 'api_url', value: Client.apiUrl());
+        Capabilities.setDisableUserRegistration(
+          authResponse.body['disableUserRegistration'] ?? false,
+        );
+
+        Capabilities.save();
 
         if (mounted) Navigator.pop(context, true);
 
@@ -77,12 +85,14 @@ class _ConnectState extends State<Connect> {
     final apiUrl = _apiUrlController.text.trim();
 
     Client.setBaseUrl('$apiUrl/api');
+    Client.saveBaseUrl();
 
     authenticate(_passkeyController.text.trim());
   }
 
   void _handleDemo() {
     Client.setBaseUrl('https://demoservice.plainflags.dev/api');
+    Client.saveBaseUrl();
 
     Navigator.pop(context, true);
   }

@@ -11,7 +11,7 @@ export async function dashauthRoutes(server: FastifyInstance) {
         request: FastifyRequest<{ Body: { passkey: string } }>,
         reply: FastifyReply) => {
         if (request.body.passkey === Config.defaultDashboardPasskey) {
-            return { success: true }
+            return { success: true, disableUserRegistration: !!process.env.DISABLE_USER_REGISTRATION }
         } else {
             throw new Error("Auth error")
         }
@@ -58,7 +58,8 @@ export async function dashauthRoutes(server: FastifyInstance) {
         reply.code(201).send({
             token, user: {
                 email: user.email, role: user.role, tempPassword
-            }
+            },
+            disableUserRegistration: !!process.env.DISABLE_USER_REGISTRATION
         })
     })
 }
