@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Plain Flags',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 215, 253, 243),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: AppBarTheme(
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
           foregroundColor: const Color.fromARGB(255, 0, 29, 24),
@@ -58,8 +58,12 @@ class MyApp extends StatelessWidget {
         ),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          selectedItemColor: const Color.fromARGB(255, 0, 147, 122),
-          unselectedItemColor: const Color.fromARGB(255, 0, 88, 29),
+          unselectedLabelStyle: TextStyle(
+            color: const Color.fromARGB(255, 73, 73, 73),
+          ),
+          selectedLabelStyle: TextStyle(
+            color: const Color.fromARGB(255, 20, 20, 20),
+          ),
         ),
         useMaterial3: true,
       ),

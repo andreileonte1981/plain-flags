@@ -200,9 +200,20 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Flags'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shield),
+              icon: Icon(Icons.flag, color: Color.fromARGB(255, 0, 63, 52)),
+              activeIcon: Icon(
+                Icons.flag,
+                color: Color.fromARGB(255, 0, 147, 122),
+              ),
+              label: 'Flags',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shield, color: Color.fromARGB(255, 110, 0, 124)),
+              activeIcon: Icon(
+                Icons.shield,
+                color: Color.fromARGB(255, 173, 0, 196),
+              ),
               label: 'Constraints',
             ),
           ],
