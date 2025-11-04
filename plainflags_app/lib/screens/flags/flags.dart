@@ -27,6 +27,37 @@ class _FlagsState extends ConsumerState<Flags> {
   bool showOnlyActive = false;
   bool showOnlyStale = false;
 
+  TextEditingController nameFilterController = TextEditingController();
+  TextEditingController constraintFilterController = TextEditingController();
+
+  List<Flag> get filteredFlags {
+    return flags.where((flag) {
+      final matchesName = flag.name.toLowerCase().contains(nameSearchQuery);
+
+      final matchesConstraint =
+          constraintSearchQuery.isEmpty ||
+          (constraintSearchQuery.isNotEmpty &&
+              flag.constraints.any(
+                (constraint) =>
+                    constraint.description.toLowerCase().contains(
+                      constraintSearchQuery,
+                    ) ||
+                    constraint.key.toLowerCase().contains(
+                      constraintSearchQuery,
+                    ) ||
+                    constraint.values
+                        .join('')
+                        .toLowerCase()
+                        .contains(constraintSearchQuery),
+              ));
+
+      final matchesActive = !showOnlyActive || (showOnlyActive && flag.isOn);
+      final matchesStale = !showOnlyStale || (showOnlyStale && flag.stale);
+
+      return matchesName && matchesConstraint && matchesActive && matchesStale;
+    }).toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -149,6 +180,7 @@ class _FlagsState extends ConsumerState<Flags> {
                         child: Column(
                           children: [
                             TextField(
+                              controller: nameFilterController,
                               decoration: InputDecoration(
                                 labelText: 'Name filter',
                                 border: OutlineInputBorder(),
@@ -158,6 +190,7 @@ class _FlagsState extends ConsumerState<Flags> {
                                     if (mounted) {
                                       setState(() {
                                         nameSearchQuery = '';
+                                        nameFilterController.clear();
                                       });
                                     }
                                   },
@@ -173,6 +206,7 @@ class _FlagsState extends ConsumerState<Flags> {
                             ),
                             SizedBox(height: 4),
                             TextField(
+                              controller: constraintFilterController,
                               decoration: InputDecoration(
                                 labelText: 'Constraint filter',
                                 border: OutlineInputBorder(),
@@ -182,6 +216,7 @@ class _FlagsState extends ConsumerState<Flags> {
                                     if (mounted) {
                                       setState(() {
                                         constraintSearchQuery = '';
+                                        constraintFilterController.clear();
                                       });
                                     }
                                   },
@@ -245,10 +280,12 @@ class _FlagsState extends ConsumerState<Flags> {
                       ),
                     ),
                   if (!isLoading && flags.isEmpty) Text('No flags available'),
-                  if (flags.isNotEmpty)
+                  if (!isLoading && flags.isNotEmpty && filteredFlags.isEmpty)
+                    Text('No matches'),
+                  if (filteredFlags.isNotEmpty)
                     Expanded(
                       child: ImplicitlyAnimatedList<Flag>(
-                        items: flags,
+                        items: filteredFlags,
                         areItemsTheSame: (a, b) => a.id == b.id,
                         itemBuilder: (context, animation, flag, index) {
                           return SizeFadeTransition(
