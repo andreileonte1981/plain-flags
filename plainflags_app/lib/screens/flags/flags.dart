@@ -59,6 +59,23 @@ class _FlagsState extends ConsumerState<Flags> {
     }).toList();
   }
 
+  String filterSummary() {
+    List<String> parts = [];
+    if (showOnlyActive) {
+      parts.add('Active');
+    }
+    if (showOnlyStale) {
+      parts.add('Stale');
+    }
+    if (nameSearchQuery.isNotEmpty) {
+      parts.add('"$nameSearchQuery"');
+    }
+    if (constraintSearchQuery.isNotEmpty) {
+      parts.add('"$constraintSearchQuery"');
+    }
+    return parts.join(', ');
+  }
+
   bool anyFilters() {
     return nameSearchQuery.isNotEmpty ||
         constraintSearchQuery.isNotEmpty ||
@@ -196,6 +213,13 @@ class _FlagsState extends ConsumerState<Flags> {
                 children: [
                   if (showFilterPanel)
                     Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: const Color.fromARGB(255, 0, 139, 105),
+                          width: 2.0,
+                        ),
+                      ),
+                      color: const Color.fromARGB(255, 189, 255, 239),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -204,6 +228,8 @@ class _FlagsState extends ConsumerState<Flags> {
                               controller: nameFilterController,
                               decoration: InputDecoration(
                                 labelText: 'Name filter',
+                                filled: true,
+                                fillColor: Colors.white,
                                 border: OutlineInputBorder(),
                                 suffixIcon: IconButton(
                                   icon: Icon(Icons.clear),
@@ -230,6 +256,8 @@ class _FlagsState extends ConsumerState<Flags> {
                               controller: constraintFilterController,
                               decoration: InputDecoration(
                                 labelText: 'Constraint filter',
+                                filled: true,
+                                fillColor: Colors.white,
                                 border: OutlineInputBorder(),
                                 suffixIcon: IconButton(
                                   icon: Icon(Icons.clear),
@@ -313,7 +341,12 @@ class _FlagsState extends ConsumerState<Flags> {
                           children: [
                             Icon(Icons.search_off),
                             SizedBox(width: 8),
-                            Text('Clear all filters'),
+                            Expanded(
+                              child: Text(
+                                filterSummary(),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                           ],
                         ),
                       ),
