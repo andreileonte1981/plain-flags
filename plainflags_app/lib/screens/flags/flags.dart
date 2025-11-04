@@ -176,6 +176,7 @@ class _FlagsState extends ConsumerState<Flags> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'create_flag',
             onPressed: () {
               setState(() {
                 showCreationPanel = !showCreationPanel;
@@ -185,6 +186,7 @@ class _FlagsState extends ConsumerState<Flags> {
           ),
           SizedBox(width: 16),
           FloatingActionButton(
+            heroTag: 'filter_flags',
             onPressed: () {
               setState(() {
                 showFilterPanel = !showFilterPanel;
@@ -194,6 +196,7 @@ class _FlagsState extends ConsumerState<Flags> {
           ),
           SizedBox(width: 16),
           FloatingActionButton(
+            heroTag: 'refresh_flags',
             onPressed: () {
               fetchFlags();
             },
