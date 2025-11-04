@@ -22,6 +22,7 @@ class _FlagsState extends ConsumerState<Flags> {
   bool failedFetching = false;
 
   bool showFilterPanel = false;
+
   String nameSearchQuery = '';
   String constraintSearchQuery = '';
   bool showOnlyActive = false;
@@ -56,6 +57,26 @@ class _FlagsState extends ConsumerState<Flags> {
 
       return matchesName && matchesConstraint && matchesActive && matchesStale;
     }).toList();
+  }
+
+  bool anyFilters() {
+    return nameSearchQuery.isNotEmpty ||
+        constraintSearchQuery.isNotEmpty ||
+        showOnlyActive ||
+        showOnlyStale;
+  }
+
+  void clearFilters() {
+    if (mounted) {
+      setState(() {
+        nameSearchQuery = '';
+        constraintSearchQuery = '';
+        showOnlyActive = false;
+        showOnlyStale = false;
+        nameFilterController.clear();
+        constraintFilterController.clear();
+      });
+    }
   }
 
   @override
@@ -231,7 +252,7 @@ class _FlagsState extends ConsumerState<Flags> {
                               },
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
@@ -282,6 +303,21 @@ class _FlagsState extends ConsumerState<Flags> {
                   if (!isLoading && flags.isEmpty) Text('No flags available'),
                   if (!isLoading && flags.isNotEmpty && filteredFlags.isEmpty)
                     Text('No matches'),
+                  if (anyFilters() && !showFilterPanel)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ElevatedButton(
+                        onPressed: clearFilters,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off),
+                            SizedBox(width: 8),
+                            Text('Clear all filters'),
+                          ],
+                        ),
+                      ),
+                    ),
                   if (filteredFlags.isNotEmpty)
                     Expanded(
                       child: ImplicitlyAnimatedList<Flag>(
