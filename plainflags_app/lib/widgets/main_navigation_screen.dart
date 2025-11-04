@@ -35,9 +35,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   Future<void> checkExistingUser() async {
-    if (UserStorage.email == null || UserStorage.password == null) {
+    final connectionUrl = Connections.currentConectionKey;
+    final creds = UserStorage.credentialsForConnection(connectionUrl);
+    if (creds == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Push modal login screen
         showLoginScreen();
       });
       return;
@@ -45,8 +46,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
     try {
       final response = await Client.post('users/login', {
-        'email': UserStorage.email,
-        'password': UserStorage.password,
+        'email': creds.email,
+        'password': creds.password,
       }, null);
 
       if (response.statusCode == 200) {
@@ -162,9 +163,6 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     }
 
     Client.clearBaseUrl();
-
-    ref.read(userStatusNotifierProvider.notifier).setLoggedOut();
-    await UserStorage.clear();
 
     setState(() {
       showConnectScreen();

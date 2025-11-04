@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 
@@ -78,7 +79,9 @@ class _MeState extends ConsumerState<Me> {
     );
 
     if (confirm == true) {
-      await UserStorage.clear();
+      final connection = Connections.currentConectionKey;
+      UserStorage.forgetCredentialsForConnection(connection);
+      UserStorage.save();
 
       ref.read(userStatusNotifierProvider.notifier).setLoggedOut();
 
@@ -91,81 +94,89 @@ class _MeState extends ConsumerState<Me> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(ref.read(userStatusNotifierProvider).email)),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Change password form
-            Form(
-              key: _formGlobalKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Current Password',
+      appBar: AppBar(
+        title: Text(
+          ref.read(userStatusNotifierProvider).email,
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Change password form
+              Form(
+                key: _formGlobalKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Current Password',
+                      ),
+                      obscureText: true,
+                      onChanged: (value) {
+                        _currentPassword = value;
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your current password';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    onChanged: (value) {
-                      _currentPassword = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your current password';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'New Password',
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'New Password',
+                      ),
+                      obscureText: true,
+                      onChanged: (value) {
+                        _newPassword = value;
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a new password';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    onChanged: (value) {
-                      _newPassword = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a new password';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm New Password',
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm New Password',
+                      ),
+                      obscureText: true,
+                      onChanged: (value) {},
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your new password';
+                        }
+                        if (value != _newPassword) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your new password';
-                      }
-                      if (value != _newPassword) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formGlobalKey.currentState?.validate() == true) {
-                        _changePassword();
-                      }
-                    },
-                    child: const Text('Change Password'),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formGlobalKey.currentState?.validate() == true) {
+                          _changePassword();
+                        }
+                      },
+                      child: const Text('Change Password'),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Divider(height: 40, color: Theme.of(context).colorScheme.primary),
-            ElevatedButton(
-              onPressed: () {
-                handleLogout();
-              },
-              child: Text('Log out'),
-            ),
-          ],
+              Divider(height: 40, color: Theme.of(context).colorScheme.primary),
+              ElevatedButton(
+                onPressed: () {
+                  handleLogout();
+                },
+                child: Text('Log out'),
+              ),
+            ],
+          ),
         ),
       ),
     );

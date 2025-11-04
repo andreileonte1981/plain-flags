@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
@@ -59,7 +60,13 @@ class _LoginState extends ConsumerState<Login> {
           Navigator.pop(context, email);
         }
 
-        await UserStorage.save(email, _password);
+        final connectionKey = Connections.currentConectionKey;
+        UserStorage.addCredentialsForConnection(
+          connectionKey,
+          email,
+          _password,
+        );
+        await UserStorage.save();
       } else {
         // Handle error response
         final errorData = response.body as Map<String, dynamic>;
@@ -130,9 +137,6 @@ class _LoginState extends ConsumerState<Login> {
     }
 
     Client.clearBaseUrl();
-
-    ref.read(userStatusNotifierProvider.notifier).setLoggedOut();
-    await UserStorage.clear();
 
     if (mounted) {
       setState(() {
