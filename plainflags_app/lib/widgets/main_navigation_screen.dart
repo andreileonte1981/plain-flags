@@ -181,17 +181,27 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             children: [
               Image.asset('assets/logo.png', height: 32),
               const SizedBox(width: 8),
-              Text(
-                apiUrl.isEmpty ? 'Not Connected' : apiUrl,
-                style: TextStyle(fontSize: 12),
-              ),
+              apiUrl.isEmpty
+                  ? Text(
+                      'Not Connected',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color.fromARGB(255, 200, 0, 0),
+                      ),
+                    )
+                  : Text(apiUrl, style: TextStyle(fontSize: 12)),
             ],
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.link_off),
-              onPressed: confirmDisconnect,
-            ),
+            apiUrl.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.link_off),
+                    onPressed: confirmDisconnect,
+                  )
+                : IconButton(
+                    onPressed: showConnectScreen,
+                    icon: Icon(Icons.leak_add),
+                  ),
             IconButton(
               icon: const Icon(Icons.account_circle),
               onPressed: () async {
