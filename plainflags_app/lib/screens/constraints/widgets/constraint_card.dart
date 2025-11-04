@@ -25,9 +25,19 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
         side: BorderSide(color: Color.fromARGB(255, 255, 193, 247), width: 2),
       ),
+      color: Color.fromARGB(255, 255, 240, 251),
       child: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Text(constraint.description),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(Icons.front_hand, color: Color.fromARGB(255, 136, 136, 136)),
+            SizedBox(width: 8),
+            Flexible(child: Text(constraint.description, softWrap: true)),
+            SizedBox(width: 8),
+            IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+          ],
+        ),
       ),
     );
   }

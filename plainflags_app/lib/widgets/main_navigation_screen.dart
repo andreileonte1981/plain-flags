@@ -219,10 +219,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
           currentIndex: _currentIndex,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.flag, color: Color.fromARGB(255, 0, 63, 52)),
+              icon: Icon(Icons.flag, color: Color.fromARGB(255, 0, 109, 91)),
               activeIcon: Icon(
                 Icons.flag,
-                color: Color.fromARGB(255, 0, 147, 122),
+                color: Color.fromARGB(255, 0, 236, 197),
               ),
               label: 'Flags',
             ),

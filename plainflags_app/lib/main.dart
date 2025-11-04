@@ -28,19 +28,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const barColor = Color.fromARGB(255, 51, 51, 51);
     return MaterialApp(
       title: 'Plain Flags',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: AppBarTheme(
-          backgroundColor: const Color.fromARGB(255, 189, 255, 239),
-          foregroundColor: const Color.fromARGB(255, 0, 29, 24),
+          backgroundColor: barColor,
+          foregroundColor: const Color.fromARGB(255, 187, 255, 244),
           titleTextStyle: const TextStyle(
-            color: Color.fromARGB(255, 0, 29, 24),
+            color: Color.fromARGB(255, 187, 255, 244),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: barColor,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+        ),
+
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color.fromARGB(255, 0, 147, 122),
@@ -60,15 +67,6 @@ class MyApp extends StatelessWidget {
           backgroundColor: const Color.fromARGB(255, 215, 253, 242),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-          ),
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: const Color.fromARGB(255, 189, 255, 239),
-          unselectedLabelStyle: TextStyle(
-            color: const Color.fromARGB(255, 73, 73, 73),
-          ),
-          selectedLabelStyle: TextStyle(
-            color: const Color.fromARGB(255, 20, 20, 20),
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
