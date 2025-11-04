@@ -63,8 +63,6 @@ class Connections {
       }
     }
 
-    dlog('Loaded connections: $connections');
-
     final currentKey = await storage.read(key: 'currentConnection');
     if (currentKey != null) {
       select(currentKey);
