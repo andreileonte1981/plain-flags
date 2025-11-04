@@ -43,8 +43,6 @@ class _ConnectState extends State<Connect> {
         Connections.select(Client.apiUrlBase());
         Connections.save();
 
-        dlog('Auth response: ${authResponse.body}');
-
         Capabilities.setDisableUserRegistration(
           authResponse.body['disableUserRegistration'] ?? false,
         );
