@@ -8,6 +8,8 @@ class Flag {
   final String id;
   final String name;
   final bool isOn;
+
+  @JsonKey(defaultValue: false)
   final bool stale;
 
   @JsonKey(defaultValue: [])

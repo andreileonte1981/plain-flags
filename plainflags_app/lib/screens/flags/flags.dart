@@ -350,7 +350,7 @@ class _FlagsState extends ConsumerState<Flags> {
                         ),
                       ),
                     ),
-                  if (!isLoading && flags.isEmpty) Text('No flags available'),
+                  if (!isLoading && flags.isEmpty) Text('No flags'),
                   if (anyFilters() && !showFilterPanel)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),

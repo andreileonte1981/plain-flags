@@ -10,7 +10,7 @@ Flag _$FlagFromJson(Map<String, dynamic> json) => Flag(
   id: json['id'] as String,
   name: json['name'] as String,
   isOn: json['isOn'] as bool,
-  stale: json['stale'] as bool,
+  stale: json['stale'] as bool? ?? false,
   constraints:
       (json['constraints'] as List<dynamic>?)
           ?.map((e) => Constraint.fromJson(e as Map<String, dynamic>))
