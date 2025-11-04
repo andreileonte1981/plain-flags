@@ -59,7 +59,7 @@ class _LoginState extends ConsumerState<Login> {
           Navigator.pop(context, email);
         }
 
-        await UserStorage().save(email, _password);
+        await UserStorage.save(email, _password);
       } else {
         // Handle error response
         final errorData = response.body as Map<String, dynamic>;
@@ -83,28 +83,95 @@ class _LoginState extends ConsumerState<Login> {
     }
   }
 
+  Future<void> confirmDisconnect() async {
+    final confirm = await showDialog<bool?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Disconnect', textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Divider(height: 4, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 20),
+              Text(
+                'Disconnect from ${Client.apiUrlShort()}?',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Divider(height: 4, color: Theme.of(context).colorScheme.primary),
+            ],
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('Stay'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: const Text('Disconnect'),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) {
+      return;
+    }
+
+    Client.clearBaseUrl();
+
+    ref.read(userStatusNotifierProvider.notifier).setLoggedOut();
+    await UserStorage.clear();
+
+    if (mounted) {
+      setState(() {
+        Navigator.pop(context, "");
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.link_off),
+              onPressed: confirmDisconnect,
+            ),
+          ],
+          title: Row(
+            children: [
+              Image.asset('assets/logo.png', width: 32, height: 32),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Log in to ${Client.apiUrlShort()}',
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Image.asset('assets/logo.png', width: 32, height: 32),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Log in to ${Client.apiUrlShort()}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
                 Form(
                   key: _formGlobalKey,
                   child: Column(

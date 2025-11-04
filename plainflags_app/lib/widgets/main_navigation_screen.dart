@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/connect.dart';
@@ -26,7 +27,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   void initState() {
     super.initState();
 
-    final apiUrlOk = checkExistingApiUrl();
+    final apiUrlOk = checkExistingConnection();
 
     if (apiUrlOk) {
       checkExistingUser();
@@ -66,23 +67,32 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     }
   }
 
-  void showLoginScreen() {
+  Future<void> showLoginScreen() async {
     if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Login()),
-      );
+      final String loginEmail =
+          (await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          )) ??
+          '';
+
+      if (loginEmail.isEmpty) {
+        showConnectScreen();
+      }
     }
   }
 
-  bool checkExistingApiUrl() {
-    if (Client.apiUrl().isEmpty) {
+  bool checkExistingConnection() {
+    if (Connections.currentConectionKey.isEmpty) {
       // Defer navigation until after the current build cycle completes
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showConnectScreen();
       });
       return false;
     }
+
+    Client.setBaseUrl('${Connections.currentConectionKey}/api');
+
     return true;
   }
 

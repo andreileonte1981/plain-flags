@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
-import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/widgets/main_navigation_screen.dart';
 
@@ -14,11 +14,11 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  await Connections.init();
+
   await Capabilities.init();
 
-  await Client.init();
-
-  await UserStorage().init();
+  await UserStorage.init();
 
   runApp(const ProviderScope(child: MyApp()));
 }

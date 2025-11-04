@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class Connect extends StatefulWidget {
@@ -22,7 +23,7 @@ class _ConnectState extends State<Connect> {
     // Pre-fill with existing API URL if available
     _apiUrlController.text = Client.apiUrl();
 
-    _apiUrlController.text = 'http://192.168.0.60:5000'; // TODO: remove
+    _apiUrlController.text = Connections.currentConectionKey;
   }
 
   @override
@@ -38,6 +39,10 @@ class _ConnectState extends State<Connect> {
         'passkey': passkey,
       }, null);
       if (authResponse.statusCode == 200) {
+        Connections.add(Client.apiUrlBase(), passkey);
+        Connections.select(Client.apiUrlBase());
+        Connections.save();
+
         dlog('Auth response: ${authResponse.body}');
 
         Capabilities.setDisableUserRegistration(
@@ -50,8 +55,10 @@ class _ConnectState extends State<Connect> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Connected to Plain Flags service'),
+            SnackBar(
+              content: Text(
+                'Connected to Plain Flags service at "${Client.apiUrlShort()}"',
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -84,16 +91,75 @@ class _ConnectState extends State<Connect> {
     final apiUrl = _apiUrlController.text.trim();
 
     Client.setBaseUrl('$apiUrl/api');
-    Client.saveBaseUrl();
 
     authenticate(_passkeyController.text.trim());
   }
 
   void _handleDemo() {
     Client.setBaseUrl('https://demoservice.plainflags.dev/api');
-    Client.saveBaseUrl();
 
     Navigator.pop(context, true);
+  }
+
+  Future<void> forgetConnection(String apiUrl) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Forget Connection'),
+          content: Text(
+            'Are you sure you want to forget the connection to "$apiUrl"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Forget'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      Connections.forget(apiUrl);
+      await Connections.save();
+      setState(() {});
+    }
+  }
+
+  Future<void> confirmConnection(String apiUrl) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Connection'),
+          content: Text('Connect to the service at "$apiUrl"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Connect'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      Connections.select(apiUrl);
+      Connections.save();
+
+      Client.setBaseUrl('$apiUrl/api');
+      final passkey = Connections.connections[apiUrl] ?? '';
+      authenticate(passkey);
+    }
   }
 
   @override
@@ -150,10 +216,58 @@ class _ConnectState extends State<Connect> {
                   },
                   child: const Text('Connect'),
                 ),
-                const SizedBox(height: 16),
+                Divider(height: 32),
                 ElevatedButton(
                   onPressed: _handleDemo,
                   child: const Text('Demo'),
+                ),
+                Divider(height: 32),
+                Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: Connections.connections.keys.length,
+                      itemBuilder: (context, index) {
+                        final apiUrl = Connections.connections.keys.elementAt(
+                          index,
+                        );
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: const Color.fromARGB(255, 0, 139, 105),
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    apiUrl,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    forgetConnection(apiUrl);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.leak_add),
+                                  onPressed: () {
+                                    confirmConnection(apiUrl);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

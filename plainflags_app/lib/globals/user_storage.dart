@@ -4,7 +4,7 @@ class UserStorage {
   static String? email;
   static String? password;
 
-  Future<void> init() async {
+  static Future<void> init() async {
     // Load user credentials from secure storage
     final storage = FlutterSecureStorage(
       aOptions: const AndroidOptions(encryptedSharedPreferences: true),
@@ -14,7 +14,7 @@ class UserStorage {
     password = await storage.read(key: 'password');
   }
 
-  Future<void> save(String emailValue, String passwordValue) async {
+  static Future<void> save(String emailValue, String passwordValue) async {
     // Save user credentials to secure storage
     final storage = FlutterSecureStorage(
       aOptions: const AndroidOptions(encryptedSharedPreferences: true),
