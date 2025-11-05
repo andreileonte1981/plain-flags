@@ -20,6 +20,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
 
   bool isLoading = false;
   bool failedFetching = false;
+  bool _showFABs = true;
 
   @override
   void initState() {
@@ -93,40 +94,58 @@ class _ConstraintsState extends ConsumerState<Constraints> {
     }
   }
 
+  void showFABs() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() {
+          _showFABs = true;
+        });
+      }
+    });
+  }
+
+  void hideFABs() {
+    setState(() {
+      _showFABs = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'create_constraint',
-            onPressed: () {
-              setState(() {});
-            },
-            backgroundColor: Color.fromARGB(255, 151, 0, 139),
-            child: Icon(Icons.add_circle_outline),
-          ),
-          SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: 'filter_constraints',
-            onPressed: () {
-              setState(() {});
-            },
-            backgroundColor: Color.fromARGB(255, 151, 0, 139),
-            child: Icon(Icons.search),
-          ),
-          SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: 'refresh_constraints',
-            onPressed: () {
-              fetchConstraints();
-            },
-            backgroundColor: Color.fromARGB(255, 151, 0, 139),
-            child: Icon(Icons.refresh),
-          ),
-        ],
-      ),
+      floatingActionButton: _showFABs
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'create_constraint',
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  backgroundColor: Color.fromARGB(255, 151, 0, 139),
+                  child: Icon(Icons.add_circle_outline),
+                ),
+                SizedBox(width: 16),
+                FloatingActionButton(
+                  heroTag: 'filter_constraints',
+                  onPressed: () {
+                    setState(() {});
+                  },
+                  backgroundColor: Color.fromARGB(255, 151, 0, 139),
+                  child: Icon(Icons.search),
+                ),
+                SizedBox(width: 16),
+                FloatingActionButton(
+                  heroTag: 'refresh_constraints',
+                  onPressed: () {
+                    fetchConstraints();
+                  },
+                  backgroundColor: Color.fromARGB(255, 151, 0, 139),
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            )
+          : null,
 
       body: failedFetching
           ? Center(
@@ -162,6 +181,8 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                               key: ValueKey(constraint.id),
                               constraint: constraint,
                               updateConstraints: fetchConstraints,
+                              showFABs: showFABs,
+                              hideFABs: hideFABs,
                             ),
                           );
                         },

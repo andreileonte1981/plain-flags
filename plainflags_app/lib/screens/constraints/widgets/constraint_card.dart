@@ -7,11 +7,15 @@ import 'package:plainflags_app/providers/user_status.dart';
 class ConstraintCard extends ConsumerStatefulWidget {
   final Constraint constraint;
   final VoidCallback updateConstraints;
+  final Function() showFABs;
+  final Function() hideFABs;
 
   const ConstraintCard({
     super.key,
     required this.constraint,
     required this.updateConstraints,
+    required this.showFABs,
+    required this.hideFABs,
   });
 
   @override
@@ -99,6 +103,7 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
 
     setState(() {
       editingValues = false;
+      widget.showFABs();
     });
 
     // Call the updateConstraints callback to notify parent widget
@@ -184,6 +189,7 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
                                     onPressed: () {
                                       setState(() {
                                         editingValues = false;
+                                        widget.showFABs();
                                       });
                                     },
                                     icon: Icon(Icons.highlight_off),
@@ -245,6 +251,7 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
                             onPressed: () {
                               setState(() {
                                 editingValues = true;
+                                widget.hideFABs();
                               });
                             },
                             icon: Icon(Icons.edit),
