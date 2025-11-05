@@ -80,13 +80,32 @@ class _LoginState extends ConsumerState<Login> {
         }
       }
     } catch (e) {
-      if (mounted) {
-        FocusManager.instance.primaryFocus?.unfocus();
+      final message =
+          (e as dynamic).message ?? 'An error occurred during login.';
 
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Signing in failed')));
-      }
+      showConnectionError(message);
+    }
+  }
+
+  Future<void> showConnectionError(String message) async {
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 

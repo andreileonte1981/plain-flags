@@ -64,7 +64,36 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         throw Exception('Failed to authenticate user');
       }
     } catch (e) {
-      if (mounted) setState(() {});
+      final message =
+          (e as dynamic).message ?? 'An error occurred during login.';
+
+      showConnectionError(message);
+    }
+  }
+
+  Future<void> showConnectionError(String message) async {
+    if (mounted) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    if (mounted) {
+      showLoginScreen();
     }
   }
 
