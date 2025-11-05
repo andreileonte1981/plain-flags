@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plainflags_app/domain/flag.dart';
+import 'package:plainflags_app/screens/flags/widgets/flag_badge.dart';
 
 class FlagBadges extends StatefulWidget {
   final Flag flag;
@@ -18,9 +19,10 @@ class _FlagBadgesState extends State<FlagBadges> {
     return Row(
       children: [
         flag.isOn
-            ? Chip(
-                labelPadding: EdgeInsets.all(2),
-                label: Row(
+            ? FlagBadge(
+                backgroundColor: const Color.fromARGB(255, 206, 255, 207),
+                strokeColor: const Color.fromARGB(255, 134, 179, 135),
+                child: Row(
                   children: [
                     Text(
                       'on',
@@ -33,11 +35,11 @@ class _FlagBadgesState extends State<FlagBadges> {
                     Icon(Icons.flag, color: Colors.green[800], size: 16),
                   ],
                 ),
-                backgroundColor: const Color.fromARGB(255, 206, 255, 207),
               )
-            : Chip(
-                labelPadding: EdgeInsets.all(2),
-                label: Row(
+            : FlagBadge(
+                backgroundColor: Colors.grey[400]!,
+                strokeColor: Colors.grey[600]!,
+                child: Row(
                   children: [
                     Text('off'),
                     SizedBox(width: 4),
@@ -51,13 +53,13 @@ class _FlagBadgesState extends State<FlagBadges> {
                     ),
                   ],
                 ),
-                backgroundColor: Colors.grey[400],
               ),
         if (flag.stale) SizedBox(width: 8),
         if (flag.stale)
-          Chip(
-            labelPadding: EdgeInsets.all(2),
-            label: Row(
+          FlagBadge(
+            backgroundColor: const Color.fromARGB(255, 255, 252, 203),
+            strokeColor: const Color.fromARGB(255, 185, 181, 147),
+            child: Row(
               children: [
                 Text(
                   'stale',
@@ -73,13 +75,13 @@ class _FlagBadgesState extends State<FlagBadges> {
                 ),
               ],
             ),
-            backgroundColor: const Color.fromARGB(255, 255, 252, 203),
           ),
         if (flag.constraints.isNotEmpty) SizedBox(width: 8),
         if (flag.constraints.isNotEmpty)
-          Chip(
-            labelPadding: EdgeInsets.all(2),
-            label: Row(
+          FlagBadge(
+            backgroundColor: const Color.fromARGB(255, 255, 223, 255),
+            strokeColor: const Color.fromARGB(255, 204, 179, 204),
+            child: Row(
               children: [
                 Text(
                   'constrained',
@@ -95,7 +97,6 @@ class _FlagBadgesState extends State<FlagBadges> {
                 ),
               ],
             ),
-            backgroundColor: const Color.fromARGB(255, 255, 223, 255),
           ),
       ],
     );
