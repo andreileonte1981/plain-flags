@@ -17,10 +17,41 @@ class ConstraintCard extends ConsumerStatefulWidget {
 }
 
 class _ConstraintCardState extends ConsumerState<ConstraintCard> {
+  bool editingValues = false;
+  bool savingValues = false;
+
+  Future<void> saveValues() async {
+    if (mounted) {
+      setState(() {
+        savingValues = true;
+      });
+    }
+
+    try {} catch (e) {
+    } finally {
+      if (mounted) {
+        setState(() {
+          savingValues = false;
+        });
+      }
+    }
+
+    setState(() {
+      editingValues = false;
+    });
+
+    // Call the updateConstraints callback to notify parent widget
+    widget.updateConstraints();
+  }
+
   @override
   Widget build(BuildContext context) {
+    String editedValues = widget.constraint.values.join(',\n');
     final constraint = widget.constraint;
-    bool editingValues = false;
+
+    TextEditingController valuesController = TextEditingController(
+      text: editedValues,
+    );
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -55,8 +86,70 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
             Divider(),
             Text('For: ${constraint.key}'),
             Text('Named:'),
-            editingValues
-                ? Row(children: [])
+            editingValues == true
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter values, comma separated',
+                          ),
+                          minLines: 3,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          controller: valuesController,
+                          autofocus: true,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      savingValues
+                          ? CircularProgressIndicator()
+                          : Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    borderRadius: BorderRadius.circular(4.0),
+                                    shape: BoxShape.rectangle,
+                                    border: Border.all(
+                                      color: Color.fromARGB(255, 50, 50, 50),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        editingValues = false;
+                                      });
+                                    },
+                                    icon: Icon(Icons.highlight_off),
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    borderRadius: BorderRadius.circular(4.0),
+                                    shape: BoxShape.rectangle,
+                                    border: Border.all(
+                                      color: Color.fromARGB(255, 50, 50, 50),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      saveValues();
+                                    },
+                                    icon: Icon(Icons.cloud_upload),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ],
+                  )
                 : Container(
                     margin: EdgeInsets.only(right: 8.0, top: 4.0, bottom: 4.0),
                     padding: EdgeInsets.symmetric(
@@ -88,13 +181,18 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
                             ),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {
+                                editingValues = true;
+                              });
+                            },
                             icon: Icon(Icons.edit),
                           ),
                         ),
                       ],
                     ),
                   ),
+            Divider(),
           ],
         ),
       ),
