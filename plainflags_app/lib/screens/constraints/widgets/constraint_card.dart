@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
+import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/user_status.dart';
 
 class ConstraintCard extends ConsumerStatefulWidget {
   final Constraint constraint;
@@ -20,14 +22,73 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
   bool editingValues = false;
   bool savingValues = false;
 
-  Future<void> saveValues() async {
+  bool checkValid(String newValues) {
+    if (newValues.split(',').any((v) => v.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Comma separated values required'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> saveValues(String newValues) async {
+    if (!checkValid(newValues)) {
+      return;
+    }
+
+    // Ask user for confirmation
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Save values?', style: TextStyle(fontWeight: FontWeight.bold)),
+            Divider(),
+            Text('Value changes are recorded in flag history.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Save'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) {
+      return;
+    }
+
     if (mounted) {
       setState(() {
         savingValues = true;
       });
     }
 
-    try {} catch (e) {
+    try {
+      await Client.post("constraints/values", {
+        'id': widget.constraint.id,
+        'values': newValues,
+      }, ref.read(userStatusNotifierProvider).token);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save constraint values'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -141,7 +202,7 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
                                   ),
                                   child: IconButton(
                                     onPressed: () {
-                                      saveValues();
+                                      saveValues(valuesController.text);
                                     },
                                     icon: Icon(Icons.cloud_upload),
                                   ),
