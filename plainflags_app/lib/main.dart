@@ -28,16 +28,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const barColor = Color.fromARGB(255, 51, 51, 51);
+    const barColor = Color.fromARGB(255, 219, 229, 255);
     return MaterialApp(
       title: 'Plain Flags',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: AppBarTheme(
           backgroundColor: barColor,
-          foregroundColor: const Color.fromARGB(255, 187, 255, 244),
+          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
           titleTextStyle: const TextStyle(
-            color: Color.fromARGB(255, 187, 255, 244),
+            color: Color.fromARGB(255, 0, 0, 0),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),

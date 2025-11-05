@@ -150,62 +150,70 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                 color: const Color.fromARGB(255, 219, 219, 219),
               ),
             if (flag.constraints.isNotEmpty)
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: BorderSide(
-                    color: const Color.fromARGB(255, 255, 167, 240),
-                    width: 1.0,
+              IgnorePointer(
+                ignoring: true,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                      color: const Color.fromARGB(255, 255, 167, 240),
+                      width: 1.0,
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: flag.constraints.length,
-                        itemBuilder: (context, index) {
-                          final constraint = flag.constraints[index];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.front_hand,
-                                    color: Color.fromARGB(255, 145, 0, 125),
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      constraint.description,
-                                      softWrap: true,
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 145, 0, 125),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: flag.constraints.length,
+                          itemBuilder: (context, index) {
+                            final constraint = flag.constraints[index];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.front_hand,
+                                      color: Color.fromARGB(255, 145, 0, 125),
+                                      size: 16,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        constraint.description,
+                                        softWrap: true,
+                                        style: TextStyle(
+                                          color: Color.fromARGB(
+                                            255,
+                                            145,
+                                            0,
+                                            125,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Text('For: ${constraint.key}'),
-                              Text('Named: ${constraint.values.join(', ')}'),
-                              if (index < flag.constraints.length - 1)
-                                Divider(
-                                  height: 4,
-                                  color: const Color.fromARGB(
-                                    255,
-                                    219,
-                                    219,
-                                    219,
-                                  ),
+                                  ],
                                 ),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
+                                Text('For: ${constraint.key}'),
+                                Text('Named: ${constraint.values.join(', ')}'),
+                                if (index < flag.constraints.length - 1)
+                                  Divider(
+                                    height: 4,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      219,
+                                      219,
+                                      219,
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
