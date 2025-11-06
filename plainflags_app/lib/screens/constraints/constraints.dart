@@ -237,104 +237,110 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                       color: const Color.fromARGB(255, 255, 223, 255),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
+                        child: Row(
                           children: [
-                            TextField(
-                              controller: descriptionFilterController,
-                              decoration: InputDecoration(
-                                labelText: 'Description filter',
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        descriptionSearchQuery = '';
-                                        descriptionFilterController.clear();
-                                      });
-                                    }
-                                  },
-                                ),
+                            Flexible(
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: descriptionFilterController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Description filter',
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: () {
+                                          if (mounted) {
+                                            setState(() {
+                                              descriptionSearchQuery = '';
+                                              descriptionFilterController
+                                                  .clear();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          descriptionSearchQuery = value
+                                              .toLowerCase();
+                                        });
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(height: 4),
+                                  TextField(
+                                    controller: keyFilterController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Key filter',
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: () {
+                                          if (mounted) {
+                                            setState(() {
+                                              keySearchQuery = '';
+                                              keyFilterController.clear();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          keySearchQuery = value.toLowerCase();
+                                        });
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(height: 4),
+                                  TextField(
+                                    controller: valuesFilterController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Values filter',
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: () {
+                                          if (mounted) {
+                                            setState(() {
+                                              valuesSearchQuery = '';
+                                              valuesFilterController.clear();
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          valuesSearchQuery = value
+                                              .toLowerCase();
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ],
                               ),
-                              onChanged: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    descriptionSearchQuery = value
-                                        .toLowerCase();
-                                  });
-                                }
-                              },
                             ),
-                            SizedBox(height: 4),
-                            TextField(
-                              controller: keyFilterController,
-                              decoration: InputDecoration(
-                                labelText: 'Key filter',
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        keySearchQuery = '';
-                                        keyFilterController.clear();
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              onChanged: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    keySearchQuery = value.toLowerCase();
-                                  });
-                                }
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  showFilterPanel = false;
+                                });
                               },
-                            ),
-                            SizedBox(height: 4),
-                            TextField(
-                              controller: valuesFilterController,
-                              decoration: InputDecoration(
-                                labelText: 'Values filter',
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
-                                suffixIcon: IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        valuesSearchQuery = '';
-                                        valuesFilterController.clear();
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              onChanged: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    valuesSearchQuery = value.toLowerCase();
-                                  });
-                                }
-                              },
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showFilterPanel = false;
-                                    });
-                                  },
-                                  icon: Icon(Icons.cancel),
-                                ),
-                              ],
+                              icon: Icon(Icons.cancel),
                             ),
                           ],
                         ),

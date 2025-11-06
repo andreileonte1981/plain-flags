@@ -249,6 +249,7 @@ class _FlagsState extends ConsumerState<Flags> {
                             TextField(
                               controller: nameFilterController,
                               decoration: InputDecoration(
+                                isDense: true,
                                 labelText: 'Name filter',
                                 filled: true,
                                 fillColor: Colors.white,
@@ -278,6 +279,7 @@ class _FlagsState extends ConsumerState<Flags> {
                               controller: constraintFilterController,
                               decoration: InputDecoration(
                                 labelText: 'Constraint filter',
+                                isDense: true,
                                 filled: true,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(),
