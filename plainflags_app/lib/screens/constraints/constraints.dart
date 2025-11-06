@@ -171,7 +171,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _showFABs
+      floatingActionButton: _showFABs && !showFilterPanel
           ? Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

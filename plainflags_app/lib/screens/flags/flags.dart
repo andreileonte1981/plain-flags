@@ -172,38 +172,40 @@ class _FlagsState extends ConsumerState<Flags> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'create_flag',
-            onPressed: () {
-              setState(() {
-                showCreationPanel = !showCreationPanel;
-              });
-            },
-            child: Icon(Icons.add_circle_outline),
-          ),
-          SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: 'filter_flags',
-            onPressed: () {
-              setState(() {
-                showFilterPanel = !showFilterPanel;
-              });
-            },
-            child: Icon(Icons.search),
-          ),
-          SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: 'refresh_flags',
-            onPressed: () {
-              fetchFlags();
-            },
-            child: Icon(Icons.refresh),
-          ),
-        ],
-      ),
+      floatingActionButton: showFilterPanel
+          ? null
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'create_flag',
+                  onPressed: () {
+                    setState(() {
+                      showCreationPanel = !showCreationPanel;
+                    });
+                  },
+                  child: Icon(Icons.add_circle_outline),
+                ),
+                SizedBox(width: 16),
+                FloatingActionButton(
+                  heroTag: 'filter_flags',
+                  onPressed: () {
+                    setState(() {
+                      showFilterPanel = !showFilterPanel;
+                    });
+                  },
+                  child: Icon(Icons.search),
+                ),
+                SizedBox(width: 16),
+                FloatingActionButton(
+                  heroTag: 'refresh_flags',
+                  onPressed: () {
+                    fetchFlags();
+                  },
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            ),
       body: failedFetching
           ? Center(
               child: Column(
