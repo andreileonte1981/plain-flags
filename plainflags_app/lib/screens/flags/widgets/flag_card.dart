@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/screens/flags/flag_details.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
@@ -111,7 +112,27 @@ class _FlagCardState extends ConsumerState<FlagCard> {
           children: [
             Row(
               children: [
-                Icon(Icons.flag, color: const Color.fromARGB(255, 71, 71, 71)),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to flag details screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FlagDetails(flag: flag),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.flag,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        size: 12,
+                      ),
+                      Text('details', style: TextStyle(fontSize: 10)),
+                    ],
+                  ),
+                ),
                 SizedBox(width: 8),
                 Flexible(
                   child: Text(
