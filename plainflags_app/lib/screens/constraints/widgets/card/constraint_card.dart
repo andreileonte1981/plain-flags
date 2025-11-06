@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
-import 'package:plainflags_app/screens/constraints/widgets/constraint_header.dart';
-import 'package:plainflags_app/screens/constraints/widgets/constraint_flag_section.dart';
+import 'package:plainflags_app/screens/constraints/widgets/card/constraint_header.dart';
+import 'package:plainflags_app/screens/constraints/widgets/card/constraint_flag_section.dart';
 
 class ConstraintCard extends ConsumerStatefulWidget {
   final Constraint constraint;

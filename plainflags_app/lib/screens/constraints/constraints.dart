@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
-import 'package:plainflags_app/screens/constraints/widgets/constraint_card.dart';
+import 'package:plainflags_app/screens/constraints/widgets/card/constraint_card.dart';
 import 'package:plainflags_app/screens/constraints/widgets/constraint_create.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
