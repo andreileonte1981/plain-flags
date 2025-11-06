@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/screens/constraints/widgets/constraint_header.dart';
 import 'package:plainflags_app/screens/constraints/widgets/constraint_flag_section.dart';
 
 class ConstraintCard extends ConsumerStatefulWidget {
@@ -26,7 +27,6 @@ class ConstraintCard extends ConsumerStatefulWidget {
 class _ConstraintCardState extends ConsumerState<ConstraintCard> {
   bool editingValues = false;
   bool savingValues = false;
-  bool deletingConstraint = false;
 
   bool checkValid(String newValues) {
     if (newValues.split(',').any((v) => v.trim().isEmpty)) {
@@ -39,78 +39,6 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
       return false;
     }
     return true;
-  }
-
-  bool mayDelete() {
-    return widget.constraint.flags.any((flag) => flag.isOn) == false;
-  }
-
-  Future<void> deleteConstraint() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Delete constraint?',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) {
-      return;
-    }
-
-    try {
-      deletingConstraint = true;
-      final deleteResponse = await Client.post("constraints/delete", {
-        'id': widget.constraint.id,
-      }, ref.read(userStatusNotifierProvider).token);
-
-      if (deleteResponse.statusCode == 200) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Constraint deleted'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else {
-        throw Exception('Failed to delete constraint');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to delete constraint'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          deletingConstraint = false;
-        });
-      }
-    }
-
-    widget.updateConstraints();
   }
 
   Future<void> saveValues(String newValues) async {
@@ -204,33 +132,9 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.front_hand,
-                  color: Color.fromARGB(255, 136, 136, 136),
-                ),
-                SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    constraint.description,
-                    softWrap: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(width: 8),
-                deletingConstraint
-                    ? CircularProgressIndicator()
-                    : IconButton(
-                        onPressed: mayDelete()
-                            ? () {
-                                deleteConstraint();
-                              }
-                            : null,
-                        icon: Icon(Icons.delete),
-                      ),
-              ],
+            ConstraintHeader(
+              constraint: constraint,
+              updateConstraints: widget.updateConstraints,
             ),
             Divider(),
             Text('For: ${constraint.key}'),
