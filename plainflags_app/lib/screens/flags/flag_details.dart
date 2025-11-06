@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/domain/flag.dart';
+import 'package:plainflags_app/domain/history.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
@@ -20,6 +21,7 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
   bool switching = false;
   Flag? flag;
   List<Constraint> allConstraints = [];
+  List<History> historyItems = [];
 
   @override
   void initState() {
@@ -59,7 +61,9 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
 
       if (response.statusCode == 200) {
         final data = response.body as List<dynamic>;
-        // Process the history data as needed
+        historyItems = data
+            .map((e) => History.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
         dlog(
           'Failed to fetch flag history: ${response.statusCode} - ${response.body}',
@@ -294,6 +298,16 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
                         ],
                       ),
                       Divider(),
+                      Column(
+                        children: historyItems.map((history) {
+                          return ListTile(
+                            title: Text(
+                              '${history.what} by ${history.userEmail}',
+                            ),
+                            subtitle: Text(history.when),
+                          );
+                        }).toList(),
+                      ),
                     ],
                   ),
                 ),
