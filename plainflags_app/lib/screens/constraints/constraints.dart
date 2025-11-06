@@ -6,6 +6,7 @@ import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/constraints/widgets/constraint_card.dart';
+import 'package:plainflags_app/screens/constraints/widgets/constraint_create.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class Constraints extends ConsumerStatefulWidget {
@@ -23,6 +24,15 @@ class _ConstraintsState extends ConsumerState<Constraints> {
   bool _showFABs = true;
 
   bool showFilterPanel = false;
+
+  bool showCreationPanel = false;
+  void hideCreationPanel() {
+    if (mounted) {
+      setState(() {
+        showCreationPanel = false;
+      });
+    }
+  }
 
   String descriptionSearchQuery = '';
   String keySearchQuery = '';
@@ -178,7 +188,9 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                 FloatingActionButton(
                   heroTag: 'create_constraint',
                   onPressed: () {
-                    setState(() {});
+                    setState(() {
+                      showCreationPanel = !showCreationPanel;
+                    });
                   },
                   backgroundColor: Color.fromARGB(255, 151, 0, 139),
                   child: Icon(Icons.add_circle_outline),
@@ -226,6 +238,11 @@ class _ConstraintsState extends ConsumerState<Constraints> {
           : Center(
               child: Column(
                 children: [
+                  if (showCreationPanel)
+                    CreateConstraintPanel(
+                      hideCreationPanel: hideCreationPanel,
+                      fetchConstraints: fetchConstraints,
+                    ),
                   if (showFilterPanel)
                     Card(
                       shape: RoundedRectangleBorder(
