@@ -172,7 +172,7 @@ class _FlagsState extends ConsumerState<Flags> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: showFilterPanel
+      floatingActionButton: showFilterPanel || showCreationPanel
           ? null
           : Row(
               mainAxisAlignment: MainAxisAlignment.end,

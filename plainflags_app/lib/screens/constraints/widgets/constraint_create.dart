@@ -176,6 +176,7 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
                 child: Column(
                   children: [
                     TextFormField(
+                      autofocus: true,
                       controller: _descriptionController,
                       validator: _validateDescription,
                       decoration: InputDecoration(

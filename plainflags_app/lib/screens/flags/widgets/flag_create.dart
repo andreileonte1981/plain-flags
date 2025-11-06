@@ -125,8 +125,10 @@ class _CreateFlagPanelState extends ConsumerState<CreateFlagPanel> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
+              autofocus: true,
               decoration: InputDecoration(
                 labelText: 'New flag name',
                 filled: true,
@@ -146,6 +148,14 @@ class _CreateFlagPanelState extends ConsumerState<CreateFlagPanel> {
                   });
                 }
               },
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  widget.hideCreationPanel();
+                });
+              },
+              icon: Icon(Icons.cancel),
             ),
           ],
         ),
