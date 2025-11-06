@@ -113,14 +113,17 @@ class _FlagCardState extends ConsumerState<FlagCard> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Navigate to flag details screen
-                    Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FlagDetails(flag: flag),
+                        builder: (context) => FlagDetails(flagId: flag.id),
                       ),
                     );
+
+                    // Refresh the flag details after returning
+                    widget.updateFlags();
                   },
                   child: Column(
                     children: [
