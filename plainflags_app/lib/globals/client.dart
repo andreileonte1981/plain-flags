@@ -78,10 +78,15 @@ class Client {
       body: json.encode(data),
     );
 
-    return Response(
-      response.statusCode,
-      response.body.isNotEmpty ? json.decode(response.body) : {},
-    );
+    dynamic decodedBody;
+
+    try {
+      decodedBody = response.body.isNotEmpty ? json.decode(response.body) : {};
+    } catch (e) {
+      decodedBody = {};
+    }
+
+    return Response(response.statusCode, decodedBody);
   }
 
   static Future<Response> get(String endpoint, String? token) async {
