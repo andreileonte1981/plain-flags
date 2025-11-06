@@ -20,46 +20,59 @@ class CreateConstraintPanel extends ConsumerStatefulWidget {
 }
 
 class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
-  String newConstraintDescription = '';
-  String newConstraintKey = '';
-  String newConstraintValues = '';
+  final _formKey = GlobalKey<FormState>();
+  final _descriptionController = TextEditingController();
+  final _keyController = TextEditingController();
+  final _valuesController = TextEditingController();
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _keyController.dispose();
+    _valuesController.dispose();
+    super.dispose();
+  }
+
+  String? _validateDescription(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Description cannot be empty';
+    }
+    return null;
+  }
+
+  String? _validateKey(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Key cannot be empty';
+    }
+    return null;
+  }
+
+  String? _validateValues(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Values cannot be empty';
+    }
+
+    final valuesList = value
+        .split(',')
+        .map((v) => v.trim())
+        .where((v) => v.isNotEmpty)
+        .toList();
+
+    if (valuesList.isEmpty) {
+      return 'Please provide at least one valid value';
+    }
+
+    return null;
+  }
 
   Future<void> create() async {
-    if (newConstraintDescription.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Constraint description cannot be empty'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (newConstraintKey.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Constraint key cannot be empty'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      return;
-    }
-
-    if (newConstraintValues.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Constraint values cannot be empty'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-      return;
-    }
+    final description = _descriptionController.text.trim();
+    final key = _keyController.text.trim();
+    final values = _valuesController.text.trim();
 
     // Ask confirmation
     final confirmed =
@@ -67,7 +80,7 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Confirm Create'),
-            content: Text('Create new constraint "$newConstraintDescription"?'),
+            content: Text('Create new constraint "$description"?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -87,9 +100,9 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
     try {
       final userStatus = ref.read(userStatusNotifierProvider);
       final createResponse = await Client.post('constraints', {
-        'description': newConstraintDescription,
-        'key': newConstraintKey,
-        'commaSeparatedValues': newConstraintValues,
+        'description': description,
+        'key': key,
+        'commaSeparatedValues': values,
       }, userStatus.token);
 
       if (createResponse.statusCode == 201) {
@@ -104,13 +117,12 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
           );
         }
 
-        setState(() {
-          widget.hideCreationPanel();
-          newConstraintDescription = '';
-          newConstraintKey = '';
-          newConstraintValues = '';
-        });
+        // Clear the form
+        _descriptionController.clear();
+        _keyController.clear();
+        _valuesController.clear();
 
+        widget.hideCreationPanel();
         widget.fetchConstraints();
       } else {
         dlog('Failed to create constraint: ${createResponse.statusCode}');
@@ -155,84 +167,75 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
       color: const Color.fromARGB(255, 255, 223, 255),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Flexible(
-              child: Column(
+        child: Form(
+          key: _formKey,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _descriptionController,
+                      validator: _validateDescription,
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                        errorMaxLines: 2,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    TextFormField(
+                      controller: _keyController,
+                      validator: _validateKey,
+                      decoration: InputDecoration(
+                        labelText: 'Key',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                        errorMaxLines: 2,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    TextFormField(
+                      controller: _valuesController,
+                      validator: _validateValues,
+                      minLines: 2,
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                        labelText: 'Values (comma separated)',
+                        hintText: 'value1, value2, value3',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                        errorMaxLines: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Description',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      if (mounted) {
-                        setState(() {
-                          newConstraintDescription = value;
-                        });
-                      }
+                  IconButton(
+                    onPressed: () {
+                      widget.hideCreationPanel();
                     },
+                    icon: Icon(Icons.cancel),
                   ),
-                  SizedBox(height: 8),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Key',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      if (mounted) {
-                        setState(() {
-                          newConstraintKey = value;
-                        });
-                      }
-                    },
-                  ),
-                  SizedBox(height: 8),
-                  TextField(
-                    minLines: 2,
-                    maxLines: null,
-                    keyboardType: TextInputType.multiline,
-                    decoration: InputDecoration(
-                      labelText: 'Values (comma separated)',
-                      hintText: 'value1, value2, value3',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      if (mounted) {
-                        setState(() {
-                          newConstraintValues = value;
-                        });
-                      }
+                  IconButton(
+                    icon: Icon(Icons.add_circle),
+                    onPressed: () {
+                      create();
                     },
                   ),
                 ],
               ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    widget.hideCreationPanel();
-                  },
-                  icon: Icon(Icons.cancel),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add_circle),
-                  onPressed: () {
-                    create();
-                  },
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
