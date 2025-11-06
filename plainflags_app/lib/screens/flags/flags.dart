@@ -378,6 +378,7 @@ class _FlagsState extends ConsumerState<Flags> {
                       child: ImplicitlyAnimatedList<Flag>(
                         items: filteredFlags,
                         areItemsTheSame: (a, b) => a.id == b.id,
+                        padding: const EdgeInsets.only(bottom: 70.0),
                         itemBuilder: (context, animation, flag, index) {
                           return SizeFadeTransition(
                             sizeFraction: 0.7,

@@ -172,6 +172,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                       child: ImplicitlyAnimatedList<Constraint>(
                         items: constraints,
                         areItemsTheSame: (a, b) => a.id == b.id,
+                        padding: const EdgeInsets.only(bottom: 70.0),
                         itemBuilder: (context, animation, constraint, index) {
                           return SizeFadeTransition(
                             sizeFraction: 0.7,
