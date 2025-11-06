@@ -22,6 +22,64 @@ class _ConstraintsState extends ConsumerState<Constraints> {
   bool failedFetching = false;
   bool _showFABs = true;
 
+  bool showFilterPanel = false;
+
+  String descriptionSearchQuery = '';
+  String keySearchQuery = '';
+  String valuesSearchQuery = '';
+
+  TextEditingController descriptionFilterController = TextEditingController();
+  TextEditingController keyFilterController = TextEditingController();
+  TextEditingController valuesFilterController = TextEditingController();
+
+  List<Constraint> get filteredConstraints {
+    return constraints.where((constraint) {
+      final matchesDescription = constraint.description.toLowerCase().contains(
+        descriptionSearchQuery,
+      );
+      final matchesKey = constraint.key.toLowerCase().contains(keySearchQuery);
+      final matchesValues = constraint.values
+          .join(' ')
+          .toLowerCase()
+          .contains(valuesSearchQuery);
+
+      return matchesDescription && matchesKey && matchesValues;
+    }).toList();
+  }
+
+  String filterSummary() {
+    List<String> parts = [];
+    if (descriptionSearchQuery.isNotEmpty) {
+      parts.add('"$descriptionSearchQuery"');
+    }
+    if (keySearchQuery.isNotEmpty) {
+      parts.add('"$keySearchQuery"');
+    }
+    if (valuesSearchQuery.isNotEmpty) {
+      parts.add('"$valuesSearchQuery"');
+    }
+    return parts.join(', ');
+  }
+
+  bool anyFilters() {
+    return descriptionSearchQuery.isNotEmpty ||
+        keySearchQuery.isNotEmpty ||
+        valuesSearchQuery.isNotEmpty;
+  }
+
+  void clearFilters() {
+    if (mounted) {
+      setState(() {
+        descriptionSearchQuery = '';
+        keySearchQuery = '';
+        valuesSearchQuery = '';
+        descriptionFilterController.clear();
+        keyFilterController.clear();
+        valuesFilterController.clear();
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -129,7 +187,9 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                 FloatingActionButton(
                   heroTag: 'filter_constraints',
                   onPressed: () {
-                    setState(() {});
+                    setState(() {
+                      showFilterPanel = !showFilterPanel;
+                    });
                   },
                   backgroundColor: Color.fromARGB(255, 151, 0, 139),
                   child: Icon(Icons.search),
@@ -166,11 +226,152 @@ class _ConstraintsState extends ConsumerState<Constraints> {
           : Center(
               child: Column(
                 children: [
+                  if (showFilterPanel)
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: const Color.fromARGB(255, 151, 0, 139),
+                          width: 2.0,
+                        ),
+                      ),
+                      color: const Color.fromARGB(255, 255, 223, 255),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: descriptionFilterController,
+                              decoration: InputDecoration(
+                                labelText: 'Description filter',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        descriptionSearchQuery = '';
+                                        descriptionFilterController.clear();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    descriptionSearchQuery = value
+                                        .toLowerCase();
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(height: 4),
+                            TextField(
+                              controller: keyFilterController,
+                              decoration: InputDecoration(
+                                labelText: 'Key filter',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        keySearchQuery = '';
+                                        keyFilterController.clear();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    keySearchQuery = value.toLowerCase();
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(height: 4),
+                            TextField(
+                              controller: valuesFilterController,
+                              decoration: InputDecoration(
+                                labelText: 'Values filter',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.clear),
+                                  onPressed: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        valuesSearchQuery = '';
+                                        valuesFilterController.clear();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    valuesSearchQuery = value.toLowerCase();
+                                  });
+                                }
+                              },
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showFilterPanel = false;
+                                    });
+                                  },
+                                  icon: Icon(Icons.cancel),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   if (!isLoading && constraints.isEmpty) Text('No constraints'),
-                  if (constraints.isNotEmpty)
+                  if (anyFilters() && !showFilterPanel)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ElevatedButton(
+                        onPressed: clearFilters,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 151, 0, 139),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                filterSummary(),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (!isLoading &&
+                      constraints.isNotEmpty &&
+                      filteredConstraints.isEmpty)
+                    Text('No matches'),
+                  if (filteredConstraints.isNotEmpty)
                     Expanded(
                       child: ImplicitlyAnimatedList<Constraint>(
-                        items: constraints,
+                        items: filteredConstraints,
                         areItemsTheSame: (a, b) => a.id == b.id,
                         padding: const EdgeInsets.only(bottom: 70.0),
                         itemBuilder: (context, animation, constraint, index) {
