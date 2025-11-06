@@ -24,7 +24,7 @@ class FlagBadge extends StatelessWidget {
         border: Border.all(color: strokeColor, width: strokeWidth),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         child: child,
       ),
     );
