@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
@@ -183,7 +185,7 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
     return Column(
       children: [
         ExpansionTile(
-          title: Text('Linkable Constraints'),
+          title: Text('Available Constraints'),
           childrenPadding: EdgeInsets.only(bottom: 2),
           children: [
             Container(
@@ -193,54 +195,58 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
               ),
               child: SizedBox(
                 height: 300,
-                child: ListView.builder(
-                  itemCount: widget.linkableConstraints.length,
-                  itemBuilder: (context, index) {
-                    final constraint = widget.linkableConstraints.elementAt(
-                      index,
-                    );
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: const Color.fromARGB(255, 255, 167, 240),
-                          width: 2.0,
+                child: ImplicitlyAnimatedList<Constraint>(
+                  items: widget.linkableConstraints.toList(),
+                  areItemsTheSame: (a, b) => a.id == b.id,
+                  itemBuilder: (context, animation, constraint, index) {
+                    return SizeFadeTransition(
+                      sizeFraction: 0.7,
+                      curve: Curves.easeInOut,
+                      animation: animation,
+                      child: Card(
+                        key: ValueKey(constraint.id),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: const Color.fromARGB(255, 255, 167, 240),
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    constraint.description,
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      constraint.description,
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text('For: ${constraint.key}'),
-                                  Text('Named:'),
-                                  Column(
-                                    children: constraint.values
-                                        .map((v) => Text(v))
-                                        .toList(),
-                                  ),
-                                ],
+                                    Text('For: ${constraint.key}'),
+                                    Text('Named:'),
+                                    Column(
+                                      children: constraint.values
+                                          .map((v) => Text(v))
+                                          .toList(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.link),
-                              onPressed: () {
-                                linkConstraint(constraint);
-                              },
-                            ),
-                          ],
+                              IconButton(
+                                icon: const Icon(Icons.link),
+                                onPressed: () {
+                                  linkConstraint(constraint);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -262,60 +268,66 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
               ),
               child: SizedBox(
                 height: 300,
-                child: ListView.builder(
-                  itemCount: widget.flag.constraints.length,
-                  itemBuilder: (context, index) {
-                    final constraint = widget.flag.constraints[index];
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: const Color.fromARGB(255, 255, 167, 240),
-                          width: 2.0,
+                child: ImplicitlyAnimatedList<Constraint>(
+                  items: widget.flag.constraints,
+                  areItemsTheSame: (a, b) => a.id == b.id,
+                  itemBuilder: (context, animation, constraint, index) {
+                    return SizeFadeTransition(
+                      sizeFraction: 0.7,
+                      curve: Curves.easeInOut,
+                      animation: animation,
+                      child: Card(
+                        key: ValueKey(constraint.id),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: const Color.fromARGB(255, 255, 167, 240),
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    constraint.description,
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      constraint.description,
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text('For: ${constraint.key}'),
-                                  Text('Named:'),
-                                  Column(
-                                    children: constraint.values
-                                        .map((v) => Text(v))
-                                        .toList(),
-                                  ),
-                                ],
+                                    Text('For: ${constraint.key}'),
+                                    Text('Named:'),
+                                    Column(
+                                      children: constraint.values
+                                          .map((v) => Text(v))
+                                          .toList(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            unlinking
-                                ? SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                              unlinking
+                                  ? SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : IconButton(
+                                      icon: const Icon(Icons.link_off),
+                                      onPressed: () {
+                                        unlinkConstraint(constraint);
+                                      },
                                     ),
-                                  )
-                                : IconButton(
-                                    icon: const Icon(Icons.link_off),
-                                    onPressed: () {
-                                      unlinkConstraint(constraint);
-                                    },
-                                  ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
