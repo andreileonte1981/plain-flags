@@ -19,6 +19,7 @@ class FlagDetails extends ConsumerStatefulWidget {
 
 class _FlagDetailsState extends ConsumerState<FlagDetails> {
   bool switching = false;
+  bool refreshing = false;
   Flag? flag;
   List<Constraint> allConstraints = [];
   List<History> historyItems = [];
@@ -37,6 +38,25 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
     fetchHistory();
   }
 
+  Future<void> refreshAllInfo() async {
+    setState(() {
+      refreshing = true;
+    });
+    try {
+      await Future.wait([
+        fetchFlagDetails(),
+        fetchHistory(),
+        fetchConstraints(),
+      ]);
+    } catch (e) {
+      dlog('Error refreshing flag info: $e');
+    } finally {
+      setState(() {
+        refreshing = false;
+      });
+    }
+  }
+
   Future<void> fetchConstraints() async {
     try {
       final userStatus = ref.read(userStatusNotifierProvider);
@@ -47,6 +67,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
         allConstraints = data
             .map((e) => Constraint.fromJson(e as Map<String, dynamic>))
             .toList();
+
+        if (mounted) setState(() {});
       } else {
         dlog(
           'Failed to fetch flag constraints: ${response.statusCode} - ${response.body}',
@@ -69,6 +91,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
         historyItems = data
             .map((e) => History.fromJson(e as Map<String, dynamic>))
             .toList();
+
+        if (mounted) setState(() {});
       } else {
         dlog(
           'Failed to fetch flag history: ${response.statusCode} - ${response.body}',
@@ -89,9 +113,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
 
       if (response.statusCode == 200) {
         final data = response.body as Map<String, dynamic>;
-        setState(() {
-          flag = Flag.fromJson(data);
-        });
+        flag = Flag.fromJson(data);
+        if (mounted) setState(() {});
       } else {
         dlog(
           'Failed to fetch flag details: ${response.statusCode} - ${response.body}',
@@ -222,6 +245,14 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
 
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: refreshing == true
+            ? CircularProgressIndicator()
+            : FloatingActionButton(
+                child: Icon(Icons.refresh),
+                onPressed: () {
+                  refreshAllInfo();
+                },
+              ),
         appBar: AppBar(
           title: Text(
             flag?.name ?? 'Loading...',
