@@ -32,7 +32,26 @@ class _FlagsState extends ConsumerState<Flags> {
   TextEditingController nameFilterController = TextEditingController();
   TextEditingController constraintFilterController = TextEditingController();
 
+  ScrollController flagScroll = ScrollController();
+
   bool showCreationPanel = false;
+
+  void scrollToLastFlag() {
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (flagScroll.hasClients) {
+            flagScroll.animateTo(
+              flagScroll.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          }
+        });
+      }
+    });
+  }
+
   void hideCreationPanel() {
     if (mounted) {
       setState(() {
@@ -234,6 +253,7 @@ class _FlagsState extends ConsumerState<Flags> {
                     CreateFlagPanel(
                       hideCreationPanel: hideCreationPanel,
                       fetchFlags: fetchFlags,
+                      scrollToLastFlag: scrollToLastFlag,
                     ),
                   if (showFilterPanel)
                     Card(
@@ -382,6 +402,7 @@ class _FlagsState extends ConsumerState<Flags> {
                       child: ImplicitlyAnimatedList<Flag>(
                         items: filteredFlags,
                         areItemsTheSame: (a, b) => a.id == b.id,
+                        controller: flagScroll,
                         padding: const EdgeInsets.only(bottom: 70.0),
                         itemBuilder: (context, animation, flag, index) {
                           return SizeFadeTransition(

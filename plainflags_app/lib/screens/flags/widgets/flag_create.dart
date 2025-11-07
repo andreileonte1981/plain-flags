@@ -6,12 +6,14 @@ import 'package:plainflags_app/utils/dlog.dart';
 
 class CreateFlagPanel extends ConsumerStatefulWidget {
   final Function() hideCreationPanel;
+  final Function() scrollToLastFlag;
   final Function() fetchFlags;
 
   const CreateFlagPanel({
     super.key,
     required this.hideCreationPanel,
     required this.fetchFlags,
+    required this.scrollToLastFlag,
   });
 
   @override
@@ -81,6 +83,7 @@ class _CreateFlagPanelState extends ConsumerState<CreateFlagPanel> {
         });
 
         widget.fetchFlags();
+        widget.scrollToLastFlag();
       } else {
         dlog('Failed to create flag: ${createResponse.statusCode}');
 
