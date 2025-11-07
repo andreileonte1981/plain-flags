@@ -7,8 +7,13 @@ import 'package:plainflags_app/screens/flags/widgets/flag_badge.dart';
 
 class ConstraintFlagSection extends ConsumerStatefulWidget {
   final Constraint constraint;
+  final Function() updateConstraints;
 
-  const ConstraintFlagSection({super.key, required this.constraint});
+  const ConstraintFlagSection({
+    super.key,
+    required this.constraint,
+    required this.updateConstraints,
+  });
 
   @override
   ConsumerState<ConstraintFlagSection> createState() =>
@@ -48,23 +53,21 @@ class _ConstraintFlagSectionState extends ConsumerState<ConstraintFlagSection> {
                       builder: (context) => FlagDetails(flagId: flag.id),
                     ),
                   );
+                  widget.updateConstraints();
                 },
                 child: Row(
                   children: [
                     Flexible(
-                      child: flag.isOn
-                          ? Text(
-                              flag.name,
-                              style: TextStyle(color: Colors.green[800]),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            )
-                          : Text(
-                              flag.name,
-                              style: TextStyle(color: Colors.grey[800]),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            ),
+                      child: Text(
+                        flag.name,
+                        style: TextStyle(
+                          color: flag.isOn
+                              ? Colors.green[800]
+                              : Colors.grey[800],
+                        ),
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                      ),
                     ),
                     SizedBox(width: 8),
                     flag.isOn

@@ -249,7 +249,10 @@ class _ConstraintCardState extends ConsumerState<ConstraintCard> {
                   ),
             if (constraint.flags.isNotEmpty) Divider(),
             if (constraint.flags.isNotEmpty)
-              ConstraintFlagSection(constraint: constraint),
+              ConstraintFlagSection(
+                constraint: constraint,
+                updateConstraints: widget.updateConstraints,
+              ),
           ],
         ),
       ),
