@@ -57,6 +57,12 @@ class _ConstraintFlagSectionState extends ConsumerState<ConstraintFlagSection> {
                 },
                 child: Row(
                   children: [
+                    Icon(
+                      Icons.arrow_circle_right,
+                      size: 16,
+                      color: flag.isOn ? Colors.green[800] : Colors.grey[800],
+                    ),
+                    SizedBox(width: 8),
                     Flexible(
                       child: Text(
                         flag.name,
@@ -107,7 +113,10 @@ class _ConstraintFlagSectionState extends ConsumerState<ConstraintFlagSection> {
                             strokeColor: Colors.grey[600]!,
                             child: Row(
                               children: [
-                                Text('off'),
+                                Text(
+                                  'off',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
                                 SizedBox(width: 4),
                                 Transform.rotate(
                                   angle: 1.2,
