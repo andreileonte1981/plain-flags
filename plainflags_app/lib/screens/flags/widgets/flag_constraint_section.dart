@@ -193,65 +193,86 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: SizedBox(
-                height: 300,
-                child: ImplicitlyAnimatedList<Constraint>(
-                  items: widget.linkableConstraints.toList(),
-                  areItemsTheSame: (a, b) => a.id == b.id,
-                  itemBuilder: (context, animation, constraint, index) {
-                    return SizeFadeTransition(
-                      sizeFraction: 0.7,
-                      curve: Curves.easeInOut,
-                      animation: animation,
-                      child: Card(
-                        key: ValueKey(constraint.id),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: const Color.fromARGB(255, 255, 167, 240),
-                            width: 2.0,
+              child: LimitedBox(
+                maxHeight: 300,
+                child: widget.linkableConstraints.isEmpty
+                    ? SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'No available constraints',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      )
+                    : ImplicitlyAnimatedList<Constraint>(
+                        items: widget.linkableConstraints.toList(),
+                        areItemsTheSame: (a, b) => a.id == b.id,
+                        shrinkWrap: true,
+                        itemBuilder: (context, animation, constraint, index) {
+                          return SizeFadeTransition(
+                            sizeFraction: 0.7,
+                            curve: Curves.easeInOut,
+                            animation: animation,
+                            child: Card(
+                              key: ValueKey(constraint.id),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  color: const Color.fromARGB(
+                                    255,
+                                    255,
+                                    167,
+                                    240,
+                                  ),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      constraint.description,
-                                      softWrap: true,
-                                      overflow: TextOverflow.visible,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            constraint.description,
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text('For: ${constraint.key}'),
+                                          Text('Named:'),
+                                          Column(
+                                            children: constraint.values
+                                                .map((v) => Text(v))
+                                                .toList(),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text('For: ${constraint.key}'),
-                                    Text('Named:'),
-                                    Column(
-                                      children: constraint.values
-                                          .map((v) => Text(v))
-                                          .toList(),
+                                    IconButton(
+                                      icon: const Icon(Icons.link),
+                                      onPressed: () {
+                                        linkConstraint(constraint);
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.link),
-                                onPressed: () {
-                                  linkConstraint(constraint);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ],
@@ -266,73 +287,94 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: SizedBox(
-                height: 300,
-                child: ImplicitlyAnimatedList<Constraint>(
-                  items: widget.flag.constraints,
-                  areItemsTheSame: (a, b) => a.id == b.id,
-                  itemBuilder: (context, animation, constraint, index) {
-                    return SizeFadeTransition(
-                      sizeFraction: 0.7,
-                      curve: Curves.easeInOut,
-                      animation: animation,
-                      child: Card(
-                        key: ValueKey(constraint.id),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: const Color.fromARGB(255, 255, 167, 240),
-                            width: 2.0,
+              child: LimitedBox(
+                maxHeight: 300,
+                child: widget.flag.constraints.isEmpty
+                    ? SizedBox(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'No applied constraints',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      )
+                    : ImplicitlyAnimatedList<Constraint>(
+                        items: widget.flag.constraints,
+                        areItemsTheSame: (a, b) => a.id == b.id,
+                        shrinkWrap: true,
+                        itemBuilder: (context, animation, constraint, index) {
+                          return SizeFadeTransition(
+                            sizeFraction: 0.7,
+                            curve: Curves.easeInOut,
+                            animation: animation,
+                            child: Card(
+                              key: ValueKey(constraint.id),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  color: const Color.fromARGB(
+                                    255,
+                                    255,
+                                    167,
+                                    240,
+                                  ),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      constraint.description,
-                                      softWrap: true,
-                                      overflow: TextOverflow.visible,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            constraint.description,
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text('For: ${constraint.key}'),
+                                          Text('Named:'),
+                                          Column(
+                                            children: constraint.values
+                                                .map((v) => Text(v))
+                                                .toList(),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text('For: ${constraint.key}'),
-                                    Text('Named:'),
-                                    Column(
-                                      children: constraint.values
-                                          .map((v) => Text(v))
-                                          .toList(),
-                                    ),
+                                    unlinking
+                                        ? SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : IconButton(
+                                            icon: const Icon(Icons.link_off),
+                                            onPressed: () {
+                                              unlinkConstraint(constraint);
+                                            },
+                                          ),
                                   ],
                                 ),
                               ),
-                              unlinking
-                                  ? SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : IconButton(
-                                      icon: const Icon(Icons.link_off),
-                                      onPressed: () {
-                                        unlinkConstraint(constraint);
-                                      },
-                                    ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ],
