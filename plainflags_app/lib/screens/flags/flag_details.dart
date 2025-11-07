@@ -320,28 +320,31 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FlagBadges(flag: flag!),
-                      Divider(),
-                      FlagConstraintSection(
-                        linkableConstraints: linkableConstraints,
-                        flag: flag!,
-                        fetchFlagDetails: fetchFlagDetails,
-                      ),
-                      Divider(),
-                      Row(
-                        children: [
-                          Icon(Icons.history_toggle_off),
-                          SizedBox(width: 8),
-                          Text('Feature History'),
-                        ],
-                      ),
-                      Divider(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: historyItems.map((history) {
-                          return HistoryItem(history: history);
-                        }).toList(),
-                      ),
+                      ...[
+                        FlagBadges(flag: flag!),
+                        Divider(),
+                        FlagConstraintSection(
+                          linkableConstraints: linkableConstraints,
+                          flag: flag!,
+                          fetchFlagDetails: fetchFlagInfo,
+                        ),
+                        Divider(),
+                        Row(
+                          children: [
+                            Icon(Icons.history_toggle_off),
+                            SizedBox(width: 8),
+                            Text('Feature History'),
+                          ],
+                        ),
+                        Divider(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: historyItems.map((history) {
+                            return HistoryItem(history: history);
+                          }).toList(),
+                        ),
+                      ],
+                      SizedBox(height: 60),
                     ],
                   ),
                 ),
