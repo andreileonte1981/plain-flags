@@ -7,6 +7,7 @@ import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_constraint_section.dart';
+import 'package:plainflags_app/screens/flags/widgets/history_item.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class FlagDetails extends ConsumerStatefulWidget {
@@ -177,7 +178,7 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
       setState(() {
         switching = false;
       });
-      fetchFlagDetails();
+      fetchFlagInfo();
     }
   }
 
@@ -233,7 +234,7 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
       setState(() {
         switching = false;
       });
-      fetchFlagDetails();
+      fetchFlagInfo();
     }
   }
 
@@ -336,13 +337,9 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
                       ),
                       Divider(),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: historyItems.map((history) {
-                          return ListTile(
-                            title: Text(
-                              '${history.what} by ${history.userEmail}',
-                            ),
-                            subtitle: Text(history.when),
-                          );
+                          return HistoryItem(history: history);
                         }).toList(),
                       ),
                     ],
