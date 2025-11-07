@@ -185,7 +185,9 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
     return Column(
       children: [
         ExpansionTile(
-          title: Text('Available Constraints'),
+          title: Text(
+            '${widget.linkableConstraints.length} Available Constraints',
+          ),
           childrenPadding: EdgeInsets.only(bottom: 2),
           children: [
             Container(
@@ -278,7 +280,7 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
           ],
         ),
         ExpansionTile(
-          title: Text('Applied Constraints'),
+          title: Text('${widget.flag.constraints.length} Applied Constraints'),
           childrenPadding: EdgeInsets.only(bottom: 2),
           initiallyExpanded: true,
           children: [
