@@ -7,11 +7,13 @@ import 'package:plainflags_app/utils/dlog.dart';
 class CreateConstraintPanel extends ConsumerStatefulWidget {
   final Function() hideCreationPanel;
   final Function() fetchConstraints;
+  final Function() scrollToLastConstraint;
 
   const CreateConstraintPanel({
     super.key,
     required this.hideCreationPanel,
     required this.fetchConstraints,
+    required this.scrollToLastConstraint,
   });
 
   @override
@@ -124,6 +126,7 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
 
         widget.hideCreationPanel();
         widget.fetchConstraints();
+        widget.scrollToLastConstraint();
       } else {
         dlog('Failed to create constraint: ${createResponse.statusCode}');
 

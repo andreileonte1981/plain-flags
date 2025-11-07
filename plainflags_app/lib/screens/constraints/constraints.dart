@@ -42,6 +42,19 @@ class _ConstraintsState extends ConsumerState<Constraints> {
   TextEditingController keyFilterController = TextEditingController();
   TextEditingController valuesFilterController = TextEditingController();
 
+  ScrollController constraintScroll = ScrollController();
+
+  Future<void> scrollToLastConstraint() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    if (constraintScroll.hasClients) {
+      constraintScroll.animateTo(
+        constraintScroll.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
   List<Constraint> get filteredConstraints {
     return constraints.where((constraint) {
       final matchesDescription = constraint.description.toLowerCase().contains(
@@ -242,6 +255,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                     CreateConstraintPanel(
                       hideCreationPanel: hideCreationPanel,
                       fetchConstraints: fetchConstraints,
+                      scrollToLastConstraint: scrollToLastConstraint,
                     ),
                   if (showFilterPanel)
                     Card(
@@ -396,6 +410,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                       child: ImplicitlyAnimatedList<Constraint>(
                         items: filteredConstraints,
                         areItemsTheSame: (a, b) => a.id == b.id,
+                        controller: constraintScroll,
                         padding: const EdgeInsets.only(bottom: 70.0),
                         itemBuilder: (context, animation, constraint, index) {
                           return SizeFadeTransition(
