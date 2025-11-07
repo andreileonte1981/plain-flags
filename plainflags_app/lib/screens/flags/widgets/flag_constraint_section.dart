@@ -7,6 +7,7 @@ import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/utils/dlog.dart';
+import 'package:plainflags_app/utils/plural.dart';
 
 class FlagConstraintSection extends ConsumerStatefulWidget {
   final Iterable<Constraint> linkableConstraints;
@@ -186,7 +187,7 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
       children: [
         ExpansionTile(
           title: Text(
-            '${widget.linkableConstraints.length} Available Constraints',
+            '${widget.linkableConstraints.length} ${plural('Available Constraint', widget.linkableConstraints.length)}',
           ),
           childrenPadding: EdgeInsets.only(bottom: 2),
           children: [
@@ -280,7 +281,9 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
           ],
         ),
         ExpansionTile(
-          title: Text('${widget.flag.constraints.length} Applied Constraints'),
+          title: Text(
+            '${widget.flag.constraints.length} ${plural('Applied Constraint', widget.flag.constraints.length)}',
+          ),
           childrenPadding: EdgeInsets.only(bottom: 2),
           initiallyExpanded: true,
           children: [
