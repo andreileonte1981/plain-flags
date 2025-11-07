@@ -1,16 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/domain/flag.dart';
+import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/utils/dlog.dart';
 
-class FlagConstraintSection extends StatelessWidget {
+class FlagConstraintSection extends ConsumerStatefulWidget {
   final Iterable<Constraint> linkableConstraints;
-  final Flag? flag;
+  final Flag flag;
+  final Function() fetchFlagDetails;
 
   const FlagConstraintSection({
     super.key,
     required this.linkableConstraints,
     required this.flag,
+    required this.fetchFlagDetails,
   });
+
+  @override
+  ConsumerState<FlagConstraintSection> createState() =>
+      _FlagConstraintSectionState();
+}
+
+class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
+  bool unlinking = false;
+
+  Future<void> unlinkConstraint(Constraint constraint) async {
+    // Confirm unlink action
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Unlink Constraint'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Remove "${constraint.description}" from this feature?',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Divider(),
+            Row(
+              children: [
+                Icon(Icons.info, color: Colors.grey),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'More users may acquire access to this feature.',
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Unlink'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      unlinking = true;
+
+      final unlinkResponse = await Client.post("constraints/unlink", {
+        'flagId': widget.flag.id,
+        'constraintId': constraint.id,
+      }, ref.read(userStatusNotifierProvider).token);
+
+      if (unlinkResponse.statusCode != 200) {
+        dlog(
+          'Failed to unlink constraint: ${unlinkResponse.statusCode} - ${unlinkResponse.body}',
+        );
+        throw Exception('Failed to unlink constraint');
+      }
+
+      widget.fetchFlagDetails();
+    } catch (e) {
+      dlog('Error unlinking constraint: $e');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to unlink constraint'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      unlinking = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +121,11 @@ class FlagConstraintSection extends StatelessWidget {
               child: SizedBox(
                 height: 300,
                 child: ListView.builder(
-                  itemCount: linkableConstraints.length,
+                  itemCount: widget.linkableConstraints.length,
                   itemBuilder: (context, index) {
-                    final constraint = linkableConstraints.elementAt(index);
+                    final constraint = widget.linkableConstraints.elementAt(
+                      index,
+                    );
                     return Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -95,9 +190,9 @@ class FlagConstraintSection extends StatelessWidget {
               child: SizedBox(
                 height: 300,
                 child: ListView.builder(
-                  itemCount: flag!.constraints.length,
+                  itemCount: widget.flag.constraints.length,
                   itemBuilder: (context, index) {
-                    final constraint = flag!.constraints[index];
+                    final constraint = widget.flag.constraints[index];
                     return Card(
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -133,12 +228,20 @@ class FlagConstraintSection extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.link_off),
-                              onPressed: () {
-                                // Unlink constraint action
-                              },
-                            ),
+                            unlinking
+                                ? SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : IconButton(
+                                    icon: const Icon(Icons.link_off),
+                                    onPressed: () {
+                                      unlinkConstraint(constraint);
+                                    },
+                                  ),
                           ],
                         ),
                       ),

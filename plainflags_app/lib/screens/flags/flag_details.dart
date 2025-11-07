@@ -27,8 +27,13 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
   void initState() {
     super.initState();
 
-    fetchFlagDetails();
+    fetchFlagInfo();
+
     fetchConstraints();
+  }
+
+  void fetchFlagInfo() {
+    fetchFlagDetails();
     fetchHistory();
   }
 
@@ -148,8 +153,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
     } finally {
       setState(() {
         switching = false;
-        fetchFlagDetails();
       });
+      fetchFlagDetails();
     }
   }
 
@@ -204,8 +209,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
     } finally {
       setState(() {
         switching = false;
-        fetchFlagDetails();
       });
+      fetchFlagDetails();
     }
   }
 
@@ -287,7 +292,8 @@ class _FlagDetailsState extends ConsumerState<FlagDetails> {
                       Divider(),
                       FlagConstraintSection(
                         linkableConstraints: linkableConstraints,
-                        flag: flag,
+                        flag: flag!,
+                        fetchFlagDetails: fetchFlagDetails,
                       ),
                       Divider(),
                       Row(
