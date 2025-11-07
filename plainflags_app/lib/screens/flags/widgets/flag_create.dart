@@ -83,11 +83,11 @@ class _CreateFlagPanelState extends ConsumerState<CreateFlagPanel> {
           newFlagName = '';
         });
 
-        widget.fetchFlags();
-
         ref
             .read(currentFlagIdProvider.notifier)
             .setFlagId(createResponse.body['id']);
+
+        await widget.fetchFlags();
 
         widget.scrollToId(createResponse.body['id']);
       } else {

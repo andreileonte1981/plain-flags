@@ -44,14 +44,21 @@ class _ConstraintsState extends ConsumerState<Constraints> {
 
   ScrollController constraintScroll = ScrollController();
 
-  Future<void> scrollToLastConstraint() async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    if (constraintScroll.hasClients) {
-      constraintScroll.animateTo(
-        constraintScroll.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
-      );
+  Future<void> scrollToId(String id) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final index = constraints.indexWhere((constraint) => constraint.id == id);
+    if (index != -1 && constraintScroll.hasClients) {
+      final itemHeight =
+          constraintScroll.position.maxScrollExtent / constraints.length;
+      final targetOffset = index * itemHeight;
+
+      if (mounted) {
+        constraintScroll.animateTo(
+          targetOffset,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     }
   }
 
@@ -255,7 +262,7 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                     CreateConstraintPanel(
                       hideCreationPanel: hideCreationPanel,
                       fetchConstraints: fetchConstraints,
-                      scrollToLastConstraint: scrollToLastConstraint,
+                      scrollToId: scrollToId,
                     ),
                   if (showFilterPanel)
                     Card(

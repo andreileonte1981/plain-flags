@@ -37,7 +37,7 @@ class _FlagsState extends ConsumerState<Flags> {
   bool showCreationPanel = false;
 
   void scrollToId(String id) {
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final index = filteredFlags.indexWhere((flag) => flag.id == id);

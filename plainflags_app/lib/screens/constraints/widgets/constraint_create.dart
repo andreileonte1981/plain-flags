@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_constraint_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class CreateConstraintPanel extends ConsumerStatefulWidget {
   final Function() hideCreationPanel;
   final Function() fetchConstraints;
-  final Function() scrollToLastConstraint;
+  final Function(String id) scrollToId;
 
   const CreateConstraintPanel({
     super.key,
     required this.hideCreationPanel,
     required this.fetchConstraints,
-    required this.scrollToLastConstraint,
+    required this.scrollToId,
   });
 
   @override
@@ -125,8 +126,14 @@ class _CreateConstraintPanelState extends ConsumerState<CreateConstraintPanel> {
         _valuesController.clear();
 
         widget.hideCreationPanel();
-        widget.fetchConstraints();
-        widget.scrollToLastConstraint();
+
+        ref
+            .read(currentConstraintIdProvider.notifier)
+            .setConstraintId(createResponse.body['id']);
+
+        await widget.fetchConstraints();
+
+        widget.scrollToId(createResponse.body['id']);
       } else {
         dlog('Failed to create constraint: ${createResponse.statusCode}');
 
