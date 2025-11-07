@@ -26,12 +26,85 @@ class FlagConstraintSection extends ConsumerStatefulWidget {
 class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
   bool unlinking = false;
 
+  Future<void> linkConstraint(Constraint constraint) async {
+    // Confirm link action
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Apply "${constraint.description}" to this feature?',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Divider(),
+            Row(
+              children: [
+                Icon(Icons.info, color: Colors.grey),
+                SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Some users may lose access to this feature.',
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Link'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      final linkResponse = await Client.post("constraints/link", {
+        'flagId': widget.flag.id,
+        'constraintId': constraint.id,
+      }, ref.read(userStatusNotifierProvider).token);
+
+      if (linkResponse.statusCode != 200) {
+        dlog(
+          'Failed to link constraint: ${linkResponse.statusCode} - ${linkResponse.body}',
+        );
+        throw Exception('Failed to link constraint');
+      }
+
+      widget.fetchFlagDetails();
+    } catch (e) {
+      dlog('Error linking constraint: $e');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to link constraint'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> unlinkConstraint(Constraint constraint) async {
     // Confirm unlink action
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Unlink Constraint'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -164,7 +237,7 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
                             IconButton(
                               icon: const Icon(Icons.link),
                               onPressed: () {
-                                // Link constraint action
+                                linkConstraint(constraint);
                               },
                             ),
                           ],
