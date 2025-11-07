@@ -36,13 +36,17 @@ class _FlagsState extends ConsumerState<Flags> {
 
   bool showCreationPanel = false;
 
-  void scrollToLastFlag() {
+  void scrollToId(String id) {
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (flagScroll.hasClients) {
+          final index = filteredFlags.indexWhere((flag) => flag.id == id);
+          final itemHeight =
+              flagScroll.position.maxScrollExtent / filteredFlags.length;
+          if (index != -1 && flagScroll.hasClients) {
+            final position = index * itemHeight;
             flagScroll.animateTo(
-              flagScroll.position.maxScrollExtent,
+              position,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOut,
             );
@@ -253,7 +257,7 @@ class _FlagsState extends ConsumerState<Flags> {
                     CreateFlagPanel(
                       hideCreationPanel: hideCreationPanel,
                       fetchFlags: fetchFlags,
-                      scrollToLastFlag: scrollToLastFlag,
+                      scrollToId: scrollToId,
                     ),
                   if (showFilterPanel)
                     Card(
