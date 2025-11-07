@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_flag_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
@@ -84,6 +85,10 @@ class _CreateFlagPanelState extends ConsumerState<CreateFlagPanel> {
 
         widget.fetchFlags();
         widget.scrollToLastFlag();
+
+        ref
+            .read(currentFlagIdProvider.notifier)
+            .setFlagId(createResponse.body['id']);
       } else {
         dlog('Failed to create flag: ${createResponse.statusCode}');
 

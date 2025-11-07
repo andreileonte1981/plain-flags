@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_flag_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/flag_details.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
@@ -101,147 +102,162 @@ class _FlagCardState extends ConsumerState<FlagCard> {
     return Card(
       shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: const Color.fromARGB(255, 0, 139, 105),
-          width: 2.0,
+          color: ref.watch(currentFlagIdProvider) == flag.id
+              ? const Color.fromARGB(255, 0, 126, 94)
+              : const Color.fromARGB(255, 168, 211, 189),
+          width: ref.watch(currentFlagIdProvider) == flag.id ? 4.0 : 2.0,
         ),
         borderRadius: BorderRadius.circular(12.0),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    // Navigate to flag details screen
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FlagDetails(flagId: flag.id),
-                      ),
-                    );
+      child: InkWell(
+        onTap: () {
+          ref.read(currentFlagIdProvider.notifier).setFlagId(flag.id);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Navigate to flag details screen
+                      ref
+                          .read(currentFlagIdProvider.notifier)
+                          .setFlagId(flag.id);
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FlagDetails(flagId: flag.id),
+                        ),
+                      );
 
-                    // Refresh the flag details after returning
-                    widget.updateFlags();
-                  },
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.flag,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        size: 12,
-                      ),
-                      Text('details', style: TextStyle(fontSize: 10)),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    widget.flag.name,
-                    softWrap: true,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 71, 71, 71),
+                      // Refresh the flag details after returning
+                      widget.updateFlags();
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.flag,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          size: 12,
+                        ),
+                        Text('details', style: TextStyle(fontSize: 10)),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-            Divider(height: 4, color: const Color.fromARGB(255, 219, 219, 219)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FlagBadges(flag: flag),
-
-                archiving
-                    ? CircularProgressIndicator()
-                    : IconButton(
-                        onPressed: mayDelete()
-                            ? () {
-                                archive(flag);
-                              }
-                            : null,
-                        icon: Icon(Icons.delete),
+                  SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      widget.flag.name,
+                      softWrap: true,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 71, 71, 71),
                       ),
-              ],
-            ),
-            if (flag.constraints.isNotEmpty)
+                    ),
+                  ),
+                ],
+              ),
               Divider(
                 height: 4,
                 color: const Color.fromARGB(255, 219, 219, 219),
               ),
-            if (flag.constraints.isNotEmpty)
-              IgnorePointer(
-                ignoring: true,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    side: BorderSide(
-                      color: const Color.fromARGB(255, 255, 167, 240),
-                      width: 1.0,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FlagBadges(flag: flag),
+
+                  archiving
+                      ? CircularProgressIndicator()
+                      : IconButton(
+                          onPressed: mayDelete()
+                              ? () {
+                                  archive(flag);
+                                }
+                              : null,
+                          icon: Icon(Icons.delete),
+                        ),
+                ],
+              ),
+              if (flag.constraints.isNotEmpty)
+                Divider(
+                  height: 4,
+                  color: const Color.fromARGB(255, 219, 219, 219),
+                ),
+              if (flag.constraints.isNotEmpty)
+                IgnorePointer(
+                  ignoring: true,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: BorderSide(
+                        color: const Color.fromARGB(255, 255, 167, 240),
+                        width: 1.0,
+                      ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: flag.constraints.length,
-                          itemBuilder: (context, index) {
-                            final constraint = flag.constraints[index];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.front_hand,
-                                      color: Color.fromARGB(255, 145, 0, 125),
-                                      size: 16,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        constraint.description,
-                                        softWrap: true,
-                                        style: TextStyle(
-                                          color: Color.fromARGB(
-                                            255,
-                                            145,
-                                            0,
-                                            125,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: flag.constraints.length,
+                            itemBuilder: (context, index) {
+                              final constraint = flag.constraints[index];
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.front_hand,
+                                        color: Color.fromARGB(255, 145, 0, 125),
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          constraint.description,
+                                          softWrap: true,
+                                          style: TextStyle(
+                                            color: Color.fromARGB(
+                                              255,
+                                              145,
+                                              0,
+                                              125,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Text('For: ${constraint.key}'),
-                                Text('Named: ${constraint.values.join(', ')}'),
-                                if (index < flag.constraints.length - 1)
-                                  Divider(
-                                    height: 4,
-                                    color: const Color.fromARGB(
-                                      255,
-                                      219,
-                                      219,
-                                      219,
-                                    ),
+                                    ],
                                   ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
+                                  Text('For: ${constraint.key}'),
+                                  Text(
+                                    'Named: ${constraint.values.join(', ')}',
+                                  ),
+                                  if (index < flag.constraints.length - 1)
+                                    Divider(
+                                      height: 4,
+                                      color: const Color.fromARGB(
+                                        255,
+                                        219,
+                                        219,
+                                        219,
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
