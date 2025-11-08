@@ -11,10 +11,7 @@ class CurrentFlagId extends _$CurrentFlagId {
 
   void setFlagId(String flagId) {
     state = flagId;
-  }
-
-  void clearFlagId() {
-    state = '';
+    ref.keepAlive();
   }
 
   String get flagId => state;

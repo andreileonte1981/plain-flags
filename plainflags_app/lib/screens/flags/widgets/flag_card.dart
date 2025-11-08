@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_constraint_id.dart';
 import 'package:plainflags_app/providers/current_flag_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/flag_details.dart';
@@ -187,51 +188,67 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                   color: const Color.fromARGB(255, 219, 219, 219),
                 ),
               if (flag.constraints.isNotEmpty)
-                IgnorePointer(
-                  ignoring: true,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      side: BorderSide(
-                        color: const Color.fromARGB(255, 255, 167, 240),
-                        width: 1.0,
-                      ),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                      color: const Color.fromARGB(255, 255, 167, 240),
+                      width: 1.0,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: flag.constraints.length,
-                            itemBuilder: (context, index) {
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        for (
+                          var index = 0;
+                          index < flag.constraints.length;
+                          index++
+                        )
+                          Builder(
+                            builder: (context) {
                               final constraint = flag.constraints[index];
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.front_hand,
-                                        color: Color.fromARGB(255, 145, 0, 125),
-                                        size: 16,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Flexible(
-                                        child: Text(
-                                          constraint.description,
-                                          softWrap: true,
-                                          style: TextStyle(
-                                            color: Color.fromARGB(
-                                              255,
-                                              145,
-                                              0,
-                                              125,
+                                  TextButton(
+                                    onPressed: () {
+                                      ref
+                                          .read(
+                                            currentConstraintIdProvider
+                                                .notifier,
+                                          )
+                                          .setConstraintId(constraint.id);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.front_hand,
+                                          color: Color.fromARGB(
+                                            255,
+                                            145,
+                                            0,
+                                            125,
+                                          ),
+                                          size: 16,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Flexible(
+                                          child: Text(
+                                            constraint.description,
+                                            softWrap: true,
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                255,
+                                                145,
+                                                0,
+                                                125,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                   Text('For: ${constraint.key}'),
                                   Text(
@@ -251,8 +268,7 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                               );
                             },
                           ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                 ),

@@ -6,7 +6,7 @@ part of 'current_flag_id.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentFlagIdHash() => r'ddbd546322c5cfb2612275824ba85cdb2b971871';
+String _$currentFlagIdHash() => r'61b37f229c4f4f2f5d21e8e15048e56b60828a58';
 
 /// See also [CurrentFlagId].
 @ProviderFor(CurrentFlagId)

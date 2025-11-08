@@ -11,10 +11,7 @@ class CurrentConstraintId extends _$CurrentConstraintId {
 
   void setConstraintId(String constraintId) {
     state = constraintId;
-  }
-
-  void clearConstraintId() {
-    state = '';
+    ref.keepAlive();
   }
 
   String get constraintId => state;
