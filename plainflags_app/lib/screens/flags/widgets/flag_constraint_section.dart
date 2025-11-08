@@ -5,6 +5,8 @@ import 'package:animated_list_plus/transitions.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_constraint_id.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 import 'package:plainflags_app/utils/plural.dart';
@@ -245,12 +247,58 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            constraint.description,
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                          TextButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(
+                                                    currentConstraintIdProvider
+                                                        .notifier,
+                                                  )
+                                                  .setConstraintId(
+                                                    constraint.id,
+                                                  );
+
+                                              Navigator.pop(context);
+
+                                              ref
+                                                  .read(
+                                                    navigationProvider.notifier,
+                                                  )
+                                                  .goToConstraints();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.arrow_circle_right,
+                                                  size: 16,
+                                                  color: const Color.fromARGB(
+                                                    255,
+                                                    180,
+                                                    0,
+                                                    171,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                                Flexible(
+                                                  child: Text(
+                                                    constraint.description,
+                                                    softWrap: true,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                            255,
+                                                            180,
+                                                            0,
+                                                            171,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           Text('For: ${constraint.key}'),
@@ -341,12 +389,58 @@ class _FlagConstraintSectionState extends ConsumerState<FlagConstraintSection> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            constraint.description,
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                          TextButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(
+                                                    currentConstraintIdProvider
+                                                        .notifier,
+                                                  )
+                                                  .setConstraintId(
+                                                    constraint.id,
+                                                  );
+
+                                              Navigator.pop(context);
+
+                                              ref
+                                                  .read(
+                                                    navigationProvider.notifier,
+                                                  )
+                                                  .goToConstraints();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.arrow_circle_right,
+                                                  size: 16,
+                                                  color: const Color.fromARGB(
+                                                    255,
+                                                    180,
+                                                    0,
+                                                    171,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4),
+                                                Flexible(
+                                                  child: Text(
+                                                    constraint.description,
+                                                    softWrap: true,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                            255,
+                                                            180,
+                                                            0,
+                                                            171,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           Text('For: ${constraint.key}'),

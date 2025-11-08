@@ -256,6 +256,17 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                                             ),
                                           ),
                                         ),
+                                        SizedBox(width: 8),
+                                        Icon(
+                                          Icons.arrow_circle_right,
+                                          size: 16,
+                                          color: const Color.fromARGB(
+                                            255,
+                                            180,
+                                            0,
+                                            171,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
