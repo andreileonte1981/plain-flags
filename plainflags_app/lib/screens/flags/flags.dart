@@ -4,6 +4,7 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_flag_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_card.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_create.dart';
@@ -161,7 +162,11 @@ class _FlagsState extends ConsumerState<Flags> {
             .toList();
         failedFetching = false;
 
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {
+            scrollToId(ref.read(currentFlagIdProvider));
+          });
+        }
       } else {
         dlog('Failed to fetch flags: ${response.statusCode}');
         flags = [];

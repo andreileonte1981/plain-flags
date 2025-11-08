@@ -4,6 +4,7 @@ import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/providers/current_constraint_id.dart';
 import 'package:plainflags_app/providers/current_flag_id.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/flag_details.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_badges.dart';
@@ -219,6 +220,14 @@ class _FlagCardState extends ConsumerState<FlagCard> {
                                                 .notifier,
                                           )
                                           .setConstraintId(constraint.id);
+
+                                      ref
+                                          .read(currentFlagIdProvider.notifier)
+                                          .setFlagId(flag.id);
+
+                                      ref
+                                          .read(navigationProvider.notifier)
+                                          .goToConstraints();
                                     },
                                     child: Row(
                                       children: [

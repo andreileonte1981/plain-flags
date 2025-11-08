@@ -4,6 +4,7 @@ import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/screens/connect.dart';
 import 'package:plainflags_app/screens/flags/flags.dart';
 import 'package:plainflags_app/screens/constraints/constraints.dart';
@@ -19,8 +20,6 @@ class MainNavigationScreen extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = [const Flags(), const Constraints()];
 
   @override
@@ -201,6 +200,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final apiUrl = Client.apiUrlShort();
+    final currentIndex = ref.watch(navigationProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -243,9 +244,9 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             ),
           ],
         ),
-        body: _screens[_currentIndex],
+        body: _screens[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
+          currentIndex: currentIndex,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.flag, color: Color.fromARGB(255, 0, 58, 48)),
@@ -268,9 +269,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             ),
           ],
           onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            ref.read(navigationProvider.notifier).setIndex(index);
           },
         ),
       ),

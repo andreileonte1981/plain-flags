@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/current_constraint_id.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/constraints/widgets/card/constraint_card.dart';
 import 'package:plainflags_app/screens/constraints/widgets/constraint_create.dart';
@@ -143,7 +144,11 @@ class _ConstraintsState extends ConsumerState<Constraints> {
             .toList();
         failedFetching = false;
 
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {
+            scrollToId(ref.read(currentConstraintIdProvider));
+          });
+        }
       } else {
         dlog('Failed to fetch constraints: ${response.statusCode}');
         constraints = [];
