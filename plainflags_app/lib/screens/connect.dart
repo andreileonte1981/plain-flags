@@ -19,8 +19,6 @@ class _ConnectState extends State<Connect> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill with existing API URL if available
-    _apiUrlController.text = Client.apiUrl();
 
     _apiUrlController.text = Connections.currentConectionKey;
   }
