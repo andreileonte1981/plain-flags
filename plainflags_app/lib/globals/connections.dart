@@ -8,9 +8,9 @@ class Connections {
   static String demoConnection = 'https://demoservice.plainflags.com';
 
   static void add(String name, String url) {
-    // if (name == demoConnection) {  // TODO: restore this after testing multiple connections
-    //   return;
-    // }
+    if (name == demoConnection) {
+      return;
+    }
 
     connections[name] = url;
   }

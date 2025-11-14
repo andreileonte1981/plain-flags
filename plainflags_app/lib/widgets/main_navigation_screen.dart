@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
+import 'package:plainflags_app/globals/events.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/providers/navigation.dart';
@@ -58,6 +59,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
         ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
 
+        Events.fire(Event(name: 'user_login'));
+
         if (mounted) setState(() {});
       } else {
         throw Exception('Failed to authenticate user');
@@ -107,6 +110,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
       if (loginEmail.isEmpty) {
         showConnectScreen();
+      } else {
+        Events.fire(Event(name: 'user_login'));
       }
     }
   }

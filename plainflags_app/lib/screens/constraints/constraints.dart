@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/constraint.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/events.dart';
 import 'package:plainflags_app/providers/current_constraint_id.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/constraints/widgets/card/constraint_card.dart';
 import 'package:plainflags_app/screens/constraints/widgets/constraint_create.dart';
@@ -27,14 +29,6 @@ class _ConstraintsState extends ConsumerState<Constraints> {
   bool showFilterPanel = false;
 
   bool showCreationPanel = false;
-  void hideCreationPanel() {
-    if (mounted) {
-      setState(() {
-        showCreationPanel = false;
-      });
-    }
-  }
-
   String descriptionSearchQuery = '';
   String keySearchQuery = '';
   String valuesSearchQuery = '';
@@ -45,15 +39,39 @@ class _ConstraintsState extends ConsumerState<Constraints> {
 
   ScrollController constraintScroll = ScrollController();
 
+  @override
+  void initState() {
+    super.initState();
+    fetchConstraints();
+
+    Events.register((Event e) {
+      if (e.name == 'user_login') {
+        if (mounted) {
+          if (ref.read(navigationProvider) == Navigation.constraintsIndex) {
+            fetchConstraints();
+          }
+        }
+      }
+    });
+  }
+
+  void hideCreationPanel() {
+    if (mounted) {
+      setState(() {
+        showCreationPanel = false;
+      });
+    }
+  }
+
   Future<void> scrollToId(String id) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final index = constraints.indexWhere((constraint) => constraint.id == id);
     if (index != -1 && constraintScroll.hasClients) {
-      final itemHeight =
-          constraintScroll.position.maxScrollExtent / constraints.length;
-      final targetOffset = index * itemHeight;
-
       if (mounted) {
+        final itemHeight =
+            constraintScroll.position.maxScrollExtent / constraints.length;
+        final targetOffset = index * itemHeight;
+
         constraintScroll.animateTo(
           targetOffset,
           duration: const Duration(milliseconds: 300),
@@ -109,12 +127,6 @@ class _ConstraintsState extends ConsumerState<Constraints> {
         valuesFilterController.clear();
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchConstraints();
   }
 
   Future<void> fetchConstraints() async {

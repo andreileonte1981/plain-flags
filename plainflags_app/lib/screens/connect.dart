@@ -249,23 +249,33 @@ class _ConnectState extends State<Connect> {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Text(
-                                    apiUrl,
-                                    overflow: TextOverflow.ellipsis,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      confirmConnection(apiUrl);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const Icon(Icons.leak_add),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            apiUrl,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     forgetConnection(apiUrl);
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.leak_add),
-                                  onPressed: () {
-                                    confirmConnection(apiUrl);
                                   },
                                 ),
                               ],

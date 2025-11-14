@@ -4,6 +4,9 @@ part 'navigation.g.dart';
 
 @riverpod
 class Navigation extends _$Navigation {
+  static const int flagsIndex = 0;
+  static const int constraintsIndex = 1;
+
   @override
   int build() {
     ref.keepAlive();

@@ -4,7 +4,9 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:plainflags_app/domain/flag.dart';
 import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/globals/events.dart';
 import 'package:plainflags_app/providers/current_flag_id.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_card.dart';
 import 'package:plainflags_app/screens/flags/widgets/flag_create.dart';
@@ -37,24 +39,39 @@ class _FlagsState extends ConsumerState<Flags> {
 
   bool showCreationPanel = false;
 
-  void scrollToId(String id) {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final index = filteredFlags.indexWhere((flag) => flag.id == id);
-          final itemHeight =
-              flagScroll.position.maxScrollExtent / filteredFlags.length;
-          if (index != -1 && flagScroll.hasClients) {
-            final position = index * itemHeight;
-            flagScroll.animateTo(
-              position,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
+  @override
+  void initState() {
+    super.initState();
+
+    fetchFlags();
+
+    Events.register((Event e) {
+      if (e.name == 'user_login') {
+        if (mounted) {
+          if (ref.read(navigationProvider) == Navigation.flagsIndex) {
+            fetchFlags();
           }
-        });
+        }
       }
     });
+  }
+
+  Future<void> scrollToId(String id) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final index = filteredFlags.indexWhere((flag) => flag.id == id);
+    if (index != -1 && flagScroll.hasClients) {
+      if (mounted) {
+        final itemHeight =
+            flagScroll.position.maxScrollExtent / filteredFlags.length;
+        final position = index * itemHeight;
+
+        flagScroll.animateTo(
+          position,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    }
   }
 
   void hideCreationPanel() {
@@ -128,13 +145,6 @@ class _FlagsState extends ConsumerState<Flags> {
         constraintFilterController.clear();
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    fetchFlags();
   }
 
   Future<void> fetchFlags() async {
