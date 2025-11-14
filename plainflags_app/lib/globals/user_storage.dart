@@ -38,7 +38,7 @@ class UserStorage {
 
     final keysString = await storage.read(key: 'userCredKeys');
 
-    dlog('Loaded user credential keys: $keysString');
+    dlog('Loaded user credential keys');
 
     if (keysString == null) {
       return;
@@ -62,7 +62,7 @@ class UserStorage {
       }
     }
 
-    dlog('Loaded user credentials for connections: $usersCredsPerConnection');
+    dlog('Loaded user credentials for connections');
   }
 
   static Future<void> save() async {
@@ -76,7 +76,7 @@ class UserStorage {
         .map((k) => Uri.encodeComponent(k))
         .join('&');
 
-    dlog('Saving user credential keys: $keys');
+    dlog('Saving user credential keys');
     await storage.write(key: 'userCredKeys', value: keys);
 
     for (var entry in usersCredsPerConnection.entries) {
@@ -86,7 +86,7 @@ class UserStorage {
 
       final credString = '$email=$password';
 
-      dlog('Saving credentials for connection "$key": $credString');
+      dlog('Saving credentials for connection "$key"');
       await storage.write(key: 'userCred_$key', value: credString);
     }
   }
