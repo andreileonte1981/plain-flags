@@ -185,6 +185,48 @@ class _ConnectState extends ConsumerState<Connect> {
 
         await Connections.save();
 
+        // Show success message
+        if (mounted) {
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  'Thank you for trying Plain Flags!',
+                  textAlign: TextAlign.center,
+                ),
+
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Your temporary demo password is $tempPassword.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'You may change it from the user settings.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Please note that demo user accounts may be deleted after a couple of days.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+
         if (mounted) Navigator.pop(context, true);
       } else {
         dlog(
