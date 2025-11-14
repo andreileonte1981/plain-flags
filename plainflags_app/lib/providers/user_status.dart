@@ -5,9 +5,15 @@ part 'user_status.g.dart';
 class UserStatus {
   bool isLoggedIn;
   String email;
+  String role;
   String token;
 
-  UserStatus({this.isLoggedIn = false, this.email = '', this.token = ''});
+  UserStatus({
+    this.isLoggedIn = false,
+    this.email = '',
+    this.role = '',
+    this.token = '',
+  });
 }
 
 @riverpod

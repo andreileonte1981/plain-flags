@@ -35,7 +35,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   Future<void> checkExistingUser() async {
-    final connectionUrl = Connections.currentConectionKey;
+    final connectionUrl = Connections.currentConnectionKey;
     final creds = UserStorage.credentialsForConnection(connectionUrl);
     if (creds == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -117,7 +117,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   }
 
   bool checkExistingConnection() {
-    if (Connections.currentConectionKey.isEmpty) {
+    if (Connections.currentConnectionKey.isEmpty) {
       // Defer navigation until after the current build cycle completes
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showConnectScreen();
@@ -125,7 +125,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       return false;
     }
 
-    Client.setBaseUrl('${Connections.currentConectionKey}/api');
+    Client.setBaseUrl('${Connections.currentConnectionKey}/api');
 
     return true;
   }
@@ -161,7 +161,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               Divider(height: 4, color: Theme.of(context).colorScheme.primary),
               const SizedBox(height: 20),
               Text(
-                'Disconnect from ${Client.apiUrlShort()}?',
+                'Disconnect from ${Connections.isDemo() ? "demo service" : Client.apiUrlShort()}?',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -220,6 +220,18 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         color: Color.fromARGB(255, 200, 0, 0),
+                      ),
+                    )
+                  : apiUrl ==
+                        Connections.demoConnection
+                            .replaceAll('http://', '')
+                            .replaceAll('https://', '')
+                  ? Text(
+                      "DEMO",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[700],
                       ),
                     )
                   : Text(apiUrl, style: TextStyle(fontSize: 12)),

@@ -79,7 +79,7 @@ class _MeState extends ConsumerState<Me> {
     );
 
     if (confirm == true) {
-      final connection = Connections.currentConectionKey;
+      final connection = Connections.currentConnectionKey;
       UserStorage.forgetCredentialsForConnection(connection);
       UserStorage.save();
 

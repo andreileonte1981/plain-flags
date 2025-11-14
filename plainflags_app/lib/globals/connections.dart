@@ -2,10 +2,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class Connections {
-  static String currentConectionKey = '';
+  static String currentConnectionKey = '';
   static Map<String, String> connections = {};
 
-  static String demoConnection = 'https://demoservice.plainflags.com';
+  static String demoConnection = 'https://demoservice.plainflags.dev';
+  // static String demoConnection = 'http://192.168.0.60:5000';
 
   static void add(String name, String url) {
     if (name == demoConnection) {
@@ -17,15 +18,19 @@ class Connections {
 
   static void forget(String name) {
     connections.remove(name);
-    if (currentConectionKey == name) {
-      currentConectionKey = '';
+    if (currentConnectionKey == name) {
+      currentConnectionKey = '';
     }
   }
 
   static void select(String name) {
-    if (connections.containsKey(name)) {
-      currentConectionKey = name;
+    if (connections.containsKey(name) || name == demoConnection) {
+      currentConnectionKey = name;
     }
+  }
+
+  static bool isDemo() {
+    return currentConnectionKey == demoConnection;
   }
 
   static Future<void> save() async {
@@ -40,7 +45,7 @@ class Connections {
         )
         .join('&');
 
-    await storage.write(key: 'currentConnection', value: currentConectionKey);
+    await storage.write(key: 'currentConnection', value: currentConnectionKey);
     await storage.write(key: 'connections', value: connectionsJson);
   }
 
@@ -68,6 +73,6 @@ class Connections {
       select(currentKey);
     }
 
-    dlog('Current connection: $currentConectionKey');
+    dlog('Current connection: $currentConnectionKey');
   }
 }

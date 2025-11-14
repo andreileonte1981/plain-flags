@@ -60,7 +60,7 @@ class _LoginState extends ConsumerState<Login> {
           Navigator.pop(context, email);
         }
 
-        final connectionKey = Connections.currentConectionKey;
+        final connectionKey = Connections.currentConnectionKey;
         UserStorage.addCredentialsForConnection(
           connectionKey,
           email,

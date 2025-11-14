@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
+import 'package:plainflags_app/globals/user_storage.dart';
+import 'package:plainflags_app/providers/user_status.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plainflags_app/utils/dlog.dart';
 
-class Connect extends StatefulWidget {
+class Connect extends ConsumerStatefulWidget {
   const Connect({super.key});
 
   @override
-  State<Connect> createState() => _ConnectState();
+  ConsumerState<Connect> createState() => _ConnectState();
 }
 
-class _ConnectState extends State<Connect> {
+class _ConnectState extends ConsumerState<Connect> {
   final TextEditingController _apiUrlController = TextEditingController();
   final TextEditingController _passkeyController = TextEditingController();
 
@@ -20,7 +24,7 @@ class _ConnectState extends State<Connect> {
   void initState() {
     super.initState();
 
-    _apiUrlController.text = Connections.currentConectionKey;
+    _apiUrlController.text = Connections.currentConnectionKey;
   }
 
   @override
@@ -94,7 +98,7 @@ class _ConnectState extends State<Connect> {
     }
   }
 
-  void _handleConnect() {
+  void handleConnect() {
     final apiUrl = _apiUrlController.text.trim();
 
     Client.setBaseUrl('$apiUrl/api');
@@ -102,10 +106,97 @@ class _ConnectState extends State<Connect> {
     authenticate(_passkeyController.text.trim());
   }
 
-  void _handleDemo() {
-    Client.setBaseUrl('https://demoservice.plainflags.dev/api');
+  Future<void> handleDemo() async {
+    Client.setBaseUrl('${Connections.demoConnection}/api');
 
-    Navigator.pop(context, true);
+    // Ask user for name
+    final String name = await showDialog(
+      context: context,
+      builder: (context) {
+        String nameValue = '';
+        return AlertDialog(
+          title: const Text('Enter Demo Name'),
+          content: TextField(
+            decoration: const InputDecoration(
+              labelText: 'Your Name',
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              nameValue = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(""),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(nameValue),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (name.isNotEmpty) {
+      connectToDemo(name);
+    }
+  }
+
+  Future<void> connectToDemo(String name) async {
+    try {
+      final response = await Client.post('dashauth/demo', {'name': name}, null);
+
+      if (response.statusCode == 201) {
+        String email = response.body['user']?['email'] ?? '';
+        String tempPassword = response.body['user']?['tempPassword'] ?? '';
+        String token = response.body['token'] ?? '';
+
+        ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
+
+        UserStorage.addCredentialsForConnection(
+          Connections.demoConnection,
+          email,
+          tempPassword,
+        );
+
+        await UserStorage.save();
+
+        Connections.select(Connections.demoConnection);
+
+        await Connections.save();
+
+        if (mounted) Navigator.pop(context, true);
+      } else {
+        dlog(
+          'Demo connection failed: ${response.statusCode} - ${response.body}',
+        );
+        throw Exception('Failed to connect to demo service');
+      }
+    } catch (e) {
+      dlog('Error connecting to demo service: $e');
+      if (mounted) {
+        // Modal dialog
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Connection Error'),
+              content: const Text(
+                'Failed to connect to demo service. Make sure your device is online.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 
   Future<void> forgetConnection(String apiUrl) async {
@@ -218,26 +309,23 @@ class _ConnectState extends State<Connect> {
                   onPressed: () {
                     if (_formGlobalKey.currentState!.validate()) {
                       _formGlobalKey.currentState!.save();
-                      _handleConnect();
+                      handleConnect();
                     }
                   },
                   child: const Text('Connect'),
                 ),
-                Divider(height: 32),
-                ElevatedButton(
-                  onPressed: _handleDemo,
-                  child: const Text('Demo'),
-                ),
-                Divider(height: 32),
-                Column(
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: Connections.connections.keys.length,
-                      itemBuilder: (context, index) {
-                        final apiUrl = Connections.connections.keys.elementAt(
-                          index,
-                        );
+                if (Connections.connections.isNotEmpty)
+                  Column(
+                    children: [
+                      Divider(height: 32),
+
+                      const Text(
+                        'Previously Connected Services:',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(height: 4),
+
+                      ...Connections.connections.keys.map((apiUrl) {
                         return Card(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
@@ -282,9 +370,13 @@ class _ConnectState extends State<Connect> {
                             ),
                           ),
                         );
-                      },
-                    ),
-                  ],
+                      }),
+                    ],
+                  ),
+                Divider(height: 32),
+                ElevatedButton(
+                  onPressed: handleDemo,
+                  child: const Text('Demo'),
                 ),
               ],
             ),
