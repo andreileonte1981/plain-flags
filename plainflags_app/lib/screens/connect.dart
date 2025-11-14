@@ -24,7 +24,9 @@ class _ConnectState extends ConsumerState<Connect> {
   void initState() {
     super.initState();
 
-    _apiUrlController.text = Connections.currentConnectionKey;
+    _apiUrlController.text = Connections.isDemo()
+        ? ""
+        : Connections.currentConnectionKey;
   }
 
   @override
@@ -108,6 +110,22 @@ class _ConnectState extends ConsumerState<Connect> {
 
   Future<void> handleDemo() async {
     Client.setBaseUrl('${Connections.demoConnection}/api');
+
+    // Check if there's a demo user already
+    final demoCreds = UserStorage.credentialsForConnection(
+      Connections.demoConnection,
+    );
+
+    if (demoCreds != null) {
+      dlog('Using existing demo credentials');
+      Connections.select(Connections.demoConnection);
+
+      await Connections.save();
+
+      if (mounted) Navigator.pop(context, true);
+
+      return;
+    }
 
     // Ask user for name
     final String name = await showDialog(
