@@ -170,8 +170,11 @@ class _ConnectState extends ConsumerState<Connect> {
         String email = response.body['user']?['email'] ?? '';
         String tempPassword = response.body['user']?['tempPassword'] ?? '';
         String token = response.body['token'] ?? '';
+        String role = response.body['user']?['role'] ?? '';
 
-        ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
+        ref
+            .read(userStatusNotifierProvider.notifier)
+            .setLoggedIn(email, token, role);
 
         UserStorage.addCredentialsForConnection(
           Connections.demoConnection,

@@ -56,8 +56,11 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
 
         final email = data['user']?['email'] ?? '';
         final token = data['token'] ?? '';
+        final role = data['user']?['role'] ?? '';
 
-        ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
+        ref
+            .read(userStatusNotifierProvider.notifier)
+            .setLoggedIn(email, token, role);
 
         Events.fire(Event(name: 'user_login'));
 

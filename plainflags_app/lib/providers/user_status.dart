@@ -25,13 +25,18 @@ class UserStatusNotifier extends _$UserStatusNotifier {
     return userStatus;
   }
 
-  void setLoggedIn(String email, String token) {
-    state = UserStatus(isLoggedIn: true, email: email, token: token);
+  void setLoggedIn(String email, String token, String role) {
+    state = UserStatus(
+      isLoggedIn: true,
+      email: email,
+      token: token,
+      role: role,
+    );
     ref.keepAlive();
   }
 
   void setLoggedOut() {
-    state = UserStatus(isLoggedIn: false, email: '', token: '');
+    state = UserStatus(isLoggedIn: false, email: '', token: '', role: '');
     ref.keepAlive();
   }
 

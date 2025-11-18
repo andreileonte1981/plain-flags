@@ -146,7 +146,9 @@ export default function UserPanel(props: {
                 </SubtleButton>
               </YesNoWrap>
               <div className="flex flex-col gap-1 items-center text-center text-gray-500 text-sm break-all px-2">
-                {userRole === Role.USER && <UserIcon />}
+                {(userRole === Role.USER || userRole === Role.DEMO) && (
+                  <UserIcon />
+                )}
                 {(userRole === Role.ADMIN || userRole === Role.SUPERADMIN) && (
                   <div className="flex">
                     <UserIcon />

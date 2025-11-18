@@ -93,12 +93,25 @@ class _MeState extends ConsumerState<Me> {
 
   @override
   Widget build(BuildContext context) {
+    bool adminIcon = [
+      'admin',
+      'superadmin',
+    ].contains(ref.watch(userStatusNotifierProvider).role);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           ref.read(userStatusNotifierProvider).email,
           style: TextStyle(fontSize: 16),
+          softWrap: true,
+          overflow: TextOverflow.visible,
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(adminIcon ? Icons.manage_accounts : Icons.person),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

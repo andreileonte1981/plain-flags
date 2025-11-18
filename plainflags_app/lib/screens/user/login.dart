@@ -50,8 +50,11 @@ class _LoginState extends ConsumerState<Login> {
 
         final email = data['user']?['email'] ?? '';
         final token = data['token'] ?? '';
+        final role = data['user']?['role'] ?? '';
 
-        ref.read(userStatusNotifierProvider.notifier).setLoggedIn(email, token);
+        ref
+            .read(userStatusNotifierProvider.notifier)
+            .setLoggedIn(email, token, role);
 
         if (mounted) {
           ScaffoldMessenger.of(
