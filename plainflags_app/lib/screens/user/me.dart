@@ -94,8 +94,8 @@ class _MeState extends ConsumerState<Me> {
   @override
   Widget build(BuildContext context) {
     bool adminIcon = [
-      'admin',
-      'superadmin',
+      Role.admin,
+      Role.superadmin,
     ].contains(ref.watch(userStatusNotifierProvider).role);
 
     return Scaffold(

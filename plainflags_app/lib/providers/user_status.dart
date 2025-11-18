@@ -2,6 +2,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_status.g.dart';
 
+class Role {
+  static const String admin = 'admin';
+  static const String demo = 'demo';
+  static const String user = 'user';
+  static const String superadmin = 'superadmin';
+}
+
 class UserStatus {
   bool isLoggedIn;
   String email;
