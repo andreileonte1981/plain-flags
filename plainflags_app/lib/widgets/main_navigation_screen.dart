@@ -7,10 +7,12 @@ import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/screens/connect.dart';
+import 'package:plainflags_app/screens/flags/archived.dart';
 import 'package:plainflags_app/screens/flags/flags.dart';
 import 'package:plainflags_app/screens/constraints/constraints.dart';
 import 'package:plainflags_app/screens/user/login.dart';
 import 'package:plainflags_app/screens/user/me.dart';
+import 'package:plainflags_app/screens/users/users.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -21,7 +23,12 @@ class MainNavigationScreen extends ConsumerStatefulWidget {
 }
 
 class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
-  final List<Widget> _screens = [const Flags(), const Constraints()];
+  final List<Widget> _screens = [
+    const Flags(),
+    const Constraints(),
+    const Archived(),
+    const Users(),
+  ];
 
   @override
   void initState() {
@@ -266,8 +273,9 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         ),
         body: _screens[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.flag, color: Color.fromARGB(255, 0, 58, 48)),
               activeIcon: Icon(
@@ -276,6 +284,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               ),
               label: 'Flags',
             ),
+
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.front_hand,
@@ -287,6 +296,38 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               ),
               label: 'Constraints',
             ),
+
+            if ([
+              Role.admin,
+              Role.superadmin,
+            ].contains(ref.read(userStatusNotifierProvider).role))
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.delete,
+                  color: Color.fromARGB(255, 100, 100, 100),
+                ),
+                activeIcon: Icon(
+                  Icons.delete,
+                  color: Color.fromARGB(255, 39, 39, 39),
+                ),
+                label: 'Archived Flags',
+              ),
+
+            if ([
+              Role.admin,
+              Role.superadmin,
+            ].contains(ref.read(userStatusNotifierProvider).role))
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.people,
+                  color: Color.fromARGB(255, 100, 100, 100),
+                ),
+                activeIcon: Icon(
+                  Icons.people,
+                  color: Color.fromARGB(255, 39, 39, 39),
+                ),
+                label: 'Users',
+              ),
           ],
           onTap: (index) {
             ref.read(navigationProvider.notifier).setIndex(index);

@@ -6,6 +6,8 @@ part 'navigation.g.dart';
 class Navigation extends _$Navigation {
   static const int flagsIndex = 0;
   static const int constraintsIndex = 1;
+  static const int archivedFlagsIndex = 2;
+  static const int usersIndex = 3;
 
   @override
   int build() {
@@ -22,7 +24,7 @@ class Navigation extends _$Navigation {
   }
 
   void setIndex(int index) {
-    if (index >= 0 && index <= 1) {
+    if (index >= 0 && index <= 3) {
       state = index;
     }
   }
