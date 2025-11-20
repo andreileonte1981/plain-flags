@@ -148,7 +148,10 @@ class _ArchivedState extends ConsumerState<Archived> {
     // Cancel any existing timer
     _debounceTimer?.cancel();
 
-    // Start a new timer
+    // Update UI immediately to show/hide the close icon
+    setState(() {});
+
+    // Start a new timer for the actual filtering
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       if (_filter != newFilter) {
         setState(() {
@@ -231,12 +234,21 @@ class _ArchivedState extends ConsumerState<Archived> {
                 // Search filter
                 TextField(
                   controller: _filterController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Search by name',
                     hintText: 'Filter archived flags...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _filterController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              _filterController.clear();
+                              _onFilterChanged('');
+                            },
+                          )
+                        : null,
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,
                     ),
