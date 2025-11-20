@@ -34,6 +34,12 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   void initState() {
     super.initState();
 
+    Events.register((Event e) {
+      if (e.name == 'user_login') {
+        if (mounted) setState(() {});
+      }
+    });
+
     final apiUrlOk = checkExistingConnection();
 
     if (apiUrlOk) {
