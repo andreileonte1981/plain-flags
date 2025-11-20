@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/domain/flag.dart';
+import 'package:plainflags_app/domain/history.dart';
+import 'package:plainflags_app/globals/client.dart';
+import 'package:plainflags_app/providers/user_status.dart';
+import 'package:plainflags_app/screens/flags/widgets/history_item.dart';
+import 'package:plainflags_app/utils/dlog.dart';
 
-class ArchivedFlagItem extends StatefulWidget {
+class ArchivedFlagItem extends ConsumerStatefulWidget {
   final Flag flag;
 
   const ArchivedFlagItem({super.key, required this.flag});
 
   @override
-  State<ArchivedFlagItem> createState() => _ArchivedFlagItemState();
+  ConsumerState<ArchivedFlagItem> createState() => _ArchivedFlagItemState();
 }
 
-class _ArchivedFlagItemState extends State<ArchivedFlagItem>
+class _ArchivedFlagItemState extends ConsumerState<ArchivedFlagItem>
     with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
+  bool _isLoadingHistory = false;
+  List<History> historyItems = [];
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -40,10 +48,55 @@ class _ArchivedFlagItemState extends State<ArchivedFlagItem>
       _isExpanded = !_isExpanded;
       if (_isExpanded) {
         _animationController.forward();
+        if (historyItems.isEmpty) {
+          _fetchHistory();
+        }
       } else {
         _animationController.reverse();
       }
     });
+  }
+
+  Future<void> _fetchHistory() async {
+    setState(() {
+      _isLoadingHistory = true;
+    });
+
+    try {
+      final userStatus = ref.read(userStatusNotifierProvider);
+      final response = await Client.post('history', {
+        'flagId': widget.flag.id,
+      }, userStatus.token);
+
+      if (response.statusCode == 200) {
+        final data = response.body as List<dynamic>;
+        historyItems = data
+            .map((e) => History.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        if (mounted) {
+          setState(() {
+            _isLoadingHistory = false;
+          });
+        }
+      } else {
+        dlog(
+          'Failed to fetch flag history: ${response.statusCode} - ${response.body}',
+        );
+        if (mounted) {
+          setState(() {
+            _isLoadingHistory = false;
+          });
+        }
+      }
+    } catch (e) {
+      dlog('Error fetching flag history: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingHistory = false;
+        });
+      }
+    }
   }
 
   @override
@@ -95,28 +148,44 @@ class _ArchivedFlagItemState extends State<ArchivedFlagItem>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Flag History',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Icon(Icons.history_toggle_off),
+                      SizedBox(width: 8),
+                      Text(
+                        'Feature History',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
-                  // For now, show basic flag information
-                  // This would be replaced with actual history data from the API
-                  _buildHistoryItem(
-                    'Flag created',
-                    'System',
-                    'Created with initial state: ${widget.flag.isOn ? 'ON' : 'OFF'}',
-                    DateTime.now().subtract(const Duration(days: 30)),
-                  ),
-                  const SizedBox(height: 8),
-                  _buildHistoryItem(
-                    'Flag archived',
-                    'Admin',
-                    'Flag was archived and removed from active flags',
-                    DateTime.now().subtract(const Duration(days: 1)),
-                  ),
+                  if (_isLoadingHistory)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (historyItems.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        'No history available for this flag.',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    )
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: historyItems.map((history) {
+                        return HistoryItem(history: history);
+                      }).toList(),
+                    ),
                 ],
               ),
             ),
@@ -124,70 +193,5 @@ class _ArchivedFlagItemState extends State<ArchivedFlagItem>
         ],
       ),
     );
-  }
-
-  Widget _buildHistoryItem(
-    String action,
-    String user,
-    String description,
-    DateTime timestamp,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                action,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                _formatTimestamp(timestamp),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'by $user',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: Colors.grey[700]),
-          ),
-          const SizedBox(height: 8),
-          Text(description, style: Theme.of(context).textTheme.bodySmall),
-        ],
-      ),
-    );
-  }
-
-  String _formatTimestamp(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
-
-    if (difference.inDays > 7) {
-      return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
-    } else {
-      return 'Just now';
-    }
   }
 }
