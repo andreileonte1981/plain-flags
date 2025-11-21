@@ -145,7 +145,7 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
       ),
       color: const Color.fromARGB(255, 189, 255, 239),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -164,15 +164,11 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Enter admin email address:',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 12),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
                 hintText: 'admin@example.com',
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white,
                 border: const OutlineInputBorder(),

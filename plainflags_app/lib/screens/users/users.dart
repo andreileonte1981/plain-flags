@@ -170,7 +170,7 @@ class _UsersState extends ConsumerState<Users> {
         children: [
           // Filter section
           Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -204,21 +204,15 @@ class _UsersState extends ConsumerState<Users> {
 
           // Creation panels
           if (_showCreateUsersPanel)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CreateUsersPanel(
-                onUsersCreated: _onUsersCreated,
-                onClose: _closeCreateUsersPanel,
-              ),
+            CreateUsersPanel(
+              onUsersCreated: _onUsersCreated,
+              onClose: _closeCreateUsersPanel,
             ),
 
           if (_showCreateAdminPanel)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CreateAdminPanel(
-                onAdminCreated: _onAdminCreated,
-                onClose: _closeCreateAdminPanel,
-              ),
+            CreateAdminPanel(
+              onAdminCreated: _onAdminCreated,
+              onClose: _closeCreateAdminPanel,
             ),
 
           // Users list
