@@ -4,6 +4,8 @@ import 'package:plainflags_app/domain/user.dart' as user_domain;
 import 'package:plainflags_app/providers/users_provider.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/screens/users/widgets/user_list_item.dart';
+import 'package:plainflags_app/screens/users/widgets/create_users_panel.dart';
+import 'package:plainflags_app/screens/users/widgets/create_admin_panel.dart';
 
 class Users extends ConsumerStatefulWidget {
   const Users({super.key});
@@ -88,6 +90,30 @@ class _UsersState extends ConsumerState<Users> {
   void _onUserDeleted() {
     // Refresh the users list
     ref.invalidate(usersProvider);
+  }
+
+  void _onUsersCreated() {
+    // Refresh the users list
+    ref.invalidate(usersProvider);
+  }
+
+  void _onAdminCreated() {
+    // Refresh the users list
+    ref.invalidate(usersProvider);
+  }
+
+  void _showCreateUsersPanel() {
+    showDialog(
+      context: context,
+      builder: (context) => CreateUsersPanel(onUsersCreated: _onUsersCreated),
+    );
+  }
+
+  void _showCreateAdminPanel() {
+    showDialog(
+      context: context,
+      builder: (context) => CreateAdminPanel(onAdminCreated: _onAdminCreated),
+    );
   }
 
   @override
@@ -245,7 +271,7 @@ class _UsersState extends ConsumerState<Users> {
                     ref.invalidate(usersProvider);
                   },
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 100.0),
                     itemCount: filteredUsers.length,
                     itemBuilder: (context, index) {
                       final user = filteredUsers[index];
@@ -259,6 +285,26 @@ class _UsersState extends ConsumerState<Users> {
                 );
               },
             ),
+          ),
+        ],
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: "create_users_fab",
+            onPressed: _showCreateUsersPanel,
+            tooltip: 'Create Users',
+            backgroundColor: Colors.blue,
+            child: const Icon(Icons.person_add, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+          FloatingActionButton(
+            heroTag: "create_admin_fab",
+            onPressed: _showCreateAdminPanel,
+            tooltip: 'Create Admin',
+            backgroundColor: Colors.orange,
+            child: const Icon(Icons.admin_panel_settings, color: Colors.white),
           ),
         ],
       ),
