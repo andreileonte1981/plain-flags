@@ -308,13 +308,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               Role.superadmin,
             ].contains(ref.read(userStatusNotifierProvider).role))
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.delete,
-                  color: Color.fromARGB(255, 100, 100, 100),
-                ),
+                icon: Icon(Icons.delete, color: Color.fromARGB(255, 53, 0, 0)),
                 activeIcon: Icon(
                   Icons.delete,
-                  color: Color.fromARGB(255, 39, 39, 39),
+                  color: Color.fromARGB(255, 156, 0, 0),
                 ),
                 label: 'Archived Flags',
               ),
@@ -324,13 +321,10 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
               Role.superadmin,
             ].contains(ref.read(userStatusNotifierProvider).role))
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.people,
-                  color: Color.fromARGB(255, 100, 100, 100),
-                ),
+                icon: Icon(Icons.people, color: Color.fromARGB(255, 0, 27, 85)),
                 activeIcon: Icon(
                   Icons.people,
-                  color: Color.fromARGB(255, 39, 39, 39),
+                  color: Color.fromARGB(255, 11, 0, 172),
                 ),
                 label: 'Users',
               ),
