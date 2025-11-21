@@ -5,8 +5,13 @@ import 'package:plainflags_app/providers/user_status.dart';
 
 class CreateUsersPanel extends ConsumerStatefulWidget {
   final VoidCallback onUsersCreated;
+  final VoidCallback onClose;
 
-  const CreateUsersPanel({super.key, required this.onUsersCreated});
+  const CreateUsersPanel({
+    super.key,
+    required this.onUsersCreated,
+    required this.onClose,
+  });
 
   @override
   ConsumerState<CreateUsersPanel> createState() => _CreateUsersPanelState();
@@ -65,6 +70,33 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
       return;
     }
 
+    // Ask for confirmation
+    final emailsString = _emailsController.text.trim();
+    final emails = _parseEmails(emailsString);
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Create'),
+            content: Text(
+              'Create ${emails.length} user${emails.length > 1 ? 's' : ''} with the following emails?\n\n${emails.join(', ')}',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Create'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmed) return;
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -79,10 +111,6 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
         return;
       }
 
-      final emailsString = _emailsController.text.trim();
-      final emails = _parseEmails(
-        emailsString,
-      ); // Keep for success message count
       final response = await Client.post('users/bulk', {
         'emails': emailsString,
       }, userStatus.token);
@@ -90,9 +118,9 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Success
         _emailsController.clear();
+        widget.onClose();
         widget.onUsersCreated();
         if (mounted) {
-          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -127,14 +155,34 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Create Users'),
-      content: SizedBox(
-        width: double.maxFinite,
+    return Card(
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Color.fromARGB(255, 0, 139, 105),
+          width: 2.0,
+        ),
+      ),
+      color: const Color.fromARGB(255, 189, 255, 239),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Create Users',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                IconButton(
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.cancel),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             const Text(
               'Enter email addresses separated by commas:',
               style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -143,12 +191,28 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
             TextField(
               controller: _emailsController,
               maxLines: 4,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'user1@example.com, user2@example.com',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
+                filled: true,
+                fillColor: Colors.white,
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.all(12),
+                suffixIcon: _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(14.0),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.add_circle),
+                        onPressed: _createUsers,
+                      ),
               ),
               enabled: !_isLoading,
+              onSubmitted: (_) => _createUsers(),
             ),
             if (_errorMessage != null) ...[
               const SizedBox(height: 8),
@@ -160,22 +224,6 @@ class _CreateUsersPanelState extends ConsumerState<CreateUsersPanel> {
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _createUsers,
-          child: _isLoading
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Create'),
-        ),
-      ],
     );
   }
 }

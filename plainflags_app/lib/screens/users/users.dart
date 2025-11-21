@@ -18,6 +18,9 @@ class _UsersState extends ConsumerState<Users> {
   String _emailFilter = '';
   final TextEditingController _filterController = TextEditingController();
 
+  bool _showCreateUsersPanel = false;
+  bool _showCreateAdminPanel = false;
+
   @override
   void initState() {
     super.initState();
@@ -102,18 +105,34 @@ class _UsersState extends ConsumerState<Users> {
     ref.invalidate(usersProvider);
   }
 
-  void _showCreateUsersPanel() {
-    showDialog(
-      context: context,
-      builder: (context) => CreateUsersPanel(onUsersCreated: _onUsersCreated),
-    );
+  void _toggleCreateUsersPanel() {
+    setState(() {
+      _showCreateUsersPanel = !_showCreateUsersPanel;
+      if (_showCreateUsersPanel) {
+        _showCreateAdminPanel = false; // Close admin panel if open
+      }
+    });
   }
 
-  void _showCreateAdminPanel() {
-    showDialog(
-      context: context,
-      builder: (context) => CreateAdminPanel(onAdminCreated: _onAdminCreated),
-    );
+  void _toggleCreateAdminPanel() {
+    setState(() {
+      _showCreateAdminPanel = !_showCreateAdminPanel;
+      if (_showCreateAdminPanel) {
+        _showCreateUsersPanel = false; // Close users panel if open
+      }
+    });
+  }
+
+  void _closeCreateUsersPanel() {
+    setState(() {
+      _showCreateUsersPanel = false;
+    });
+  }
+
+  void _closeCreateAdminPanel() {
+    setState(() {
+      _showCreateAdminPanel = false;
+    });
   }
 
   @override
@@ -182,6 +201,25 @@ class _UsersState extends ConsumerState<Users> {
               },
             ),
           ),
+
+          // Creation panels
+          if (_showCreateUsersPanel)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CreateUsersPanel(
+                onUsersCreated: _onUsersCreated,
+                onClose: _closeCreateUsersPanel,
+              ),
+            ),
+
+          if (_showCreateAdminPanel)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CreateAdminPanel(
+                onAdminCreated: _onAdminCreated,
+                onClose: _closeCreateAdminPanel,
+              ),
+            ),
 
           // Users list
           Expanded(
@@ -293,7 +331,7 @@ class _UsersState extends ConsumerState<Users> {
         children: [
           FloatingActionButton(
             heroTag: "create_users_fab",
-            onPressed: _showCreateUsersPanel,
+            onPressed: _toggleCreateUsersPanel,
             tooltip: 'Create Users',
             backgroundColor: Colors.blue,
             child: const Icon(Icons.person_add, color: Colors.white),
@@ -301,7 +339,7 @@ class _UsersState extends ConsumerState<Users> {
           const SizedBox(width: 16),
           FloatingActionButton(
             heroTag: "create_admin_fab",
-            onPressed: _showCreateAdminPanel,
+            onPressed: _toggleCreateAdminPanel,
             tooltip: 'Create Admin',
             backgroundColor: Colors.orange,
             child: const Icon(Icons.admin_panel_settings, color: Colors.white),

@@ -5,8 +5,13 @@ import 'package:plainflags_app/providers/user_status.dart';
 
 class CreateAdminPanel extends ConsumerStatefulWidget {
   final VoidCallback onAdminCreated;
+  final VoidCallback onClose;
 
-  const CreateAdminPanel({super.key, required this.onAdminCreated});
+  const CreateAdminPanel({
+    super.key,
+    required this.onAdminCreated,
+    required this.onClose,
+  });
 
   @override
   ConsumerState<CreateAdminPanel> createState() => _CreateAdminPanelState();
@@ -50,6 +55,30 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
       return;
     }
 
+    // Ask for confirmation
+    final email = _emailController.text.trim();
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Create'),
+            content: Text('Create admin user with email "$email"?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Create'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmed) return;
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -64,7 +93,6 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
         return;
       }
 
-      final email = _emailController.text.trim();
       final response = await Client.post('users/bulk', {
         'emails': email,
         'role': 'admin',
@@ -73,9 +101,9 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Success
         _emailController.clear();
+        widget.onClose();
         widget.onAdminCreated();
         if (mounted) {
-          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Admin created successfully'),
@@ -108,14 +136,34 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Create Admin'),
-      content: SizedBox(
-        width: double.maxFinite,
+    return Card(
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Color.fromARGB(255, 0, 139, 105),
+          width: 2.0,
+        ),
+      ),
+      color: const Color.fromARGB(255, 189, 255, 239),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Create Admin',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                IconButton(
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.cancel),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             const Text(
               'Enter admin email address:',
               style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -123,13 +171,29 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
             const SizedBox(height: 12),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'admin@example.com',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.all(12),
+                filled: true,
+                fillColor: Colors.white,
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.all(12),
+                suffixIcon: _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(14.0),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.add_circle),
+                        onPressed: _createAdmin,
+                      ),
               ),
               enabled: !_isLoading,
               keyboardType: TextInputType.emailAddress,
+              onSubmitted: (_) => _createAdmin(),
             ),
             if (_errorMessage != null) ...[
               const SizedBox(height: 8),
@@ -141,22 +205,6 @@ class _CreateAdminPanelState extends ConsumerState<CreateAdminPanel> {
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _createAdmin,
-          child: _isLoading
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Create'),
-        ),
-      ],
     );
   }
 }
