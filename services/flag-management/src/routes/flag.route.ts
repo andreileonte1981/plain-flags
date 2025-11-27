@@ -154,6 +154,13 @@ export async function flagRoutes(server: FastifyInstance) {
         request: FastifyRequest<{ Body: { id: string } }>,
         reply: FastifyReply
     ) => {
+        const requesterId = (request.user as { id: string }).id
+        const requester = await User.findOneBy({ id: requesterId })
+
+        if (requester?.role === Role.DEMO) {
+            throw new Error("Demo users cannot archive flags")
+        }
+
         const flag = await Flag.findOne({ where: { id: request.body.id }, relations: ["constraints"] })
 
         if (!flag) {

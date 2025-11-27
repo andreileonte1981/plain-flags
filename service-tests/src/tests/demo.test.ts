@@ -6,8 +6,50 @@ import { sleep } from "../utils/sleep";
 import { tokenForLoggedInUser } from "../utils/token";
 
 describe
-    .skip
+    // .skip
     ("Demo tests", () => {
+        test("A demo user cannot archive a flag", async () => {
+            const client = new Client()
+
+            const demoUserRequest: any = await client.post("/api/dashauth/demo", {
+                name: Salt.uniqued("DemoUser")
+            })
+
+            const demoUserEmail = demoUserRequest.data.user.email
+            const demoUserPassword = demoUserRequest.data.user.tempPassword
+
+            const loginResponse: any = await client.post("/api/users/login", {
+                email: demoUserEmail,
+                password: demoUserPassword
+            })
+
+            assert(loginResponse.status === 200)
+
+            const token = loginResponse.data.token
+
+            const flagCreationResponse: any = await client.post(
+                "/api/flags",
+                { name: Salt.uniqued("NoArchive") },
+                token
+            )
+
+            assert(flagCreationResponse.status === 201)
+
+            const flagId = flagCreationResponse.data.id
+
+            let error: any
+            try {
+                await client.post(
+                    "/api/flags/archive",
+                    { id: flagId },
+                    token
+                )
+            } catch (e) { error = e }
+
+            assert(error)
+            assert(error.response.data.message.includes("Demo users cannot archive flags"))
+        });
+
         test
             .skip
             ("Demo users are deleted past the force count threshold", async () => {
