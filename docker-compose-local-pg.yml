@@ -50,6 +50,7 @@ services:
       - DEFAULT_USER_PASSWORD_FILE=/run/secrets/default_user_password
       - SUPERADMIN_EMAIL=boss@plainflags.com
       - DASHBOARD_PASSKEY_FILE=/run/secrets/dashboard_passkey
+      - DEMO_MODE=true
 
     secrets:
       - jwt_signing_secret

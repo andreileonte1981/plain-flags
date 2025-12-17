@@ -1,6 +1,6 @@
 echo "Taking down containers"
 
-docker rm -f $(docker ps -a -q)
+docker rm -f $(docker ps -a -q) &&
 
 # PostgreSQL is started as containers
 docker compose -f docker-compose-pg.yml up -d
