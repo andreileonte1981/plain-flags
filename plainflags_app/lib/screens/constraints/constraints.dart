@@ -401,7 +401,11 @@ class _ConstraintsState extends ConsumerState<Constraints> {
                         ),
                       ),
                     ),
-                  if (!isLoading && constraints.isEmpty) Text('No constraints'),
+                  if (!isLoading && constraints.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text('No constraints'),
+                    ),
                   if (anyFilters() && !showFilterPanel)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),

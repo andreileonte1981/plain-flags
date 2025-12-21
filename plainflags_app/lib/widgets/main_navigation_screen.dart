@@ -13,6 +13,8 @@ import 'package:plainflags_app/screens/constraints/constraints.dart';
 import 'package:plainflags_app/screens/user/login.dart';
 import 'package:plainflags_app/screens/user/me.dart';
 import 'package:plainflags_app/screens/users/users.dart';
+import 'package:plainflags_app/utils/dlog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -218,6 +220,70 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     });
   }
 
+  Future<void> showDemoModal() async {
+    if (mounted) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Demo Connection'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 20),
+                Flexible(
+                  child: const Text(
+                    'The demo connection of Plain Flags controls the pixels of an image in the demo application.',
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Flexible(
+                  child: Text(
+                    'Demo users can create and toggle pixels within bounds using feature flags named "pixel-x-y".',
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text('Controlled Application:'),
+                TextButton(
+                  onPressed: () async {
+                    if (!await launchUrl(
+                      Uri.parse('https://demoapp.plainflags.dev'),
+                    )) {
+                      dlog('Could not launch demo application URL');
+                    }
+                  },
+                  child: Text('https://demoapp.plainflags.dev'),
+                ),
+                SizedBox(height: 16),
+                Text('Plain Flags Homepage:'),
+                TextButton(
+                  onPressed: () async {
+                    if (!await launchUrl(Uri.parse('https://plainflags.dev'))) {
+                      dlog('Could not launch Plain Flags homepage URL');
+                    }
+                  },
+                  child: Text('https://plainflags.dev'),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final apiUrl = Client.apiUrlShort();
@@ -242,13 +308,23 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                         Connections.demoConnection
                             .replaceAll('http://', '')
                             .replaceAll('https://', '')
-                  ? Text(
-                      "DEMO",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green[700],
-                      ),
+                  ? Row(
+                      children: [
+                        Text(
+                          "DEMO",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[700],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showDemoModal();
+                          },
+                          icon: Icon(Icons.info, color: Colors.green[700]),
+                        ),
+                      ],
                     )
                   : Text(apiUrl, style: TextStyle(fontSize: 12)),
             ],
