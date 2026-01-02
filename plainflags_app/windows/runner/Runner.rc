@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "Andrei Leonte" "\0"
             VALUE "FileDescription", "plainflags_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "plainflags_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Andrei Leonte. All rights reserved." "\0"
             VALUE "OriginalFilename", "plainflags_app.exe" "\0"
             VALUE "ProductName", "plainflags_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

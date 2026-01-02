@@ -1,4 +1,4 @@
-package com.example.plainflags_app
+package dev.plainflags.app
 
 import io.flutter.embedding.android.FlutterActivity
 
