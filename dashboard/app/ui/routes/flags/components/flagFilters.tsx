@@ -12,7 +12,7 @@ export default function FlagFilters(props: {
   };
 }) {
   return (
-    <div className="flex flex-wrap items-center text-gray-600 font-semibold md:border-r-2 md:px-3">
+    <div className="flex items-center text-gray-600 font-semibold md:border-r-2 md:px-3">
       <div>
         <FilterEdit
           onChange={(e) => {

@@ -10,6 +10,8 @@ import FlagListItems from "./components/flagListItems";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { scrollToElement } from "~/utils/scrollTo";
 import { AnimatePresence, motion } from "motion/react";
+import SearchIcon from "~/ui/components/icons/searchIcon";
+import CancelButton from "~/ui/components/reusables/cancelButton";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -47,6 +49,8 @@ export default function Component({ loaderData }: Route.ComponentProps) {
     active: false,
   });
 
+  const [filtersShown, setFiltersShown] = useState(false);
+
   const flags = unfilteredFlags
     ?.filter(
       (f) => f.name.toLowerCase().indexOf(filters.name.toLowerCase()) >= 0
@@ -81,8 +85,24 @@ export default function Component({ loaderData }: Route.ComponentProps) {
   return (
     <div className="md:mx-2 flex flex-col">
       <div className="sticky md:top-0 top-12 w-full z-10 bg-white">
-        <div className="flex flex-wrap items-center border-b-4 border-green-600/30 md:py-2 md:px-2">
-          <FlagFilters setFilters={setFilters} filters={filters} />
+        <div className="flex flex-row flex-wrap justify-center md:justify-start items-center gap-2 border-b-4 border-green-600/30 md:py-2 md:px-2 pb-2 md:pb-0">
+          {filtersShown ? (
+            <div className="flex md:flex-row flex-row-reverse md:gap-2 items-center">
+              <CancelButton
+                onClick={() => setFiltersShown(false)}
+                text={"Close"}
+              ></CancelButton>
+              <FlagFilters setFilters={setFilters} filters={filters} />
+            </div>
+          ) : (
+            <button
+              id="showFiltersButton"
+              className="bg-green-900 text-white font-bold uppercase text-sm h-12 md:m-3 md:ml-2 p-3 px-6 cursor-pointer hover:bg-green-600 active:bg-green-700 rounded flex-none"
+              onClick={() => setFiltersShown(true)}
+            >
+              <SearchIcon />
+            </button>
+          )}
           <AnimatePresence initial={false}>
             {!isCreateOpen && (
               <motion.div
