@@ -10,6 +10,8 @@ import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { AnimatePresence, motion } from "motion/react";
 import { scrollToElement } from "~/utils/scrollTo";
 import PurplePlusButton from "~/ui/components/reusables/purplePlusButton";
+import CancelButton from "~/ui/components/reusables/cancelButton";
+import SearchIcon from "~/ui/components/icons/searchIcon";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -38,6 +40,8 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
     return <div>Loading...</div>;
   }
 
+  const [filtersShown, setFiltersShown] = useState(false);
+
   const [filters, setFilters] = useState({
     description: "",
     key: "",
@@ -57,6 +61,7 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
         (v) => v.toLowerCase().indexOf(filters.value.toLowerCase()) >= 0
       )
     );
+
   const [isCreateOpen, setCreateOpen] = useState(false);
 
   const { currentConstraint, setCurrentConstraint } = useContext(
@@ -70,8 +75,24 @@ export default function Constraints({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <div className="sticky md:top-0 top-12 z-10 bg-white md:mx-2">
-        <div className="flex flex-wrap gap-4 items-center border-b-4 border-magenta/20">
-          <ConstraintFilters filters={filters} setFilters={setFilters} />
+        <div className="flex flex-wrap gap-2 justify-center md:justify-start items-center border-b-4 border-magenta/20 pb-2 md:pb-0">
+          {filtersShown ? (
+            <div className="flex md:flex-row flex-row-reverse md:gap-2 items-center">
+              <CancelButton
+                onClick={() => setFiltersShown(false)}
+                text={"Close"}
+              ></CancelButton>
+              <ConstraintFilters filters={filters} setFilters={setFilters} />
+            </div>
+          ) : (
+            <button
+              id="showFiltersButton"
+              className="bg-purple-900 text-white font-bold uppercase text-sm h-12 md:m-3 p-3 px-5 cursor-pointer hover:bg-purple-700 active:bg-purple-800 rounded flex-none"
+              onClick={() => setFiltersShown(true)}
+            >
+              <SearchIcon />
+            </button>
+          )}
           <AnimatePresence initial={false}>
             {!isCreateOpen && (
               <motion.div
