@@ -135,6 +135,9 @@ dist
 .VSCodeCounter
 
 deploy.sh
+deploy_mgt.sh
+deploy_dash.sh
+deploy_states.sh
 
 .secrets
 

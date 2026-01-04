@@ -4,6 +4,7 @@
 DOCKER_USER=your_user_name
 CURRENT_DIR=$(pwd)
 
+# You need a builder that supports the architectures these images are built for.
 docker buildx use mybuilder
 
 cd services/flag-management
