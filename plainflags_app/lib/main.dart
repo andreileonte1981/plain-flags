@@ -31,6 +31,7 @@ class MyApp extends ConsumerWidget {
     const barColor = Color.fromARGB(255, 219, 229, 255);
     return MaterialApp(
       title: 'Plain Flags',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBarTheme: AppBarTheme(
