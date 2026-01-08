@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:plainflags_app/utils/emailcheck.dart';
 
 class Login extends ConsumerStatefulWidget {
-  const Login({super.key});
+  final String userEmail;
+  final String userPassword;
+  const Login({super.key, required this.userEmail, required this.userPassword});
 
   @override
   ConsumerState<Login> createState() => _LoginState();
@@ -16,30 +19,31 @@ class Login extends ConsumerStatefulWidget {
 class _LoginState extends ConsumerState<Login> {
   final _formGlobalKey = GlobalKey<FormState>();
 
-  String _email = '';
-  String _password = '';
-
   late TextEditingController _emailController;
+  late TextEditingController _passwordController;
 
   final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController(text: _email);
+    _emailController = TextEditingController(text: widget.userEmail);
+    _passwordController = TextEditingController(text: widget.userPassword);
   }
 
   @override
   void dispose() {
     _emailController.dispose();
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
   Future<void> _signIn() async {
     try {
       final response = await Client.post('users/login', {
-        'email': _email,
-        'password': _password,
+        'email': _emailController.text.trim(),
+        'password': _passwordController.text.trim(),
       }, null);
 
       if (response.statusCode == 200) {
@@ -54,6 +58,8 @@ class _LoginState extends ConsumerState<Login> {
             .read(userStatusNotifierProvider.notifier)
             .setLoggedIn(email, token, role);
 
+        ref.read(navigationProvider.notifier).updateToRole(role);
+
         if (mounted) {
           ScaffoldMessenger.of(
             context,
@@ -65,7 +71,7 @@ class _LoginState extends ConsumerState<Login> {
         UserStorage.addCredentialsForConnection(
           connectionKey,
           email,
-          _password,
+          _passwordController.text.trim(),
         );
         await UserStorage.save();
       } else {
@@ -215,7 +221,7 @@ class _LoginState extends ConsumerState<Login> {
                           return null;
                         },
                         onSaved: (value) {
-                          _email = value ?? '';
+                          _emailController.text = value ?? '';
                         },
                       ),
                       const SizedBox(height: 20),
@@ -224,6 +230,7 @@ class _LoginState extends ConsumerState<Login> {
                           labelText: 'Password',
                         ),
                         focusNode: _passwordFocusNode,
+                        controller: _passwordController,
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -232,7 +239,7 @@ class _LoginState extends ConsumerState<Login> {
                           return null;
                         },
                         onSaved: (value) {
-                          _password = value ?? '';
+                          _passwordController.text = value ?? '';
                         },
                       ),
                       const SizedBox(height: 20),

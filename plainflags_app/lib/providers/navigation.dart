@@ -1,3 +1,4 @@
+import 'package:plainflags_app/providers/user_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigation.g.dart';
@@ -26,6 +27,18 @@ class Navigation extends _$Navigation {
   void setIndex(int index) {
     if (index >= 0 && index <= 3) {
       state = index;
+    }
+  }
+
+  void updateToRole(String role) {
+    if (role == Role.admin || role == Role.superadmin) {
+      // Admins can access all screens; do not change the index
+      return;
+    } else {
+      // Non-admin users can only access Flags and Constraints
+      if (state >= 2) {
+        state = 0; // Redirect to Flags screen
+      }
     }
   }
 

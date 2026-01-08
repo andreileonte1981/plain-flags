@@ -54,7 +54,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     final creds = UserStorage.credentialsForConnection(connectionUrl);
     if (creds == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showLoginScreen();
+        showLoginScreen('', '');
       });
       return;
     }
@@ -77,6 +77,8 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
             .read(userStatusNotifierProvider.notifier)
             .setLoggedIn(email, token, role);
 
+        ref.read(navigationProvider.notifier).updateToRole(role);
+
         Events.fire(Event(name: 'user_login'));
 
         if (mounted) setState(() {});
@@ -87,11 +89,15 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
       final message =
           (e as dynamic).message ?? 'An error occurred during login.';
 
-      showConnectionError(message);
+      showConnectionError(message, creds.email, creds.password);
     }
   }
 
-  Future<void> showConnectionError(String message) async {
+  Future<void> showConnectionError(
+    String message,
+    String email,
+    String password,
+  ) async {
     if (mounted) {
       await showDialog(
         context: context,
@@ -113,16 +119,19 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
     }
 
     if (mounted) {
-      showLoginScreen();
+      showLoginScreen(email, password);
     }
   }
 
-  Future<void> showLoginScreen() async {
+  Future<void> showLoginScreen(String email, String password) async {
     if (mounted) {
       final String loginEmail =
           (await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Login()),
+            MaterialPageRoute(
+              builder: (context) =>
+                  Login(userEmail: email, userPassword: password),
+            ),
           )) ??
           '';
 
@@ -347,7 +356,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
                   MaterialPageRoute(builder: (context) => const Me()),
                 );
                 if (currentEmail != null && currentEmail.isEmpty) {
-                  showLoginScreen();
+                  showLoginScreen('', '');
                 }
               },
             ),

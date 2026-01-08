@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
+import 'package:plainflags_app/providers/navigation.dart';
 import 'package:plainflags_app/providers/user_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plainflags_app/utils/dlog.dart';
@@ -121,7 +122,7 @@ class _ConnectState extends ConsumerState<Connect> {
     }
 
     // Ask user for name
-    final String name = await showDialog(
+    final String? name = await showDialog(
       context: context,
       builder: (context) {
         String nameValue = '';
@@ -138,7 +139,7 @@ class _ConnectState extends ConsumerState<Connect> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(""),
+              onPressed: () => Navigator.of(context).pop(null),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -150,7 +151,7 @@ class _ConnectState extends ConsumerState<Connect> {
       },
     );
 
-    if (name.isNotEmpty) {
+    if (name != null) {
       connectToDemo(name);
     }
   }
@@ -168,6 +169,8 @@ class _ConnectState extends ConsumerState<Connect> {
         ref
             .read(userStatusNotifierProvider.notifier)
             .setLoggedIn(email, token, role);
+
+        ref.read(navigationProvider.notifier).updateToRole(role);
 
         UserStorage.addCredentialsForConnection(
           Connections.demoConnection,
