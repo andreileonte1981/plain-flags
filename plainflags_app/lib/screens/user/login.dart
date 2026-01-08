@@ -4,8 +4,6 @@ import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/providers/user_status.dart';
-import 'package:plainflags_app/globals/capabilities.dart';
-import 'package:plainflags_app/screens/user/register.dart';
 import 'package:plainflags_app/utils/emailcheck.dart';
 
 class Login extends ConsumerStatefulWidget {
@@ -248,47 +246,6 @@ class _LoginState extends ConsumerState<Login> {
                         },
                         child: const Text('Log In'),
                       ),
-                      const SizedBox(height: 20),
-                      Capabilities.disableUserRegistration
-                          ? const SizedBox.shrink()
-                          : ElevatedButton(
-                              onPressed: () async {
-                                final registerResult =
-                                    await Navigator.push<dynamic>(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const Register(),
-                                      ),
-                                    );
-
-                                if (registerResult != null) {
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Successfully signed up! Please sign in with your new account',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                  if (registerResult is String) {
-                                    if (context.mounted) {
-                                      setState(() {
-                                        _email = registerResult;
-                                        _emailController.text = registerResult;
-
-                                        if (context.mounted) {
-                                          FocusScope.of(
-                                            context,
-                                          ).requestFocus(_passwordFocusNode);
-                                        }
-                                      });
-                                    }
-                                  }
-                                }
-                              },
-                              child: const Text("Register"),
-                            ),
                     ],
                   ),
                 ),

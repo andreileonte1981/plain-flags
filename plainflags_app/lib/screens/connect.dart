@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
@@ -45,12 +44,6 @@ class _ConnectState extends ConsumerState<Connect> {
         Connections.add(Client.apiUrlBase(), passkey);
         Connections.select(Client.apiUrlBase());
         Connections.save();
-
-        Capabilities.setDisableUserRegistration(
-          authResponse.body['disableUserRegistration'] ?? false,
-        );
-
-        Capabilities.save();
 
         if (mounted) Navigator.pop(context, true);
 

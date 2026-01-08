@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:plainflags_app/globals/capabilities.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
 import 'package:plainflags_app/widgets/main_navigation_screen.dart';
@@ -15,8 +14,6 @@ Future<void> main() async {
   ]);
 
   await Connections.init();
-
-  await Capabilities.init();
 
   await UserStorage.init();
 
