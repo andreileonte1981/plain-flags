@@ -1,6 +1,6 @@
 {
   "name": "plain-flags-management",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Plain flags management service",
   "main": "bin/index.js",
   "scripts": {
