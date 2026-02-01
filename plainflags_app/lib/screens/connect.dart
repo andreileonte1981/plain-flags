@@ -122,28 +122,29 @@ class _ConnectState extends ConsumerState<Connect> {
     }
 
     // Ask user for name
-    final String? name = await showDialog(
+    final Map<String, dynamic>? result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) {
-        String nameValue = '';
+        final nameController = TextEditingController();
         return AlertDialog(
           title: const Text('Enter Demo Name'),
           content: TextField(
+            controller: nameController,
             decoration: const InputDecoration(
-              labelText: 'Your Name',
+              labelText: 'Your Name (optional)',
               border: OutlineInputBorder(),
             ),
-            onChanged: (value) {
-              nameValue = value;
-            },
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
+              onPressed: () => Navigator.of(context).pop(), // Returns null
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(nameValue),
+              onPressed: () {
+                final value = nameController.text.trim();
+                Navigator.of(context).pop({'confirmed': true, 'name': value});
+              },
               child: const Text('OK'),
             ),
           ],
@@ -151,8 +152,8 @@ class _ConnectState extends ConsumerState<Connect> {
       },
     );
 
-    if (name != null) {
-      connectToDemo(name);
+    if (result?['confirmed'] == true) {
+      connectToDemo(result!['name'] as String);
     }
   }
 
