@@ -1,0 +1,5 @@
+# Plain Flags GCP Instance Configuration
+# Copy this file to instance-config and fill in your values
+
+PROJECT_ID=your-project-id-here
+REGION=us-central1
