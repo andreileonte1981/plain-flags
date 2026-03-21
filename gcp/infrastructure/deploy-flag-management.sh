@@ -4,14 +4,14 @@
 set -e
 
 # Check for config file
-if [ ! -f "instance-config" ]; then
-    echo "Error: instance-config file not found"
-    echo "Please copy instance-config.template to instance-config and fill in your values"
+if [ ! -f "config/instance-config" ]; then
+    echo "Error: config/instance-config file not found"
+    echo "Please copy config/instance-config.template to config/instance-config and fill in your values"
     exit 1
 fi
 
 # Read configuration
-source ./instance-config
+source ./config/instance-config
 
 # Read database connection name
 if [ ! -f ".db-connection-name" ]; then
@@ -23,8 +23,8 @@ fi
 CONNECTION_NAME=$(cat .db-connection-name)
 
 if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
-    echo "Error: PROJECT_ID not set in instance-config"
-    echo "Please edit instance-config and set your GCP project ID"
+    echo "Error: PROJECT_ID not set in config/instance-config"
+    echo "Please edit config/instance-config and set your GCP project ID"
     exit 1
 fi
 

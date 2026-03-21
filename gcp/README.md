@@ -11,24 +11,28 @@ Minimal Google Cloud Platform deployment for Plain Flags with Cloud SQL PostgreS
 ## Quick Start
 
 ### 1. Configure your deployment
+
 ```bash
 cd gcp/infrastructure
-cp instance-config.template instance-config
+cp config/instance-config.template config/instance-config
 # Edit instance-config and set your PROJECT_ID and REGION
 ```
 
 ### 2. Set up GCP project
+
 ```bash
 chmod +x *.sh
 ./setup-project.sh
 ```
 
 ### 3. Deploy database
+
 ```bash
 ./deploy-database.sh YOUR_SECURE_PASSWORD
 ```
 
 ### 4. Deploy flag-management service
+
 ```bash
 ./deploy-flag-management.sh
 ```
@@ -56,7 +60,7 @@ This minimal version includes:
 
 - **Database**: Cloud SQL PostgreSQL with basic flags table
 - **Service**: Cloud Run service with flag create/list endpoints
-- **Features**: 
+- **Features**:
   - Create flags (POST /api/flags)
   - List flags (GET /api/flags)
   - Health check (GET /health)
