@@ -87,7 +87,21 @@ This minimal version includes:
 
 ## Cleanup
 
-To remove all resources:
+To remove all resources and avoid ongoing costs:
+
+```bash
+cd gcp/infrastructure
+./cleanup.sh
+```
+
+**Warning**: This permanently deletes:
+
+- Cloud Run service
+- Cloud SQL database (including all data)
+- Secrets and service accounts
+- All Plain Flags data
+
+For manual cleanup:
 
 ```bash
 # Delete Cloud Run service
