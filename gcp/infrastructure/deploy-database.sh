@@ -53,7 +53,6 @@ gcloud sql instances create $INSTANCE_NAME \
     --storage-size=10GB \
     --storage-auto-increase \
     --backup-start-time=02:00 \
-    --enable-bin-log \
     --authorized-networks=0.0.0.0/0
 
 echo "Waiting for instance to be ready..."
