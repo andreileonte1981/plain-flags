@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { AuthTypes, Connector, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
+import { AuthTypes, Connector, DriverOptions, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import Flag from "./entities/Flag";
 import { FastifyBaseLogger } from "fastify";
@@ -32,23 +32,20 @@ export class Data {
             const connector = new Connector();
 
             try {
-                const clientOpts = await connector.getOptions({
+                const clientOpts: DriverOptions = await connector.getOptions({
                     instanceConnectionName: connectionName,
                     ipType: IpAddressTypes.PUBLIC,
-                    authType: AuthTypes.PASSWORD
+                    authType: AuthTypes.IAM, // Use IAM authentication for better security
                 });
-
-                logger.info(`Cloud SQL connector returned options: ${JSON.stringify(clientOpts, null, 2)}`);
 
                 // For Cloud Run, the connector typically returns socket options
                 AppDataSource = new DataSource({
                     type: "postgres",
-                    ...clientOpts, // Spread all connector options (socket, host, port, etc.)
                     username: process.env.DB_USER || 'plainflags',
                     password: process.env.DB_PASSWORD || '',
                     database: process.env.DB_NAME || 'plainflags',
                     extra: {
-                        socketPath: `/cloudsql/${connectionName}` // Ensure socketPath is set for Cloud Run
+                        ...clientOpts
                     },
                     entities,
                     synchronize: true, // For development - creates tables automatically
