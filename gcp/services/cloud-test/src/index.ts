@@ -14,6 +14,12 @@ interface TestResult {
     testsRun: number;
     testsPassed: number;
     testsFailed: number;
+    tests: Array<{
+        name: string;
+        success: boolean;
+        duration: number;
+        error?: string;
+    }>;
 }
 
 const fastify = Fastify({
@@ -74,7 +80,8 @@ fastify.post('/api/run-tests', async (request: FastifyRequest, reply: FastifyRep
             duration,
             testsRun: testRunResult.testsRun,
             testsPassed: testRunResult.testsPassed,
-            testsFailed: testRunResult.testsFailed
+            testsFailed: testRunResult.testsFailed,
+            tests: testRunResult.tests
         };
 
         // Store result
@@ -124,7 +131,8 @@ fastify.get('/api/test-results', async () => {
         duration: result.duration,
         testsRun: result.testsRun,
         testsPassed: result.testsPassed,
-        testsFailed: result.testsFailed
+        testsFailed: result.testsFailed,
+        tests: result.tests
     }));
 
     return {

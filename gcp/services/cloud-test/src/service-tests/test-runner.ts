@@ -5,6 +5,12 @@ export interface TestRunResult {
     testsRun: number;
     testsPassed: number;
     testsFailed: number;
+    tests: Array<{
+        name: string;
+        success: boolean;
+        duration: number;
+        error?: string;
+    }>;
 }
 
 export interface TestCase {
@@ -54,7 +60,13 @@ export class TestRunner {
             output,
             testsRun: this.results.length,
             testsPassed,
-            testsFailed
+            testsFailed,
+            tests: this.results.map(r => ({
+                name: r.name,
+                success: r.success,
+                duration: r.duration,
+                error: r.error
+            }))
         };
     }
 

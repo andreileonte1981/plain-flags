@@ -123,7 +123,7 @@ export async function runFlagTests(managementServiceUrl: string, pattern?: strin
         {
             name: 'Create flag with minimum name length',
             test: async () => {
-                const flagName = 'a'; // Minimum length
+                const flagName = ManagementApiClient.generateUniqueName('a'); // Minimum length base with unique suffix
                 const flag = await client.createFlag({ name: flagName });
 
                 if (flag.name !== flagName) {
