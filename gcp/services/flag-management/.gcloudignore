@@ -1,4 +1,9 @@
-# Node modules
+# TypeScript source files (deploy compiled dist/ instead)
+src/
+tsconfig.json
+*.ts
+
+# Node modules (Cloud Run will npm install from package.json)
 node_modules/
 
 # Logs
