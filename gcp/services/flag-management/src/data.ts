@@ -11,15 +11,6 @@ let AppDataSource: DataSource;
 export class Data {
     static async init(logger: FastifyBaseLogger): Promise<void> {
         try {
-            // Debug environment variables
-            logger.info('Environment variables: NODE_ENV=%s, DB_CONNECTION_NAME=%s, DB_NAME=%s, DB_USER=%s, PORT=%s',
-                process.env.NODE_ENV,
-                process.env.DB_CONNECTION_NAME,
-                process.env.DB_NAME,
-                process.env.DB_USER,
-                process.env.PORT
-            );
-
             // Validate required environment variables
             const connectionName = process.env.DB_CONNECTION_NAME;
             if (!connectionName) {
