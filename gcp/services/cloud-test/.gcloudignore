@@ -1,0 +1,12 @@
+.gcloudignore
+.git/
+.gitignore
+node_modules/
+src/
+tsconfig.json
+.env
+.env.*
+*.log
+*.md
+.vscode/
+.DS_Store

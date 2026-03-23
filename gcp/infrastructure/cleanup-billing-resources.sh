@@ -20,6 +20,7 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
 fi
 
 SERVICE_NAME="plainflags-management"
+TEST_SERVICE_NAME="plainflags-cloud-test"
 INSTANCE_NAME="plainflags-db"
 
 echo "Deleting credit-consuming resources from project: $PROJECT_ID"
@@ -32,12 +33,19 @@ fi
 
 gcloud config set project $PROJECT_ID
 
-# Delete Cloud Run service
+# Delete Cloud Run services
 if gcloud run services describe $SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
     gcloud run services delete $SERVICE_NAME --region=$REGION --quiet
-    echo "✓ Cloud Run service deleted"
+    echo "✓ Management service deleted"
 else
-    echo "- Cloud Run service not found"
+    echo "- Management service not found"
+fi
+
+if gcloud run services describe $TEST_SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
+    gcloud run services delete $TEST_SERVICE_NAME --region=$REGION --quiet
+    echo "✓ Cloud test service deleted"
+else
+    echo "- Cloud test service not found"
 fi
 
 # Delete Cloud SQL instance
