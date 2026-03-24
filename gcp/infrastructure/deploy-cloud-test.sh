@@ -61,13 +61,40 @@ echo ""
 echo "Deployment complete!"
 echo "Cloud Test Service URL: $SERVICE_URL"
 echo ""
-echo "Test the service:"
+
+# Run tests automatically
+echo "Running tests..."
+echo "POST $SERVICE_URL/api/run-tests"
+TEST_RESULT=$(curl -s -X POST "$SERVICE_URL/api/run-tests" 2>/dev/null)
+
+if [ $? -eq 0 ] && [ -n "$TEST_RESULT" ]; then
+    echo ""
+    echo "=== TEST RESULTS ==="
+    echo "$TEST_RESULT" | jq '.' 2>/dev/null || echo "$TEST_RESULT"
+    echo ""
+    
+    # Try to open test results in browser
+    RESULTS_URL="$SERVICE_URL/api/test-results"
+    echo "Test results available at: $RESULTS_URL"
+    
+    if command -v xdg-open >/dev/null 2>&1; then
+        echo "Opening test results in browser..."
+        xdg-open "$RESULTS_URL" >/dev/null 2>&1 &
+    elif command -v open >/dev/null 2>&1; then
+        echo "Opening test results in browser..."
+        open "$RESULTS_URL" >/dev/null 2>&1 &
+    else
+        echo "Browser opening not available. Visit the URL above manually."
+    fi
+else
+    echo "Failed to run tests automatically. You can run them manually:"
+    echo "curl -X POST $SERVICE_URL/api/run-tests"
+fi
+
+echo ""
+echo "Manual commands:"
 echo "curl $SERVICE_URL/health"
-echo ""
-echo "Run tests:"
 echo "curl -X POST $SERVICE_URL/api/run-tests"
-echo ""
-echo "Get test results:"
 echo "curl $SERVICE_URL/api/test-results"
 echo ""
 echo "To delete this service when done:"
