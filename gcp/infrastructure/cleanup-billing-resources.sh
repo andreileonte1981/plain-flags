@@ -20,6 +20,7 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
 fi
 
 SERVICE_NAME="plainflags-management"
+DASHBOARD_SERVICE_NAME="plainflags-dashboard"
 TEST_SERVICE_NAME="plainflags-cloud-test"
 INSTANCE_NAME="plainflags-db"
 
@@ -39,6 +40,13 @@ if gcloud run services describe $SERVICE_NAME --region=$REGION >/dev/null 2>&1; 
     echo "✓ Management service deleted"
 else
     echo "- Management service not found"
+fi
+
+if gcloud run services describe $DASHBOARD_SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
+    gcloud run services delete $DASHBOARD_SERVICE_NAME --region=$REGION --quiet
+    echo "✓ Dashboard service deleted"
+else
+    echo "- Dashboard service not found"
 fi
 
 if gcloud run services describe $TEST_SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
