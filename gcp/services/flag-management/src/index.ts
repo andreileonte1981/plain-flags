@@ -12,6 +12,13 @@ const fastify = Fastify({
     }
 });
 
+// Register CORS plugin
+fastify.register(require('@fastify/cors'), {
+    origin: true, // Allow all origins for now, can be restricted later
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+});
+
 // Health check endpoint
 fastify.get('/health', async () => {
     return { status: 'ok', service: 'plainflags-management' };
