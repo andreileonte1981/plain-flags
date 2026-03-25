@@ -42,17 +42,17 @@ echo "✓ Management service deployed successfully"
 echo ""
 
 echo "===================="
-echo "3. Deploying Dashboard..."
-echo "===================="
-./deploy-dashboard.sh
-echo "✓ Dashboard deployed successfully"
-echo ""
-
-echo "===================="
 echo "4. Deploying Test Service..."
 echo "===================="
 ./deploy-cloud-test.sh
 echo "✓ Test service deployed successfully"
+echo ""
+
+echo "===================="
+echo "3. Deploying Dashboard..."
+echo "===================="
+./deploy-dashboard.sh
+echo "✓ Dashboard deployed successfully"
 echo ""
 
 # Get service URLs
