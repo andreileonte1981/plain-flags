@@ -44,7 +44,6 @@ echo "Instance: $INSTANCE_NAME"
 # Set project
 gcloud config set project $PROJECT_ID
 
-# Create Cloud SQL instance
 echo "Creating Cloud SQL instance..."
 gcloud sql instances create $INSTANCE_NAME \
     --database-version=POSTGRES_15 \
@@ -58,26 +57,27 @@ gcloud sql instances create $INSTANCE_NAME \
 echo "Waiting for instance to be ready..."
 sleep 30
 
-# Set root password
 echo "Setting root password..."
 gcloud sql users set-password postgres \
     --instance=$INSTANCE_NAME \
     --password=$DB_PASSWORD
 
-# Create application user
 echo "Creating application user..."
 gcloud sql users create $DB_USER \
     --instance=$INSTANCE_NAME \
     --password=$DB_PASSWORD
 
-# Create application database
 echo "Creating application database..."
 gcloud sql databases create $DATABASE_NAME \
     --instance=$INSTANCE_NAME
 
-# Store database password in Secret Manager
 echo "Storing database password in Secret Manager..."
-echo -n "$DB_PASSWORD" | gcloud secrets create plainflags-db-password --data-file=-
+if gcloud secrets describe plainflags-db-password >/dev/null 2>&1; then
+    echo "Secret already exists, updating value..."
+    echo -n "$DB_PASSWORD" | gcloud secrets versions add plainflags-db-password --data-file=-
+else
+    echo -n "$DB_PASSWORD" | gcloud secrets create plainflags-db-password --data-file=-
+fi
 
 # Get instance connection name
 CONNECTION_NAME=$(gcloud sql instances describe $INSTANCE_NAME --format="value(connectionName)")
@@ -87,11 +87,6 @@ echo "$CONNECTION_NAME" > .db-connection-name
 
 echo ""
 echo "Database setup complete!"
-echo "Instance Name: $INSTANCE_NAME"
-echo "Connection Name: $CONNECTION_NAME"
-echo "Database: $DATABASE_NAME"
-echo "User: $DB_USER"
-echo "Password stored in Secret Manager: plainflags-db-password"
 echo "Connection name saved to .db-connection-name"
 echo ""
 echo "Next step: Run './deploy-flag-management.sh' to deploy the service"
