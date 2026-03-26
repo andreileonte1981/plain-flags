@@ -14,20 +14,15 @@ export interface CreateFlagRequest {
 }
 
 /**
- * Fetch a GCP OIDC identity token for the management service audience.
- * Uses the GCP metadata server available in Cloud Run environments.
+ * Sign in to Firebase with email/password to get an ID token.
+ * Firebase ID tokens are accepted by the management service's requireAuth middleware.
  */
-async function fetchOidcToken(audience: string): Promise<string> {
-    const metadataUrl =
-        `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity` +
-        `?audience=${encodeURIComponent(audience)}&format=full`;
-
-    const response = await axios.get(metadataUrl, {
-        headers: { 'Metadata-Flavor': 'Google' },
-        timeout: 5000,
-    });
-
-    return response.data as string;
+async function signInWithFirebase(apiKey: string, email: string, password: string): Promise<string> {
+    const response = await axios.post(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${encodeURIComponent(apiKey)}`,
+        { email, password, returnSecureToken: true }
+    );
+    return response.data.idToken as string;
 }
 
 export class ManagementApiClient {
@@ -39,11 +34,17 @@ export class ManagementApiClient {
     }
 
     /**
-     * Initialise the client by fetching an OIDC token from the metadata server.
+     * Initialise the client by signing in to Firebase with the test runner credentials.
      * Must be called once before using authenticated methods.
      */
     async init(): Promise<void> {
-        this.token = await fetchOidcToken(this.baseURL);
+        const apiKey = process.env.FIREBASE_API_KEY;
+        const email = process.env.TEST_USER_EMAIL;
+        const password = process.env.TEST_USER_PASSWORD;
+        if (!apiKey || !email || !password) {
+            throw new Error('Missing Firebase credentials: FIREBASE_API_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD must be set');
+        }
+        this.token = await signInWithFirebase(apiKey, email, password);
     }
 
     private buildClient(authenticated: boolean = true): AxiosInstance {

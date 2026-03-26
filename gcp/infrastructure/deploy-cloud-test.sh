@@ -18,6 +18,12 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
     exit 1
 fi
 
+if [ ! -f ".secrets/firebase.env" ]; then
+    echo "Error: .secrets/firebase.env not found. Run setup-firebase.sh first."
+    exit 1
+fi
+source ./.secrets/firebase.env
+
 SERVICE_NAME="plainflags-cloud-test"
 SOURCE_DIR="../services/cloud-test"
 
@@ -49,6 +55,9 @@ gcloud run deploy $SERVICE_NAME \
     --service-account=plainflags-runner@$PROJECT_ID.iam.gserviceaccount.com \
     --set-env-vars="NODE_ENV=production" \
     --set-env-vars="MANAGEMENT_SERVICE_URL=${MANAGEMENT_URL}" \
+    --set-env-vars="FIREBASE_API_KEY=${FIREBASE_API_KEY}" \
+    --set-env-vars="TEST_USER_EMAIL=${TEST_USER_EMAIL}" \
+    --set-env-vars="TEST_USER_PASSWORD=${TEST_USER_PASSWORD}" \
     --memory=512Mi \
     --cpu=1 \
     --max-instances=5 \
