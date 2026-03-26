@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { getIdToken } from '~/firebase';
 
 export interface Flag {
     id: string;
@@ -13,46 +14,64 @@ export interface CreateFlagRequest {
     name: string;
 }
 
+export interface User {
+    id: string;
+    email: string;
+    role: string;
+}
+
 export class ManagementApiClient {
-    private client: AxiosInstance;
+    private baseURL: string;
 
     constructor(baseURL: string) {
-        this.client = axios.create({
-            baseURL,
+        this.baseURL = baseURL;
+    }
+
+    private async buildClient(): Promise<AxiosInstance> {
+        const token = await getIdToken();
+        return axios.create({
+            baseURL: this.baseURL,
             timeout: 10000,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
             }
         });
     }
 
     async health(): Promise<any> {
-        const response = await this.client.get('/health');
+        const client = await this.buildClient();
+        const response = await client.get('/health');
         return response.data;
     }
 
     async createFlag(request: CreateFlagRequest): Promise<Flag> {
-        const response = await this.client.post('/api/flags', request);
+        const client = await this.buildClient();
+        const response = await client.post('/api/flags', request);
         return response.data;
     }
 
     async listFlags(): Promise<Flag[]> {
-        const response = await this.client.get('/api/flags');
+        const client = await this.buildClient();
+        const response = await client.get('/api/flags');
         return response.data;
     }
 
-    async getFlag(id: string): Promise<Flag> {
-        const response = await this.client.get(`/api/flags/${id}`);
+    async listUsers(): Promise<User[]> {
+        const client = await this.buildClient();
+        const response = await client.get('/api/users');
         return response.data;
     }
 
-    async deleteFlag(id: string): Promise<void> {
-        await this.client.delete(`/api/flags/${id}`);
+    async createUsers(emails: string, role?: string): Promise<{ created: string[]; errors: string[] }> {
+        const client = await this.buildClient();
+        const response = await client.post('/api/users/bulk', { emails, role });
+        return response.data;
     }
 
-    async updateFlag(id: string, updates: Partial<Flag>): Promise<Flag> {
-        const response = await this.client.patch(`/api/flags/${id}`, updates);
-        return response.data;
+    async deleteUser(id: string): Promise<void> {
+        const client = await this.buildClient();
+        await client.delete(`/api/users/${id}`);
     }
 }
 
@@ -73,4 +92,8 @@ export function getApiClient(): ManagementApiClient {
     }
 
     return apiClientInstance;
+}
+
+export function resetApiClient(): void {
+    apiClientInstance = null;
 }

@@ -2,6 +2,10 @@ import "reflect-metadata";
 import Fastify from 'fastify';
 import { Data } from './data';
 import flagRoutes from './routes/flag.route';
+import userRoutes from './routes/user.route';
+import Users from './logic/users';
+// Import to ensure Firebase Admin is initialized before routes use it
+import './middleware/firebaseAuth';
 
 const fastify = Fastify({
     logger: {
@@ -14,18 +18,19 @@ const fastify = Fastify({
 
 // Register CORS plugin
 fastify.register(require('@fastify/cors'), {
-    origin: true, // Allow all origins for now, can be restricted later
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 });
 
-// Health check endpoint
+// Health check endpoint (unauthenticated)
 fastify.get('/health', async () => {
     return { status: 'ok', service: 'plainflags-management' };
 });
 
 // Register route modules
 fastify.register(flagRoutes);
+fastify.register(userRoutes);
 
 // Start server
 async function start() {
@@ -33,6 +38,10 @@ async function start() {
         // Initialize database connection
         await Data.init(fastify.log);
         fastify.log.info('Database initialized successfully');
+
+        // Bootstrap superadmin if no users exist
+        await Users.makeAdminIfNone();
+        fastify.log.info('User bootstrap complete');
 
         // Start server
         const port = parseInt(process.env.PORT || '8080');

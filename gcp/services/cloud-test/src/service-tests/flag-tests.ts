@@ -3,6 +3,10 @@ import { TestRunner, TestRunResult, TestCase } from './test-runner';
 
 export async function runFlagTests(managementServiceUrl: string, pattern?: string): Promise<TestRunResult> {
     const client = new ManagementApiClient(managementServiceUrl);
+
+    // Fetch OIDC token for authenticated requests
+    await client.init();
+
     const runner = new TestRunner();
 
     // Define test cases
@@ -145,6 +149,18 @@ export async function runFlagTests(managementServiceUrl: string, pattern?: strin
                         return;
                     }
                     throw new Error(`Expected validation error (400/422), got: ${error.message}`);
+                }
+            }
+        },
+
+        {
+            name: 'Unauthenticated request to protected endpoint returns 401',
+            test: async () => {
+                const status = await client.unauthenticatedListFlags();
+                if (status !== 401 && status !== 403) {
+                    throw new Error(
+                        `Expected 401 or 403 for unauthenticated request, got ${status}`
+                    );
                 }
             }
         }

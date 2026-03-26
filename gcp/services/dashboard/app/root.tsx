@@ -28,11 +28,22 @@ declare global {
   interface Window {
     ENV?: {
       MANAGEMENT_SERVICE_URL?: string;
+      FIREBASE_CONFIG?: string;
     };
   }
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const firebaseConfig =
+    typeof process !== "undefined"
+      ? JSON.stringify({
+          apiKey: process.env.FIREBASE_API_KEY,
+          authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          appId: process.env.FIREBASE_APP_ID,
+        })
+      : "{}";
+
   return (
     <html lang="en">
       <head>
@@ -45,6 +56,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             dangerouslySetInnerHTML={{
               __html: `window.ENV = ${JSON.stringify({
                 MANAGEMENT_SERVICE_URL: process.env.MANAGEMENT_SERVICE_URL,
+                FIREBASE_CONFIG: firebaseConfig,
               })};`,
             }}
           />

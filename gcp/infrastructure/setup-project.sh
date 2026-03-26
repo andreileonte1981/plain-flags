@@ -43,7 +43,7 @@ echo "Enabling required APIs..."
 
 # Enable basic APIs first
 echo "Enabling basic APIs..."
-for service in serviceusage.googleapis.com run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com; do
+for service in serviceusage.googleapis.com run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com identitytoolkit.googleapis.com firebase.googleapis.com; do
     if gcloud services list --enabled --filter="name:$service" --format="value(name)" | grep -q "$service"; then
         echo "✓ $service already enabled"
     else
@@ -75,11 +75,16 @@ else
     fi
 fi
 
-# Create service account for Cloud Run services
-echo "Creating service account..."
-gcloud iam service-accounts create plainflags-runner \
-    --description="Service account for Plain Flags Cloud Run services" \
-    --display-name="Plain Flags Runner"
+# Create service account for Cloud Run services (idempotent)
+SA_EMAIL="plainflags-runner@$PROJECT_ID.iam.gserviceaccount.com"
+if gcloud iam service-accounts describe "$SA_EMAIL" >/dev/null 2>&1; then
+    echo "✓ Service account already exists"
+else
+    echo "Creating service account..."
+    gcloud iam service-accounts create plainflags-runner \
+        --description="Service account for Plain Flags Cloud Run services" \
+        --display-name="Plain Flags Runner"
+fi
 
 # Grant necessary permissions
 echo "Granting permissions..."
@@ -91,8 +96,19 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:plainflags-runner@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/secretmanager.secretAccessor"
 
+# Grant Firebase Admin SDK access (to create/verify Auth users)
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:plainflags-runner@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/firebaseauth.admin"
+
 echo "GCP project setup complete!"
 echo "✓ All required APIs are enabled"
 echo "✓ Service account created with proper permissions"
+echo ""
+
+# Set up Firebase (add to project, create web app, enable email sign-in, write .secrets/firebase.env)
+echo "Setting up Firebase..."
+bash "$(dirname "$0")/setup-firebase.sh"
+
 echo ""
 echo "Next step: Run './deploy-database.sh' to set up the database"

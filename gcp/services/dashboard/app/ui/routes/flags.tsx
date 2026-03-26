@@ -1,7 +1,8 @@
-import { Link } from "react-router";
+import { Link, redirect } from "react-router";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
-import type { Route } from "../+types/root";
+import { getFirebaseAuth } from "~/firebase";
+import { Route } from "./+types";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,6 +12,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader() {
+  const auth = getFirebaseAuth();
+  if (!auth.currentUser) {
+    return redirect("/login");
+  }
+
   try {
     const client = getApiClient();
     const flags = await client.listFlags();

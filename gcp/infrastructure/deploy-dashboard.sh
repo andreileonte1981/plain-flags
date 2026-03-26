@@ -13,6 +13,14 @@ fi
 # Read configuration
 source ./config/instance-config
 
+# Read Firebase secrets
+if [ ! -f ".secrets/firebase.env" ]; then
+    echo "Error: .secrets/firebase.env not found"
+    echo "Please run './setup-firebase.sh' first to configure Firebase."
+    exit 1
+fi
+source ./.secrets/firebase.env
+
 if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
     echo "Error: PROJECT_ID not set in instance-config"
     exit 1
@@ -50,6 +58,10 @@ gcloud run deploy $SERVICE_NAME \
     --allow-unauthenticated \
     --set-env-vars="NODE_ENV=production" \
     --set-env-vars="MANAGEMENT_SERVICE_URL=${MANAGEMENT_URL}" \
+    --set-env-vars="FIREBASE_PROJECT_ID=${PROJECT_ID}" \
+    --set-env-vars="FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}" \
+    --set-env-vars="FIREBASE_API_KEY=${FIREBASE_API_KEY}" \
+    --set-env-vars="FIREBASE_APP_ID=${FIREBASE_APP_ID}" \
     --memory=512Mi \
     --cpu=1 \
     --max-instances=10 \
@@ -76,10 +88,6 @@ else
     echo "Browser opening not available. Visit the URL above manually."
 fi
 
-echo ""
-echo "Dashboard endpoints:"
-echo "  Home: $SERVICE_URL"
-echo "  Flags: $SERVICE_URL/flags"
 echo ""
 echo "To delete this service when done:"
 echo "./delete-dashboard.sh"

@@ -46,6 +46,7 @@ gcloud run deploy $SERVICE_NAME \
     --platform=managed \
     --region=$REGION \
     --allow-unauthenticated \
+    --service-account=plainflags-runner@$PROJECT_ID.iam.gserviceaccount.com \
     --set-env-vars="NODE_ENV=production" \
     --set-env-vars="MANAGEMENT_SERVICE_URL=${MANAGEMENT_URL}" \
     --memory=512Mi \

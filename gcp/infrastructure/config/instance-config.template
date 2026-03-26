@@ -1,5 +1,12 @@
 # Plain Flags GCP Instance Configuration
 # Copy this file to instance-config and fill in your values
 
-PROJECT_ID=your-project-id-here
+PROJECT_ID=your-gcp-project-id-here
 REGION=us-central1
+
+# Firebase Authentication
+# The email address of the superadmin user (created automatically on first startup)
+SUPERADMIN_EMAIL=superadmin@yourdomain.com
+
+# Firebase API key, App ID, and other SDK credentials are stored in .secrets/firebase.env
+# Run './setup-firebase.sh' to generate that file automatically.

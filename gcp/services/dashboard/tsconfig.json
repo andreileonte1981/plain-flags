@@ -1,7 +1,11 @@
 {
     "include": [
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        ".react-router/types/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
     ],
     "compilerOptions": {
         "lib": [
@@ -21,6 +25,10 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "baseUrl": ".",
+        "rootDirs": [
+            ".",
+            ".react-router/types"
+        ],
         "paths": {
             "~/*": [
                 "./app/*"

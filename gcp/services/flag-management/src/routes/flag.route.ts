@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import Flag from '../entities/Flag';
+import { requireAuth } from '../middleware/firebaseAuth';
 
 // Request/Response interfaces
 interface CreateFlagBody {
@@ -9,6 +10,7 @@ interface CreateFlagBody {
 export default async function flagRoutes(fastify: FastifyInstance) {
     // Create a flag
     fastify.post<{ Body: CreateFlagBody }>('/api/flags', {
+        preHandler: requireAuth,
         schema: {
             body: {
                 type: 'object',
@@ -63,7 +65,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
     });
 
     // List all flags
-    fastify.get('/api/flags', async (request: FastifyRequest, reply: FastifyReply) => {
+    fastify.get('/api/flags', { preHandler: requireAuth }, async (request: FastifyRequest, reply: FastifyReply) => {
         try {
             const flags = await Flag.find({
                 where: { isArchived: false },

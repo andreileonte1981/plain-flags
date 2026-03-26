@@ -2,9 +2,10 @@ import { DataSource } from "typeorm";
 import { AuthTypes, Connector, DriverOptions, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import Flag from "./entities/Flag";
+import User from "./entities/User";
 import { FastifyBaseLogger } from "fastify";
 
-const entities = [Flag];
+const entities = [Flag, User];
 
 let AppDataSource: DataSource;
 
