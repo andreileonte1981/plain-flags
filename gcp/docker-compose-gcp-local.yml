@@ -1,0 +1,22 @@
+services:
+
+  db:
+    image: postgres:17.4-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=stop00
+      - POSTGRES_USER=plainflags
+      - POSTGRES_DB=plainflags
+    volumes:
+      - pgdata_gcp_local:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+
+volumes:
+  pgdata_gcp_local:

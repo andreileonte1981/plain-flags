@@ -12,41 +12,48 @@ let AppDataSource: DataSource;
 export class Data {
     static async init(logger: FastifyBaseLogger): Promise<void> {
         try {
-            // Validate required environment variables
             const connectionName = process.env.DB_CONNECTION_NAME;
-            if (!connectionName) {
-                throw new Error('DB_CONNECTION_NAME environment variable is required');
-            }
 
-            logger.info(`Connecting to Cloud SQL instance: ${connectionName}`);
+            if (connectionName) {
+                // ── Cloud SQL (Cloud Run) ──────────────────────────────────────
+                logger.info(`Connecting to Cloud SQL instance: ${connectionName}`);
 
-            // Create Cloud SQL connector
-            const connector = new Connector();
-
-            try {
+                const connector = new Connector();
                 const clientOpts: DriverOptions = await connector.getOptions({
                     instanceConnectionName: connectionName,
                     ipType: IpAddressTypes.PUBLIC,
-                    authType: AuthTypes.IAM, // Use IAM authentication for better security
+                    authType: AuthTypes.IAM,
                 });
 
-                // For Cloud Run, the connector typically returns socket options
                 AppDataSource = new DataSource({
                     type: "postgres",
                     username: process.env.DB_USER || 'plainflags',
                     password: process.env.DB_PASSWORD || '',
                     database: process.env.DB_NAME || 'plainflags',
-                    extra: {
-                        ...clientOpts
-                    },
+                    extra: { ...clientOpts },
                     entities,
-                    synchronize: true, // For development - creates tables automatically
-                    logging: process.env.NODE_ENV !== 'production',
+                    synchronize: true,
+                    logging: false,
                     namingStrategy: new SnakeNamingStrategy(),
                 });
-            } catch (connectorError) {
-                logger.error(`Cloud SQL connector failed: ${JSON.stringify(connectorError, null, 2)}`);
-                throw connectorError;
+            } else {
+                // ── Local TCP (docker-compose-gcp-local.yml) ──────────────────
+                const host = process.env.DB_HOST || 'localhost';
+                const port = parseInt(process.env.DB_PORT || '5432');
+                logger.info(`Connecting to local PostgreSQL at ${host}:${port}`);
+
+                AppDataSource = new DataSource({
+                    type: "postgres",
+                    host,
+                    port,
+                    username: process.env.DB_USER || 'plainflags',
+                    password: process.env.DB_PASSWORD || '',
+                    database: process.env.DB_NAME || 'plainflags',
+                    entities,
+                    synchronize: true,
+                    logging: true,
+                    namingStrategy: new SnakeNamingStrategy(),
+                });
             }
 
             await AppDataSource.initialize();
