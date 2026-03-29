@@ -3,6 +3,7 @@ node_modules/
 build/
 .react-router/
 .env
+.env.merged
 .vscode/
 npm-debug.log*
 yarn-debug.log*
