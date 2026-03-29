@@ -6,7 +6,7 @@
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/dist/service-tests/run-local.js",
+            "program": "${workspaceFolder}/dist/engine/run-local.js",
             "envFile": "${workspaceFolder}/.env.merged",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"

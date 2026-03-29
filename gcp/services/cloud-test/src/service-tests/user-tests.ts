@@ -1,5 +1,5 @@
-import { ManagementApiClient } from './api-client';
-import { TestRunner, TestRunResult, TestCase } from './test-runner';
+import { ManagementApiClient } from '../engine/api-client';
+import { TestRunner, TestRunResult, TestCase } from '../engine/test-runner';
 
 export async function runUserTests(managementServiceUrl: string, pattern?: string): Promise<TestRunResult> {
     const client = new ManagementApiClient(managementServiceUrl);

@@ -1,5 +1,5 @@
-import { ManagementApiClient, Flag } from './api-client';
-import { TestRunner, TestRunResult, TestCase } from './test-runner';
+import { ManagementApiClient, Flag } from '../engine/api-client';
+import { TestRunner, TestRunResult, TestCase } from '../engine/test-runner';
 
 export async function runFlagTests(managementServiceUrl: string, pattern?: string): Promise<TestRunResult> {
     const client = new ManagementApiClient(managementServiceUrl);

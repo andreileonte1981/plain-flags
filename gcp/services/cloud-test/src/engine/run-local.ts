@@ -12,8 +12,8 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../../infrastructure/.secrets/firebase.env') });
 dotenv.config();
 
-import { runFlagTests } from './flag-tests';
-import { runUserTests } from './user-tests';
+import { runFlagTests } from '../service-tests/flag-tests';
+import { runUserTests } from '../service-tests/user-tests';
 
 const managementUrl = process.env.MANAGEMENT_SERVICE_URL || 'http://localhost:8080';
 
