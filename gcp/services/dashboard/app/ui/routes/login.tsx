@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
-import { login, getFirebaseAuth } from "~/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { login } from "~/firebase";
+import { getApiClient } from "~/client/api-client";
 
 export function meta() {
   return [
@@ -26,39 +26,23 @@ export default function Login() {
     try {
       const user = await login(email, password);
 
-      // Force token refresh to get latest custom claims if any
+      // Force token refresh so the API client picks up the latest token
       await user.getIdToken(true);
 
-      // Fetch the user's role from the management API
-      const token = await user.getIdToken();
-      const managementUrl = window.ENV?.MANAGEMENT_SERVICE_URL;
-
+      // Fetch own profile — confirms provisioning and returns role
       let role = "user";
       try {
-        const res = await fetch(`${managementUrl}/api/users`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          // We have admin access — determine role from the email match
-          const users: Array<{ id: string; email: string; role: string }> =
-            await res.json();
-          const me = users.find((u) => u.email === user.email);
-          if (me) role = me.role;
+        const me = await getApiClient().getMe();
+        role = me.role;
+      } catch (err: any) {
+        if (err?.response?.status === 403 || err?.response?.status === 401) {
+          setError(
+            "Your account is not yet provisioned. Please contact an administrator.",
+          );
+          setLoading(false);
+          return;
         }
-      } catch {
-        // Non-admin users won't have access to /api/users — that's fine
-      }
-
-      // Also try fetching flags to verify we're provisioned
-      const flagsRes = await fetch(`${managementUrl}/api/flags`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (flagsRes.status === 403) {
-        setError(
-          "Your account is not yet provisioned. Please contact an administrator.",
-        );
-        setLoading(false);
-        return;
+        throw err;
       }
 
       if (typeof window !== "undefined") {

@@ -1,6 +1,6 @@
 /**
  * Local test runner for flag-tests.ts.
- * Run via "npm run test:local" or the VS Code launch config.
+ * Run via "npm run local" or the VS Code launch config.
  *
  * Loads env vars from two files (relative to cwd = gcp/services/cloud-test):
  *   .env                                  — MANAGEMENT_SERVICE_URL, NODE_ENV
@@ -13,12 +13,20 @@ dotenv.config({ path: path.resolve(__dirname, '../../../infrastructure/.secrets/
 dotenv.config();
 
 import { runFlagTests } from './flag-tests';
+import { runUserTests } from './user-tests';
 
 const managementUrl = process.env.MANAGEMENT_SERVICE_URL || 'http://localhost:8080';
 
-runFlagTests(managementUrl)
-    .then(result => {
-        console.log('\n=== Test Results ===');
+async function main() {
+    let totalRun = 0;
+    let totalPassed = 0;
+
+    for (const [label, run] of [
+        ['Flags', () => runFlagTests(managementUrl)],
+        ['Users', () => runUserTests(managementUrl)],
+    ] as const) {
+        const result = await run();
+        console.log(`\n=== ${label} Tests ===`);
         for (const test of result.tests) {
             const icon = test.success ? '✓' : '✗';
             console.log(`  ${icon} ${test.name} (${test.duration}ms)`);
@@ -26,10 +34,15 @@ runFlagTests(managementUrl)
                 console.log(`      ${test.error}`);
             }
         }
-        console.log(`\n${result.testsPassed}/${result.testsRun} passed`);
-        if (!result.success) process.exit(1);
-    })
-    .catch(err => {
-        console.error('Fatal:', err);
-        process.exit(1);
-    });
+        totalRun += result.testsRun;
+        totalPassed += result.testsPassed;
+    }
+
+    console.log(`\n${totalPassed}/${totalRun} passed`);
+    if (totalPassed < totalRun) process.exit(1);
+}
+
+main().catch(err => {
+    console.error('Fatal:', err);
+    process.exit(1);
+});

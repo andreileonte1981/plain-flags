@@ -57,6 +57,12 @@ export class ManagementApiClient {
         return response.data;
     }
 
+    async getMe(): Promise<{ id: string; email: string; role: string }> {
+        const client = await this.buildClient();
+        const response = await client.get('/api/users/me');
+        return response.data;
+    }
+
     async listUsers(): Promise<User[]> {
         const client = await this.buildClient();
         const response = await client.get('/api/users');

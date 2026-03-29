@@ -4,6 +4,19 @@ import { firebaseAdmin, requireAuth } from "../middleware/firebaseAuth";
 
 export default async function userRoutes(fastify: FastifyInstance) {
     /**
+     * GET /api/users/me — returns the authenticated user's own profile (any role).
+     * Used by the dashboard after login to confirm provisioning and retrieve role.
+     */
+    fastify.get(
+        "/api/users/me",
+        { preHandler: requireAuth },
+        async (request: FastifyRequest, reply: FastifyReply) => {
+            const user = (request as any).user as User;
+            return { id: user.id, email: user.email, role: user.role };
+        }
+    );
+
+    /**
      * GET /api/users — admin/superadmin only
      */
     fastify.get(

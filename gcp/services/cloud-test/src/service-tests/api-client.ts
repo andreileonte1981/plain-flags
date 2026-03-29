@@ -89,6 +89,24 @@ export class ManagementApiClient {
         }
     }
 
+    async getMe(): Promise<{ id: string; email: string; role: string }> {
+        const response = await this.buildClient().get('/api/users/me');
+        return response.data;
+    }
+
+    /** Returns the HTTP status from /api/users/me using an arbitrary bearer token. */
+    async getMeStatus(token: string): Promise<number> {
+        try {
+            await axios.get(`${this.baseURL}/api/users/me`, {
+                headers: { Authorization: `Bearer ${token}` },
+                timeout: 10000,
+            });
+            return 200;
+        } catch (error: any) {
+            return error?.response?.status ?? 0;
+        }
+    }
+
     // Helper method to generate unique flag names
     static generateUniqueName(prefix: string = 'test'): string {
         const timestamp = Date.now();

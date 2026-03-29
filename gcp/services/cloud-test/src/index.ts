@@ -1,5 +1,6 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import { runFlagTests } from './service-tests/flag-tests';
+import { runUserTests } from './service-tests/user-tests';
 
 interface TestRequest {
     pattern?: string;
@@ -68,8 +69,21 @@ fastify.post('/api/run-tests', async (request: FastifyRequest, reply: FastifyRep
             return;
         }
 
-        // Run the tests
-        const testRunResult = await runFlagTests(managementUrl, pattern);
+        // Run all test suites and merge results
+        const [flagResult, userResult] = await Promise.all([
+            runFlagTests(managementUrl, pattern),
+            runUserTests(managementUrl, pattern),
+        ]);
+        const allTests = [...flagResult.tests, ...userResult.tests];
+        const testRunResult = {
+            success: flagResult.success && userResult.success,
+            output: [flagResult.output, userResult.output].filter(Boolean).join('\n'),
+            error: [flagResult.error, userResult.error].filter(Boolean).join('\n') || undefined,
+            testsRun: flagResult.testsRun + userResult.testsRun,
+            testsPassed: flagResult.testsPassed + userResult.testsPassed,
+            testsFailed: flagResult.testsFailed + userResult.testsFailed,
+            tests: allTests,
+        };
         const duration = Date.now() - startTime;
 
         const testResult: TestResult = {
