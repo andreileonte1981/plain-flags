@@ -6,6 +6,8 @@ Documentation at https://plainflags.dev
 
 ## Folder structure
 
+**gcp** - Coming soon: Plain Flags you can run in your Google Cloud (work in progress)
+
 **services** - The back end for the feature flags logic.
 
 **services/flag-management** - The service for creating and changing feature flags. Exposes a REST API.
