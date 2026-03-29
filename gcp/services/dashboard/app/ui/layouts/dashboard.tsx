@@ -8,10 +8,12 @@ import LogoutIcon from "~/ui/icons/logoutIcon";
 
 function NavItem({
   to,
+  title,
   tooltip,
   children,
 }: {
   to: string;
+  title: string;
   tooltip: string;
   children: React.ReactNode;
 }) {
@@ -25,9 +27,10 @@ function NavItem({
         to={to}
         className="flex flex-row items-center justify-end gap-1 font-semibold text-gray-500 text-right hover:text-red-500 px-2 py-1"
       >
+        <span className="hidden md:block text-sm">{title}</span>
         <div className="ml-2 mr-2 flex-none">{children}</div>
       </Link>
-      <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max p-2 bg-black/90 rounded left-full text-white text-sm font-bold z-50">
+      <div className="hidden md:block absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max p-2 bg-black/90 rounded left-full text-white text-sm font-bold z-50">
         {tooltip}
       </div>
     </div>
@@ -75,7 +78,11 @@ export default function Dashboard() {
 
           <div className="h-full flex md:flex-col md:justify-between justify-between">
             <div className="pt-2 flex justify-around md:flex-col md:justify-start gap-2 md:items-stretch items-center">
-              <NavItem to="/flags" tooltip="Control your features here">
+              <NavItem
+                to="/flags"
+                title="Flags"
+                tooltip="Control your features here"
+              >
                 <div className="text-green-600">
                   <FlagIcon />
                 </div>
@@ -83,6 +90,7 @@ export default function Dashboard() {
               {isAdmin && (
                 <NavItem
                   to="/users"
+                  title="Users"
                   tooltip="Create and delete users (admin only)"
                 >
                   <div className="text-gray-500">
@@ -107,15 +115,21 @@ export default function Dashboard() {
                   <UserIcon />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-white border rounded shadow-lg p-2 min-w-32">
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 text-gray-600 hover:text-red-500 text-sm font-semibold w-full"
-                    >
-                      <LogoutIcon />
-                      <span>Log out</span>
-                    </button>
-                  </div>
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setUserMenuOpen(false)}
+                    />
+                    <div className="absolute bottom-full right-0 mb-2 bg-white border rounded shadow-lg p-2 min-w-32 z-50">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 text-gray-600 hover:text-red-500 text-sm font-semibold w-full"
+                      >
+                        <LogoutIcon />
+                        <span>Log out</span>
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
