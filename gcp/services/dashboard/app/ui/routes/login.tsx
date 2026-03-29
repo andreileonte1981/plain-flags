@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { login } from "~/firebase";
+import { login, getFirebaseAuth } from "~/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { getApiClient } from "~/client/api-client";
 
 export function meta() {
@@ -17,6 +18,26 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+
+  async function handleReset() {
+    if (!email) {
+      setError("Enter your email address above first.");
+      return;
+    }
+    setResetLoading(true);
+    setError("");
+    try {
+      await sendPasswordResetEmail(getFirebaseAuth(), email);
+      setResetSent(true);
+    } catch {
+      // Don't reveal whether the address exists
+      setResetSent(true);
+    } finally {
+      setResetLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -104,6 +125,21 @@ export default function Login() {
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+        {resetSent ? (
+          <p className="mt-3 text-xs text-green-600 font-semibold text-center">
+            If that address is registered, a reset link has been sent. Check
+            your inbox and spam folders.
+          </p>
+        ) : (
+          <button
+            type="button"
+            disabled={resetLoading}
+            onClick={handleReset}
+            className="mt-3 text-xs text-gray-400 hover:text-gray-600 disabled:opacity-50 underline"
+          >
+            Send password reset link
+          </button>
+        )}
       </div>
     </div>
   );
