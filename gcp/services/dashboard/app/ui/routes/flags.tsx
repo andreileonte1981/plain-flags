@@ -111,38 +111,10 @@ export default function Flags({ loaderData }: Route.ComponentProps) {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Summary ({flags.length} flags)
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    {flags.filter((f) => f.isOn && !f.isArchived).length}
-                  </div>
-                  <div className="text-sm text-green-700">Active</div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-gray-600">
-                    {flags.filter((f) => !f.isOn && !f.isArchived).length}
-                  </div>
-                  <div className="text-sm text-gray-700">Inactive</div>
-                </div>
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-orange-600">
-                    {flags.filter((f) => f.isArchived).length}
-                  </div>
-                  <div className="text-sm text-orange-700">Archived</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {flags.map((flag) => (
-                <FlagCard key={flag.id} flag={flag} />
-              ))}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {flags.map((flag) => (
+              <FlagCard key={flag.id} flag={flag} />
+            ))}
           </div>
         )}
       </main>
