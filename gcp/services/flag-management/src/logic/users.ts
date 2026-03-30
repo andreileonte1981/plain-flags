@@ -32,5 +32,11 @@ export default class Users {
         await User.insert(superadmin);
 
         console.log(`Superadmin created: ${email}`);
+        try {
+            const resetLink = await firebaseAdmin.auth().generatePasswordResetLink(email);
+            console.log(`Superadmin password reset link: ${resetLink}`);
+        } catch (err) {
+            console.log(`Could not generate superadmin reset link: ${err}`);
+        }
     }
 }
