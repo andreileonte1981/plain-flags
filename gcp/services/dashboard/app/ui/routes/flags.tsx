@@ -1,4 +1,5 @@
 import { redirect } from "react-router";
+import { Link } from "react-router";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
@@ -40,7 +41,10 @@ function FlagCard({ flag }: FlagCardProps) {
     : "bg-gray-100 text-gray-800";
 
   return (
-    <div className="bg-white shadow rounded-lg p-6 border-l-4 border-green-500">
+    <Link
+      to={`/flags/${flag.id}`}
+      className="block bg-white shadow rounded-lg p-6 border-l-4 border-green-500 hover:shadow-md transition-shadow"
+    >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">{flag.name}</h3>
         <span
@@ -58,7 +62,7 @@ function FlagCard({ flag }: FlagCardProps) {
           <p className="text-sm text-orange-600 font-medium mt-1">Archived</p>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
 

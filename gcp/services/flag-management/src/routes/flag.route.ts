@@ -91,4 +91,63 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             });
         }
     });
+
+    // Get a single flag by ID
+    fastify.get<{ Params: { id: string } }>('/api/flags/:id', { preHandler: requireAuth }, async (request, reply) => {
+        const flag = await Flag.findOneBy({ id: request.params.id });
+        if (!flag) {
+            reply.code(404).send({ message: 'Flag not found' });
+            return;
+        }
+        reply.send({
+            id: flag.id,
+            name: flag.name,
+            isOn: flag.isOn,
+            isArchived: flag.isArchived,
+            createdAt: flag.createdAt,
+            updatedAt: flag.updatedAt
+        });
+    });
+
+    // Turn a flag on
+    fastify.post<{ Body: { id: string } }>('/api/flags/turnon', { preHandler: requireAuth }, async (request, reply) => {
+        const flag = await Flag.findOneBy({ id: request.body.id });
+        if (!flag) {
+            reply.code(404).send({ message: 'Flag not found' });
+            return;
+        }
+        if (!flag.isOn) {
+            flag.isOn = true;
+            await flag.save();
+        }
+        reply.send({
+            id: flag.id,
+            name: flag.name,
+            isOn: flag.isOn,
+            isArchived: flag.isArchived,
+            createdAt: flag.createdAt,
+            updatedAt: flag.updatedAt
+        });
+    });
+
+    // Turn a flag off
+    fastify.post<{ Body: { id: string } }>('/api/flags/turnoff', { preHandler: requireAuth }, async (request, reply) => {
+        const flag = await Flag.findOneBy({ id: request.body.id });
+        if (!flag) {
+            reply.code(404).send({ message: 'Flag not found' });
+            return;
+        }
+        if (flag.isOn) {
+            flag.isOn = false;
+            await flag.save();
+        }
+        reply.send({
+            id: flag.id,
+            name: flag.name,
+            isOn: flag.isOn,
+            isArchived: flag.isArchived,
+            createdAt: flag.createdAt,
+            updatedAt: flag.updatedAt
+        });
+    });
 }

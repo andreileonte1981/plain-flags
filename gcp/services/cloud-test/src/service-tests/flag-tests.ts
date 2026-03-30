@@ -163,6 +163,52 @@ export async function runFlagTests(managementServiceUrl: string, pattern?: strin
                     );
                 }
             }
+        },
+
+        {
+            name: 'Turning a flag on sets isOn=true in the flags list',
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('turnon-test');
+                const created = await client.createFlag({ name: flagName });
+
+                if (created.isOn !== false) {
+                    throw new Error('Flag should start off');
+                }
+
+                await client.turnOnFlag(created.id);
+
+                const flags = await client.listFlags();
+                const found = flags.find(f => f.id === created.id);
+                if (!found) {
+                    throw new Error('Flag not found in list after turning on');
+                }
+                if (found.isOn !== true) {
+                    throw new Error(`Expected isOn=true after turning on, got isOn=${found.isOn}`);
+                }
+            }
+        },
+
+        {
+            name: 'Turning a flag off sets isOn=false in the flags list',
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('turnoff-test');
+                const created = await client.createFlag({ name: flagName });
+
+                // Turn it on first
+                await client.turnOnFlag(created.id);
+
+                // Then turn it off
+                await client.turnOffFlag(created.id);
+
+                const flags = await client.listFlags();
+                const found = flags.find(f => f.id === created.id);
+                if (!found) {
+                    throw new Error('Flag not found in list after turning off');
+                }
+                if (found.isOn !== false) {
+                    throw new Error(`Expected isOn=false after turning off, got isOn=${found.isOn}`);
+                }
+            }
         }
     ];
 

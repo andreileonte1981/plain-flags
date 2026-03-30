@@ -76,6 +76,21 @@ export class ManagementApiClient {
         return response.data;
     }
 
+    async getFlag(id: string): Promise<Flag> {
+        const response = await this.buildClient().get(`/api/flags/${id}`);
+        return response.data;
+    }
+
+    async turnOnFlag(id: string): Promise<Flag> {
+        const response = await this.buildClient().post('/api/flags/turnon', { id });
+        return response.data;
+    }
+
+    async turnOffFlag(id: string): Promise<Flag> {
+        const response = await this.buildClient().post('/api/flags/turnoff', { id });
+        return response.data;
+    }
+
     /**
      * Attempt an unauthenticated request to a protected endpoint.
      * Returns the HTTP status code of the response.
