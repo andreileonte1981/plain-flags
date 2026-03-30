@@ -1,10 +1,22 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import Flag from '../entities/Flag';
+import User, { Role } from '../entities/User';
 import { requireAuth } from '../middleware/firebaseAuth';
 
 // Request/Response interfaces
 interface CreateFlagBody {
     name: string;
+}
+
+function flagResponse(flag: Flag) {
+    return {
+        id: flag.id,
+        name: flag.name,
+        isOn: flag.isOn,
+        isArchived: flag.isArchived,
+        createdAt: flag.createdAt,
+        updatedAt: flag.updatedAt
+    };
 }
 
 export default async function flagRoutes(fastify: FastifyInstance) {
@@ -24,13 +36,15 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         const { name } = request.body;
 
         try {
-            // Check if flag already exists
+            // Check if flag already exists (including archived — names are reserved)
             const existingFlag = await Flag.findOne({ where: { name } });
 
             if (existingFlag) {
                 reply.code(409).send({
                     error: 'Conflict',
-                    message: `Flag with name '${name}' already exists`
+                    message: existingFlag.isArchived
+                        ? `Name '${name}' is used by an archived flag. Please choose a different name.`
+                        : `Flag with name '${name}' already exists`
                 });
                 return;
             }
@@ -46,14 +60,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
 
             fastify.log.info(`Created flag: ${newFlag.name}`);
 
-            reply.code(201).send({
-                id: newFlag.id,
-                name: newFlag.name,
-                isOn: newFlag.isOn,
-                isArchived: newFlag.isArchived,
-                createdAt: newFlag.createdAt,
-                updatedAt: newFlag.updatedAt
-            });
+            reply.code(201).send(flagResponse(newFlag));
 
         } catch (error) {
             fastify.log.error(error, 'Error creating flag');
@@ -64,32 +71,62 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
     });
 
-    // List all flags
+    // List all non-archived flags
     fastify.get('/api/flags', { preHandler: requireAuth }, async (request: FastifyRequest, reply: FastifyReply) => {
         try {
             const flags = await Flag.find({
                 where: { isArchived: false },
                 order: { createdAt: 'DESC' }
             });
-
-            const response = flags.map(flag => ({
-                id: flag.id,
-                name: flag.name,
-                isOn: flag.isOn,
-                isArchived: flag.isArchived,
-                createdAt: flag.createdAt,
-                updatedAt: flag.updatedAt
-            }));
-
-            reply.send(response);
-
+            reply.send(flags.map(flagResponse));
         } catch (error) {
             fastify.log.error(error, 'Error fetching flags');
-            reply.code(500).send({
-                error: 'Internal Server Error',
-                message: 'Failed to fetch flags'
-            });
+            reply.code(500).send({ error: 'Internal Server Error', message: 'Failed to fetch flags' });
         }
+    });
+
+    // Paginated list of archived flags — admin/superadmin only
+    fastify.get<{ Querystring: { page?: string; pageSize?: string; filter?: string } }>(
+        '/api/flags/archived',
+        { preHandler: requireAuth },
+        async (request, reply) => {
+            const requester = (request as any).user as User;
+            if (requester.role !== Role.ADMIN && requester.role !== Role.SUPERADMIN) {
+                reply.code(403).send({ message: 'Forbidden' });
+                return;
+            }
+            const page = Math.max(1, parseInt(request.query.page ?? '1', 10));
+            const pageSize = Math.min(100, Math.max(1, parseInt(request.query.pageSize ?? '20', 10)));
+            const filter = request.query.filter ?? '';
+            const [flags, count] = await Flag.createQueryBuilder('flag')
+                .where('flag.isArchived = :isArchived', { isArchived: true })
+                .andWhere('flag.name ILIKE :filter', { filter: `%${filter}%` })
+                .orderBy('flag.updatedAt', 'DESC')
+                .skip((page - 1) * pageSize)
+                .take(pageSize)
+                .getManyAndCount();
+            reply.send({ count, flags: flags.map(flagResponse) });
+        }
+    );
+
+    // Archive a flag (must be off; names stay reserved)
+    fastify.post<{ Body: { id: string } }>('/api/flags/archive', { preHandler: requireAuth }, async (request, reply) => {
+        const flag = await Flag.findOneBy({ id: request.body.id });
+        if (!flag) {
+            reply.code(404).send({ message: 'Flag not found' });
+            return;
+        }
+        if (flag.isArchived) {
+            reply.code(409).send({ message: 'Flag is already archived' });
+            return;
+        }
+        if (flag.isOn) {
+            reply.code(400).send({ message: 'Flag must be turned off before archiving' });
+            return;
+        }
+        flag.isArchived = true;
+        await flag.save();
+        reply.send(flagResponse(flag));
     });
 
     // Get a single flag by ID
@@ -99,14 +136,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             reply.code(404).send({ message: 'Flag not found' });
             return;
         }
-        reply.send({
-            id: flag.id,
-            name: flag.name,
-            isOn: flag.isOn,
-            isArchived: flag.isArchived,
-            createdAt: flag.createdAt,
-            updatedAt: flag.updatedAt
-        });
+        reply.send(flagResponse(flag));
     });
 
     // Turn a flag on
@@ -120,14 +150,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             flag.isOn = true;
             await flag.save();
         }
-        reply.send({
-            id: flag.id,
-            name: flag.name,
-            isOn: flag.isOn,
-            isArchived: flag.isArchived,
-            createdAt: flag.createdAt,
-            updatedAt: flag.updatedAt
-        });
+        reply.send(flagResponse(flag));
     });
 
     // Turn a flag off
@@ -141,13 +164,6 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             flag.isOn = false;
             await flag.save();
         }
-        reply.send({
-            id: flag.id,
-            name: flag.name,
-            isOn: flag.isOn,
-            isArchived: flag.isArchived,
-            createdAt: flag.createdAt,
-            updatedAt: flag.updatedAt
-        });
+        reply.send(flagResponse(flag));
     });
 }

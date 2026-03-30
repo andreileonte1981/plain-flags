@@ -209,6 +209,42 @@ export async function runFlagTests(managementServiceUrl: string, pattern?: strin
                     throw new Error(`Expected isOn=false after turning off, got isOn=${found.isOn}`);
                 }
             }
+        },
+
+        {
+            name: 'Archived flag is omitted from the flags list',
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('archive-omit-test');
+                const created = await client.createFlag({ name: flagName });
+
+                await client.archiveFlag(created.id);
+
+                const flags = await client.listFlags();
+                const found = flags.find(f => f.id === created.id);
+                if (found) {
+                    throw new Error(`Archived flag with ID ${created.id} should not appear in the flags list`);
+                }
+            }
+        },
+
+        {
+            name: 'Creating a flag with an archived name fails with 409',
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('archive-name-test');
+                const created = await client.createFlag({ name: flagName });
+
+                await client.archiveFlag(created.id);
+
+                try {
+                    await client.createFlag({ name: flagName });
+                    throw new Error('Creating a flag with an archived name should have failed');
+                } catch (error: any) {
+                    if (error.response && error.response.status === 409) {
+                        return;
+                    }
+                    throw new Error(`Expected 409 Conflict error, got: ${error.message}`);
+                }
+            }
         }
     ];
 

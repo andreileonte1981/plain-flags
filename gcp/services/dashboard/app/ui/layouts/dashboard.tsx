@@ -5,6 +5,7 @@ import FlagIcon from "~/ui/icons/flagIcon";
 import UsersIcon from "~/ui/icons/usersIcon";
 import UserIcon from "~/ui/icons/userIcon";
 import LogoutIcon from "~/ui/icons/logoutIcon";
+import ArchiveIcon from "~/ui/icons/archiveIcon";
 
 function NavItem({
   to,
@@ -95,6 +96,17 @@ export default function Dashboard() {
                 >
                   <div className="text-gray-500">
                     <UsersIcon />
+                  </div>
+                </NavItem>
+              )}
+              {isAdmin && (
+                <NavItem
+                  to="/archived"
+                  title="Archived"
+                  tooltip="Archived feature flags (admin only)"
+                >
+                  <div className="text-orange-500">
+                    <ArchiveIcon />
                   </div>
                 </NavItem>
               )}

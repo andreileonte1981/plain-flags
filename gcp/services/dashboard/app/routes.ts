@@ -7,5 +7,6 @@ export default [
         route("flags", "ui/routes/flags.tsx"),
         route("flags/:flagId", "ui/routes/flag.tsx"),
         route("users", "ui/routes/users/users.tsx"),
+        route("archived", "ui/routes/archived.tsx"),
     ]),
 ] satisfies RouteConfig;

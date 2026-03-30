@@ -75,6 +75,18 @@ export class ManagementApiClient {
         return response.data;
     }
 
+    async archiveFlag(id: string): Promise<Flag> {
+        const client = await this.buildClient();
+        const response = await client.post('/api/flags/archive', { id });
+        return response.data;
+    }
+
+    async listArchivedFlags(page: number = 1, pageSize: number = 20, filter: string = ''): Promise<{ count: number; flags: Flag[] }> {
+        const client = await this.buildClient();
+        const response = await client.get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
+        return response.data;
+    }
+
     async getMe(): Promise<{ id: string; email: string; role: string }> {
         const client = await this.buildClient();
         const response = await client.get('/api/users/me');

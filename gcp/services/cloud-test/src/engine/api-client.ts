@@ -91,6 +91,16 @@ export class ManagementApiClient {
         return response.data;
     }
 
+    async archiveFlag(id: string): Promise<Flag> {
+        const response = await this.buildClient().post('/api/flags/archive', { id });
+        return response.data;
+    }
+
+    async listArchivedFlags(page: number = 1, pageSize: number = 20, filter: string = ''): Promise<{ count: number; flags: Flag[] }> {
+        const response = await this.buildClient().get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
+        return response.data;
+    }
+
     /**
      * Attempt an unauthenticated request to a protected endpoint.
      * Returns the HTTP status code of the response.
