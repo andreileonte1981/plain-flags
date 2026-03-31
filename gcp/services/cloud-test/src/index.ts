@@ -1,38 +1,9 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import { testSuites } from './engine/test-suites';
+import { SuiteResult, TestResult } from './engine/test-result';
 
 interface TestRequest {
     pattern?: string;
-}
-
-interface SuiteResult {
-    label: string;
-    success: boolean;
-    testsRun: number;
-    testsPassed: number;
-    testsFailed: number;
-    testsSkipped: number;
-    tests: Array<{
-        name: string;
-        success: boolean;
-        duration: number;
-        error?: string;
-        skipped?: boolean;
-        skipReason?: string;
-    }>;
-}
-
-interface TestResult {
-    success: boolean;
-    output: string;
-    error?: string;
-    timestamp: string;
-    duration: number;
-    testsRun: number;
-    testsPassed: number;
-    testsFailed: number;
-    testsSkipped: number;
-    suites: SuiteResult[];
 }
 
 const fastify = Fastify({
