@@ -1,9 +1,25 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
-import { runFlagTests } from './service-tests/flag-tests';
-import { runUserTests } from './service-tests/user-tests';
+import { testSuites } from './engine/test-suites';
 
 interface TestRequest {
     pattern?: string;
+}
+
+interface SuiteResult {
+    label: string;
+    success: boolean;
+    testsRun: number;
+    testsPassed: number;
+    testsFailed: number;
+    testsSkipped: number;
+    tests: Array<{
+        name: string;
+        success: boolean;
+        duration: number;
+        error?: string;
+        skipped?: boolean;
+        skipReason?: string;
+    }>;
 }
 
 interface TestResult {
@@ -15,12 +31,8 @@ interface TestResult {
     testsRun: number;
     testsPassed: number;
     testsFailed: number;
-    tests: Array<{
-        name: string;
-        success: boolean;
-        duration: number;
-        error?: string;
-    }>;
+    testsSkipped: number;
+    suites: SuiteResult[];
 }
 
 const fastify = Fastify({
@@ -70,19 +82,27 @@ fastify.post('/api/run-tests', async (request: FastifyRequest, reply: FastifyRep
         }
 
         // Run all test suites and merge results
-        const [flagResult, userResult] = await Promise.all([
-            runFlagTests(managementUrl, pattern),
-            runUserTests(managementUrl, pattern),
-        ]);
-        const allTests = [...flagResult.tests, ...userResult.tests];
+        const results = await Promise.all(
+            testSuites.map(suite => suite.run(managementUrl, pattern))
+        );
+        const suites: SuiteResult[] = testSuites.map((suite, i) => ({
+            label: suite.label,
+            success: results[i].success,
+            testsRun: results[i].testsRun,
+            testsPassed: results[i].testsPassed,
+            testsFailed: results[i].testsFailed,
+            testsSkipped: results[i].testsSkipped,
+            tests: results[i].tests,
+        }));
         const testRunResult = {
-            success: flagResult.success && userResult.success,
-            output: [flagResult.output, userResult.output].filter(Boolean).join('\n'),
-            error: [flagResult.error, userResult.error].filter(Boolean).join('\n') || undefined,
-            testsRun: flagResult.testsRun + userResult.testsRun,
-            testsPassed: flagResult.testsPassed + userResult.testsPassed,
-            testsFailed: flagResult.testsFailed + userResult.testsFailed,
-            tests: allTests,
+            success: results.every(r => r.success),
+            output: results.map(r => r.output).filter(Boolean).join('\n'),
+            error: results.map(r => r.error).filter(Boolean).join('\n') || undefined,
+            testsRun: results.reduce((s, r) => s + r.testsRun, 0),
+            testsPassed: results.reduce((s, r) => s + r.testsPassed, 0),
+            testsFailed: results.reduce((s, r) => s + r.testsFailed, 0),
+            testsSkipped: results.reduce((s, r) => s + r.testsSkipped, 0),
+            suites,
         };
         const duration = Date.now() - startTime;
 
@@ -95,7 +115,8 @@ fastify.post('/api/run-tests', async (request: FastifyRequest, reply: FastifyRep
             testsRun: testRunResult.testsRun,
             testsPassed: testRunResult.testsPassed,
             testsFailed: testRunResult.testsFailed,
-            tests: testRunResult.tests
+            testsSkipped: testRunResult.testsSkipped,
+            suites: testRunResult.suites,
         };
 
         // Store result
@@ -146,7 +167,8 @@ fastify.get('/api/test-results', async () => {
         testsRun: result.testsRun,
         testsPassed: result.testsPassed,
         testsFailed: result.testsFailed,
-        tests: result.tests
+        testsSkipped: result.testsSkipped,
+        suites: result.suites,
     }));
 
     return {
