@@ -1,11 +1,13 @@
 import { DataSource } from "typeorm";
 import { AuthTypes, Connector, DriverOptions, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import Flag from "./entities/Flag";
+import Flag, { FlagSubscriber } from "./entities/Flag";
 import User from "./entities/User";
+import Settings from "./entities/Settings";
 import { FastifyBaseLogger } from "fastify";
 
-const entities = [Flag, User];
+const entities = [Flag, User, Settings];
+const subscribers = [FlagSubscriber];
 
 let AppDataSource: DataSource;
 
@@ -32,6 +34,7 @@ export class Data {
                     database: process.env.DB_NAME || 'plainflags',
                     extra: { ...clientOpts },
                     entities,
+                    subscribers,
                     synchronize: true,
                     logging: false,
                     namingStrategy: new SnakeNamingStrategy(),
@@ -50,6 +53,7 @@ export class Data {
                     password: process.env.DB_PASSWORD || '',
                     database: process.env.DB_NAME || 'plainflags',
                     entities,
+                    subscribers,
                     synchronize: true,
                     logging: true,
                     namingStrategy: new SnakeNamingStrategy(),

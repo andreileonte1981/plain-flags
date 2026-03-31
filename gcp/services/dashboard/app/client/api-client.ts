@@ -6,6 +6,7 @@ export interface Flag {
     name: string;
     isOn: boolean;
     isArchived: boolean;
+    stale: boolean;
     createdAt: string;
     updatedAt: string;
 }

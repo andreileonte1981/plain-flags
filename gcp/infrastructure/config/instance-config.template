@@ -10,3 +10,9 @@ SUPERADMIN_EMAIL=superadmin@yourdomain.com
 
 # Firebase API key, App ID, and other SDK credentials are stored in .secrets/firebase.env
 # Run './setup-firebase.sh' to generate that file automatically.
+
+# Stale flag detection: a flag is stale if it hasn't been updated in this many days
+STALE_FLAG_DAYS=2
+
+# Email of the test service account allowed to set the time offset (non-production only)
+TEST_SERVICE_EMAIL=test-runner@yourdomain.com

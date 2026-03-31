@@ -14,6 +14,7 @@ function flagResponse(flag: Flag) {
         name: flag.name,
         isOn: flag.isOn,
         isArchived: flag.isArchived,
+        stale: flag.stale,
         createdAt: flag.createdAt,
         updatedAt: flag.updatedAt
     };
@@ -78,6 +79,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
                 where: { isArchived: false },
                 order: { createdAt: 'DESC' }
             });
+            await Promise.all(flags.map(f => f.checkStale()));
             reply.send(flags.map(flagResponse));
         } catch (error) {
             fastify.log.error(error, 'Error fetching flags');
@@ -136,6 +138,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             reply.code(404).send({ message: 'Flag not found' });
             return;
         }
+        await flag.checkStale();
         reply.send(flagResponse(flag));
     });
 

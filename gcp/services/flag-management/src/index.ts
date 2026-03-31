@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 import { Data } from './data';
 import flagRoutes from './routes/flag.route';
 import userRoutes from './routes/user.route';
+import settingsRoutes from './routes/settings.route';
 import Users from './logic/users';
 // Import to ensure Firebase Admin is initialized before routes use it
 import './middleware/firebaseAuth';
@@ -31,6 +32,7 @@ fastify.get('/health', async () => {
 // Register route modules
 fastify.register(flagRoutes);
 fastify.register(userRoutes);
+fastify.register(settingsRoutes);
 
 // Start server
 async function start() {

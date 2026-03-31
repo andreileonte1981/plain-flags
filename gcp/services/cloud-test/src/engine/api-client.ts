@@ -5,6 +5,7 @@ export interface Flag {
     name: string;
     isOn: boolean;
     isArchived: boolean;
+    stale: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -99,6 +100,10 @@ export class ManagementApiClient {
     async listArchivedFlags(page: number = 1, pageSize: number = 20, filter: string = ''): Promise<{ count: number; flags: Flag[] }> {
         const response = await this.buildClient().get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
         return response.data;
+    }
+
+    async setDaysOffset(days: number): Promise<void> {
+        await this.buildClient().post('/api/settings/daysOffset', { days });
     }
 
     /**

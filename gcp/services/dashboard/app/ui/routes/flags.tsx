@@ -47,11 +47,18 @@ function FlagCard({ flag }: FlagCardProps) {
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">{flag.name}</h3>
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClassName}`}
-        >
-          {flag.isOn ? "ON" : "OFF"}
-        </span>
+        <div className="flex gap-1.5 items-center">
+          {flag.stale && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+              STALE
+            </span>
+          )}
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClassName}`}
+          >
+            {flag.isOn ? "ON" : "OFF"}
+          </span>
+        </div>
       </div>
       <div className="mt-2">
         <p className="text-sm text-gray-500">ID: {flag.id}</p>

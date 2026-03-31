@@ -60,6 +60,8 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars="DB_USER=plainflags" \
     --set-env-vars="SUPERADMIN_EMAIL=${SUPERADMIN_EMAIL}" \
     --set-env-vars="FIREBASE_PROJECT_ID=${PROJECT_ID}" \
+    --set-env-vars="STALE_FLAG_DAYS=${STALE_FLAG_DAYS:-2}" \
+    --set-env-vars="TEST_SERVICE_EMAIL=${TEST_SERVICE_EMAIL}" \
     --set-secrets=DB_PASSWORD=plainflags-db-password:latest \
     --add-cloudsql-instances=$CONNECTION_NAME \
     --memory=512Mi \

@@ -226,6 +226,11 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
             {flag.name}
           </span>
           <StatusBadge isOn={flag.isOn} />
+          {flag.stale && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800">
+              STALE
+            </span>
+          )}
         </div>
         <div className="flex-none mt-2 sm:mt-0 flex gap-2 items-center">
           {!flag.isArchived && <TurnOnOffButton flag={flag} />}
