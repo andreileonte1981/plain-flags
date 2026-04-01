@@ -38,6 +38,19 @@ interface FlagCardProps {
   flag: Flag;
 }
 
+function extractErrorMessage(err: unknown, fallback: string): string {
+  if (err && typeof err === "object") {
+    const e = err as Record<string, unknown>;
+    const data = (e.response as Record<string, unknown> | undefined)?.data;
+    if (data && typeof data === "object") {
+      const d = data as Record<string, unknown>;
+      if (typeof d.message === "string") return d.message;
+      if (typeof d.error === "string") return d.error;
+    }
+  }
+  return err instanceof Error ? err.message : fallback;
+}
+
 function CreateFlagPanel() {
   const [name, setName] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -69,7 +82,9 @@ function CreateFlagPanel() {
         scrollToElement(`flagcard_${flag.id}`, "smooth", "start");
       }, 250);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create flag");
+      const message = extractErrorMessage(err, "Failed to create flag");
+      setError(message);
+      setConfirming(false);
     } finally {
       setLoading(false);
     }
@@ -101,7 +116,6 @@ function CreateFlagPanel() {
             No
           </button>
         </div>
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
     );
   }
@@ -115,7 +129,10 @@ function CreateFlagPanel() {
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            setError("");
+          }}
           placeholder="Flag name"
           className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
         />
@@ -127,6 +144,7 @@ function CreateFlagPanel() {
           Create
         </button>
       </form>
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 }
