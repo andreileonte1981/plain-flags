@@ -133,6 +133,11 @@ export default function FlagCard({ flag }: FlagCardProps) {
             </span>
           </Link>
           <div className="flex gap-1.5 items-center">
+            {flag.constraints && flag.constraints.length > 0 && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-magenta/10 text-magenta">
+                CONSTRAINED
+              </span>
+            )}
             {flag.stale && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                 STALE

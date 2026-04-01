@@ -169,6 +169,11 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
             {flag.name}
           </span>
           <StatusBadge isOn={flag.isOn} />
+          {flag.constraints && flag.constraints.length > 0 && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-magenta/10 text-magenta">
+              CONSTRAINED
+            </span>
+          )}
           {flag.stale && (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800">
               STALE
