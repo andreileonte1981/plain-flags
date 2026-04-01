@@ -1,4 +1,4 @@
-import { redirect, useRevalidator, useNavigate } from "react-router";
+import { redirect, useRevalidator } from "react-router";
 import { Link } from "react-router";
 import { useContext, useState } from "react";
 import type { Flag } from "~/client/api-client";
@@ -119,84 +119,6 @@ function TurnOnOffButton({ flag }: { flag: Flag }) {
   );
 }
 
-function ArchiveButton({ flag }: { flag: Flag }) {
-  const [confirm, setConfirm] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const { queueToast } = useContext(ToastContext);
-
-  async function archive() {
-    setLoading(true);
-    setError("");
-    try {
-      await getApiClient().archiveFlag(flag.id);
-      queueToast("Flag archived.");
-      navigate("/flags");
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message || err.message || "Error archiving flag",
-      );
-      setLoading(false);
-    }
-  }
-
-  if (flag.isArchived) {
-    return (
-      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-orange-100 text-orange-700">
-        Archived
-      </span>
-    );
-  }
-
-  if (flag.isOn) {
-    return (
-      <button
-        disabled
-        title="Turn the flag off before archiving"
-        className="font-bold text-sm px-4 py-2 rounded text-white bg-orange-200 cursor-not-allowed"
-      >
-        Archive
-      </button>
-    );
-  }
-
-  if (confirm) {
-    return (
-      <div className="flex flex-col items-end gap-1">
-        <div className="flex gap-2 items-center">
-          <span className="text-sm font-semibold text-gray-600">
-            Archive flag?
-          </span>
-          <button
-            className="font-bold text-sm px-3 py-1 rounded text-white bg-orange-600 hover:bg-orange-500"
-            disabled={loading}
-            onClick={archive}
-          >
-            {loading ? "Archiving…" : "Yes"}
-          </button>
-          <button
-            className="text-gray-500 text-sm hover:underline"
-            onClick={() => setConfirm(false)}
-          >
-            No
-          </button>
-        </div>
-        {error && <p className="text-red-500 text-xs">{error}</p>}
-      </div>
-    );
-  }
-
-  return (
-    <button
-      className="font-bold text-sm px-4 py-2 rounded text-white bg-orange-600 hover:bg-orange-500"
-      onClick={() => setConfirm(true)}
-    >
-      Archive
-    </button>
-  );
-}
-
 export default function FlagDetail({ loaderData }: { loaderData: any }) {
   const { flag, error } = loaderData as {
     flag: Flag | null;
@@ -240,7 +162,11 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
         </div>
         <div className="flex-none mt-2 sm:mt-0 flex gap-2 items-center">
           {!flag.isArchived && <TurnOnOffButton flag={flag} />}
-          <ArchiveButton flag={flag} />
+          {flag.isArchived && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-orange-100 text-orange-700">
+              Archived
+            </span>
+          )}
         </div>
       </div>
 

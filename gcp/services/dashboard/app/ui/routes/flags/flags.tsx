@@ -1,6 +1,5 @@
 import { redirect } from "react-router";
-import { useNavigate } from "react-router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
@@ -8,6 +7,7 @@ import { Route } from "./+types/flags";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { scrollToElement } from "~/utils/scrollTo";
 import CreateFlagPanel from "./components/createFlagPanel";
+import FlagCard from "./components/flagCard";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -33,65 +33,6 @@ export async function clientLoader() {
       error: error instanceof Error ? error.message : "Failed to load flags",
     };
   }
-}
-
-interface FlagCardProps {
-  flag: Flag;
-}
-
-function FlagCard({ flag }: FlagCardProps) {
-  const flagCardId = `flagcard_${flag.id}`;
-  const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
-  const navigate = useNavigate();
-  const isCurrent = currentFlag === flagCardId;
-
-  const statusClassName = flag.isOn
-    ? "bg-green-100 text-green-800"
-    : "bg-gray-100 text-gray-800";
-
-  const borderClassName = isCurrent
-    ? "border-4 border-green-600 shadow-lg"
-    : "border border-gray-200 shadow hover:shadow-md";
-
-  function handleClick(e: React.MouseEvent) {
-    e.preventDefault();
-    setCurrentFlag(flagCardId);
-    navigate(`/flags/${flag.id}`);
-  }
-
-  return (
-    <a
-      id={flagCardId}
-      href={`/flags/${flag.id}`}
-      onClick={handleClick}
-      className={`block bg-white rounded-lg p-6 border-l-4 border-l-green-500 scroll-mt-32 transition-shadow ${borderClassName}`}
-    >
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900">{flag.name}</h3>
-        <div className="flex gap-1.5 items-center">
-          {flag.stale && (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-              STALE
-            </span>
-          )}
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClassName}`}
-          >
-            {flag.isOn ? "ON" : "OFF"}
-          </span>
-        </div>
-      </div>
-      <div className="mt-2">
-        <p className="text-sm text-gray-500">ID: {flag.id}</p>
-        <p className="text-sm text-gray-500">
-          Created: {new Date(flag.createdAt).toLocaleDateString()}
-        </p>
-        {flag.isArchived && (
-          <p className="text-sm text-orange-600 font-medium mt-1">Archived</p>
-        )}
-      </div>
-    </a>
-  );
 }
 
 export default function Flags({ loaderData }: Route.ComponentProps) {
