@@ -128,7 +128,7 @@ export default function FlagCard({ flag }: FlagCardProps) {
             className="group inline-flex items-center gap-1 text-lg font-medium text-gray-900 hover:underline"
           >
             {flag.name}
-            <span className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-gray-400">
               <LinkIcon />
             </span>
           </Link>
