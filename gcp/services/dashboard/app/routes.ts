@@ -8,5 +8,6 @@ export default [
         route("flags/:flagId", "ui/routes/flags/flag.tsx"),
         route("users", "ui/routes/users/users.tsx"),
         route("archived", "ui/routes/flags/archived.tsx"),
+        route("constraints", "ui/routes/constraints/constraints.tsx"),
     ]),
 ] satisfies RouteConfig;

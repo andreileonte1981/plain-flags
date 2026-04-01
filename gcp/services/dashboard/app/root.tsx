@@ -11,6 +11,7 @@ import { useState } from "react";
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ToastContext, ToastMessage } from "~/context/toastContext";
 import Toast from "~/ui/components/toast";
 
@@ -77,6 +78,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const [currentFlag, setCurrentFlag] = useState("");
+  const [currentConstraint, setCurrentConstraint] = useState("");
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   function queueToast(message: string) {
@@ -93,8 +95,12 @@ export default function App() {
   return (
     <ToastContext.Provider value={{ queueToast, removeToast }}>
       <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
-        <Outlet />
-        <Toast messages={toasts} removeToast={removeToast} />
+        <CurrentConstraintContext.Provider
+          value={{ currentConstraint, setCurrentConstraint }}
+        >
+          <Outlet />
+          <Toast messages={toasts} removeToast={removeToast} />
+        </CurrentConstraintContext.Provider>
       </CurrentFlagContext.Provider>
     </ToastContext.Provider>
   );

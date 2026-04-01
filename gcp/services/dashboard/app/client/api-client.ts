@@ -9,6 +9,22 @@ export interface Flag {
     stale: boolean;
     createdAt: string;
     updatedAt: string;
+    constraints?: Array<{ id: string; description: string; key: string; values: string[] }>;
+}
+
+export interface Constraint {
+    id: string;
+    description: string;
+    key: string;
+    values: string[];
+    createdAt: string;
+    flags: Array<{ id: string; name: string; isOn: boolean }>;
+}
+
+export interface CreateConstraintRequest {
+    description: string;
+    key: string;
+    commaSeparatedValues: string;
 }
 
 export interface CreateFlagRequest {
@@ -86,6 +102,29 @@ export class ManagementApiClient {
         const client = await this.buildClient();
         const response = await client.get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
         return response.data;
+    }
+
+    async createConstraint(request: CreateConstraintRequest): Promise<Constraint> {
+        const client = await this.buildClient();
+        const response = await client.post('/api/constraints', request);
+        return response.data;
+    }
+
+    async listConstraints(): Promise<Constraint[]> {
+        const client = await this.buildClient();
+        const response = await client.get('/api/constraints');
+        return response.data;
+    }
+
+    async updateConstraintValues(id: string, values: string): Promise<Constraint> {
+        const client = await this.buildClient();
+        const response = await client.post('/api/constraints/values', { id, values });
+        return response.data;
+    }
+
+    async deleteConstraint(id: string): Promise<void> {
+        const client = await this.buildClient();
+        await client.post('/api/constraints/delete', { id });
     }
 
     async getMe(): Promise<{ id: string; email: string; role: string }> {

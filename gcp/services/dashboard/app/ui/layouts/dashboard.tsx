@@ -6,6 +6,7 @@ import UsersIcon from "~/ui/icons/usersIcon";
 import UserIcon from "~/ui/icons/userIcon";
 import LogoutIcon from "~/ui/icons/logoutIcon";
 import ArchiveIcon from "~/ui/icons/archiveIcon";
+import ConstraintIcon from "~/ui/icons/constraintIcon";
 
 function NavItem({
   to,
@@ -110,6 +111,15 @@ export default function Dashboard() {
                   </div>
                 </NavItem>
               )}
+              <NavItem
+                to="/constraints"
+                title="Constraints"
+                tooltip="Manage access constraints"
+              >
+                <div className="text-purple-700">
+                  <ConstraintIcon />
+                </div>
+              </NavItem>
             </div>
 
             {/* User section */}
