@@ -127,6 +127,16 @@ export class ManagementApiClient {
         await client.post('/api/constraints/delete', { id });
     }
 
+    async linkConstraint(flagId: string, constraintId: string): Promise<void> {
+        const client = await this.buildClient();
+        await client.post('/api/constraints/link', { flagId, constraintId });
+    }
+
+    async unlinkConstraint(flagId: string, constraintId: string): Promise<void> {
+        const client = await this.buildClient();
+        await client.post('/api/constraints/unlink', { flagId, constraintId });
+    }
+
     async getMe(): Promise<{ id: string; email: string; role: string }> {
         const client = await this.buildClient();
         const response = await client.get('/api/users/me');

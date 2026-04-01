@@ -1,7 +1,8 @@
 import { redirect, useRevalidator } from "react-router";
 import { Link } from "react-router";
 import { useContext, useEffect, useState } from "react";
-import type { Flag } from "~/client/api-client";
+import type { Constraint, Flag } from "~/client/api-client";
+import ConstraintSection from "./components/constraintSection";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
 import { ToastContext } from "~/context/toastContext";
@@ -25,11 +26,15 @@ export async function clientLoader({
   }
 
   try {
-    const flag = await getApiClient().getFlag(params.flagId as string);
-    return { flag, error: null };
+    const [flag, allConstraints] = await Promise.all([
+      getApiClient().getFlag(params.flagId as string),
+      getApiClient().listConstraints(),
+    ]);
+    return { flag, allConstraints, error: null };
   } catch (error) {
     return {
       flag: null,
+      allConstraints: [],
       error: error instanceof Error ? error.message : "Failed to load flag",
     };
   }
@@ -121,8 +126,9 @@ function TurnOnOffButton({ flag }: { flag: Flag }) {
 }
 
 export default function FlagDetail({ loaderData }: { loaderData: any }) {
-  const { flag, error } = loaderData as {
+  const { flag, allConstraints, error } = loaderData as {
     flag: Flag | null;
+    allConstraints: Constraint[];
     error: string | null;
   };
 
@@ -178,6 +184,17 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
           )}
         </div>
       </div>
+
+      {/* Constraints */}
+      <ConstraintSection
+        availableConstraints={allConstraints.filter(
+          (c) => !flag.constraints?.some((fc) => fc.id === c.id),
+        )}
+        appliedConstraints={allConstraints.filter((c) =>
+          flag.constraints?.some((fc) => fc.id === c.id),
+        )}
+        flagId={flag.id}
+      />
 
       {/* Details */}
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-3">
