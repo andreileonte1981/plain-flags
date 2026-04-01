@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useRevalidator } from "react-router";
 import { getApiClient } from "~/client/api-client";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { ToastContext } from "~/context/toastContext";
 import { scrollToElement } from "~/utils/scrollTo";
 import { extractErrorMessage } from "~/utils/errorMessage";
 
@@ -12,6 +13,7 @@ export default function CreateFlagPanel() {
   const [error, setError] = useState("");
   const revalidator = useRevalidator();
   const { setCurrentFlag } = useContext(CurrentFlagContext);
+  const { queueToast } = useContext(ToastContext);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,6 +32,7 @@ export default function CreateFlagPanel() {
       const flag = await getApiClient().createFlag({ name: name.trim() });
       setName("");
       setConfirming(false);
+      queueToast("Flag created.");
       await revalidator.revalidate();
       setTimeout(() => {
         setCurrentFlag(`flagcard_${flag.id}`);

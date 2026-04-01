@@ -1,9 +1,10 @@
 import { redirect, useRevalidator, useNavigate } from "react-router";
 import { Link } from "react-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
+import { ToastContext } from "~/context/toastContext";
 
 export function meta() {
   return [
@@ -50,6 +51,7 @@ function TurnOnOffButton({ flag }: { flag: Flag }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const revalidator = useRevalidator();
+  const { queueToast } = useContext(ToastContext);
 
   async function toggle() {
     setLoading(true);
@@ -57,8 +59,10 @@ function TurnOnOffButton({ flag }: { flag: Flag }) {
     try {
       if (flag.isOn) {
         await getApiClient().turnOffFlag(flag.id);
+        queueToast("Flag turned off.");
       } else {
         await getApiClient().turnOnFlag(flag.id);
+        queueToast("Flag turned on.");
       }
       setConfirm(false);
       revalidator.revalidate();
@@ -120,12 +124,14 @@ function ArchiveButton({ flag }: { flag: Flag }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { queueToast } = useContext(ToastContext);
 
   async function archive() {
     setLoading(true);
     setError("");
     try {
       await getApiClient().archiveFlag(flag.id);
+      queueToast("Flag archived.");
       navigate("/flags");
     } catch (err: any) {
       setError(

@@ -11,6 +11,8 @@ import { useState } from "react";
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { ToastContext, ToastMessage } from "~/context/toastContext";
+import Toast from "~/ui/components/toast";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -75,10 +77,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const [currentFlag, setCurrentFlag] = useState("");
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  function queueToast(message: string) {
+    const id = `toast_${Math.random() * 100_000_000}`;
+    const toast = new ToastMessage(message, id);
+    setToasts((prev) => [...prev, toast]);
+    setTimeout(() => removeToast(id), ToastMessage.delay);
+  }
+
+  function removeToast(id: string) {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }
+
   return (
-    <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
-      <Outlet />
-    </CurrentFlagContext.Provider>
+    <ToastContext.Provider value={{ queueToast, removeToast }}>
+      <CurrentFlagContext.Provider value={{ currentFlag, setCurrentFlag }}>
+        <Outlet />
+        <Toast messages={toasts} removeToast={removeToast} />
+      </CurrentFlagContext.Provider>
+    </ToastContext.Provider>
   );
 }
 
