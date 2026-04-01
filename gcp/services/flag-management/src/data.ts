@@ -4,9 +4,10 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import Flag, { FlagSubscriber } from "./entities/Flag";
 import User from "./entities/User";
 import Settings from "./entities/Settings";
+import Constraint from "./entities/Constraint";
 import { FastifyBaseLogger } from "fastify";
 
-const entities = [Flag, User, Settings];
+const entities = [Flag, User, Settings, Constraint];
 const subscribers = [FlagSubscriber];
 
 let AppDataSource: DataSource;

@@ -2,6 +2,7 @@ import { TestRunResult } from './test-runner';
 import { runFlagTests } from '../service-tests/flag-tests';
 import { runUserTests } from '../service-tests/user-tests';
 import { runStaleTests } from '../service-tests/stale-tests';
+import { runConstraintTests } from '../service-tests/constraint-tests';
 
 export interface TestSuite {
     label: string;
@@ -12,4 +13,5 @@ export const testSuites: TestSuite[] = [
     { label: 'Flags', run: runFlagTests },
     { label: 'Users', run: runUserTests },
     { label: 'Stale Feature', run: runStaleTests },
+    { label: 'Constraints', run: runConstraintTests },
 ];

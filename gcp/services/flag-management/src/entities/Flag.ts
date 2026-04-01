@@ -6,11 +6,14 @@ import {
     EntitySubscriberInterface,
     EventSubscriber,
     InsertEvent,
+    JoinTable,
+    ManyToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     UpdateEvent,
 } from "typeorm";
 import Settings from "./Settings";
+import Constraint from "./Constraint";
 
 async function getVirtualNow(): Promise<Date> {
     if (process.env.NODE_ENV === "production") {
@@ -43,6 +46,10 @@ export default class Flag extends BaseEntity {
     @UpdateDateColumn()
     updatedAt!: Date;
 
+    @ManyToMany(() => Constraint, (constraint) => constraint.flags, { cascade: true })
+    @JoinTable()
+    constraints!: Constraint[];
+
     stale: boolean = false;
 
     async checkStale() {
@@ -51,6 +58,14 @@ export default class Flag extends BaseEntity {
         const daysDiff = (now.getTime() - this.updatedAt.getTime()) / msPerDay;
         const staleDays = parseInt(process.env.STALE_FLAG_DAYS || "2", 10);
         this.stale = daysDiff > staleDays;
+    }
+
+    unlinkConstraint(id: string) {
+        this.constraints = (this.constraints as any[]).filter((c) => c.id !== id);
+    }
+
+    unlinkAllConstraints() {
+        this.constraints = [];
     }
 }
 

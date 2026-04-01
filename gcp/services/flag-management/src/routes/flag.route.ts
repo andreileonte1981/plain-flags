@@ -16,7 +16,10 @@ function flagResponse(flag: Flag) {
         isArchived: flag.isArchived,
         stale: flag.stale,
         createdAt: flag.createdAt,
-        updatedAt: flag.updatedAt
+        updatedAt: flag.updatedAt,
+        constraints: flag.constraints
+            ? flag.constraints.map((c) => ({ id: c.id, description: c.description, key: c.key, values: c.values }))
+            : undefined,
     };
 }
 
@@ -77,6 +80,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         try {
             const flags = await Flag.find({
                 where: { isArchived: false },
+                relations: ['constraints'],
                 order: { createdAt: 'DESC' }
             });
             await Promise.all(flags.map(f => f.checkStale()));
@@ -111,9 +115,9 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
     );
 
-    // Archive a flag (must be off; names stay reserved)
+    // Archive a flag (must be off; names stay reserved; unlinks all constraints)
     fastify.post<{ Body: { id: string } }>('/api/flags/archive', { preHandler: requireAuth }, async (request, reply) => {
-        const flag = await Flag.findOneBy({ id: request.body.id });
+        const flag = await Flag.findOne({ where: { id: request.body.id }, relations: ['constraints'] });
         if (!flag) {
             reply.code(404).send({ message: 'Flag not found' });
             return;
@@ -126,6 +130,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
             reply.code(400).send({ message: 'Flag must be turned off before archiving' });
             return;
         }
+        flag.unlinkAllConstraints();
         flag.isArchived = true;
         await flag.save();
         reply.send(flagResponse(flag));
@@ -133,7 +138,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
 
     // Get a single flag by ID
     fastify.get<{ Params: { id: string } }>('/api/flags/:id', { preHandler: requireAuth }, async (request, reply) => {
-        const flag = await Flag.findOneBy({ id: request.params.id });
+        const flag = await Flag.findOne({ where: { id: request.params.id }, relations: ['constraints'] });
         if (!flag) {
             reply.code(404).send({ message: 'Flag not found' });
             return;

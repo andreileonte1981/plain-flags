@@ -8,10 +8,26 @@ export interface Flag {
     stale: boolean;
     createdAt: string;
     updatedAt: string;
+    constraints?: Array<{ id: string; description: string; key: string; values: string[] }>;
+}
+
+export interface Constraint {
+    id: string;
+    description: string;
+    key: string;
+    values: string[];
+    createdAt: string;
+    flags: Array<{ id: string; name: string; isOn: boolean }>;
 }
 
 export interface CreateFlagRequest {
     name: string;
+}
+
+export interface CreateConstraintRequest {
+    description: string;
+    key: string;
+    commaSeparatedValues: string;
 }
 
 /**
@@ -100,6 +116,28 @@ export class ManagementApiClient {
     async listArchivedFlags(page: number = 1, pageSize: number = 20, filter: string = ''): Promise<{ count: number; flags: Flag[] }> {
         const response = await this.buildClient().get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
         return response.data;
+    }
+
+    async createConstraint(request: CreateConstraintRequest): Promise<Constraint> {
+        const response = await this.buildClient().post('/api/constraints', request);
+        return response.data;
+    }
+
+    async listConstraints(): Promise<Constraint[]> {
+        const response = await this.buildClient().get('/api/constraints');
+        return response.data;
+    }
+
+    async linkConstraint(flagId: string, constraintId: string): Promise<void> {
+        await this.buildClient().post('/api/constraints/link', { flagId, constraintId });
+    }
+
+    async unlinkConstraint(flagId: string, constraintId: string): Promise<void> {
+        await this.buildClient().post('/api/constraints/unlink', { flagId, constraintId });
+    }
+
+    async deleteConstraint(id: string): Promise<void> {
+        await this.buildClient().post('/api/constraints/delete', { id });
     }
 
     async setDaysOffset(days: number): Promise<void> {
