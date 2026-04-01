@@ -109,7 +109,7 @@ export default function Flags({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow">
+      <div className="sticky top-12 md:top-0 z-10 bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center gap-8">
