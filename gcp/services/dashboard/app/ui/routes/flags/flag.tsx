@@ -1,10 +1,11 @@
 import { redirect, useRevalidator } from "react-router";
 import { Link } from "react-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
 import { ToastContext } from "~/context/toastContext";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
 
 export function meta() {
   return [
@@ -124,6 +125,14 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
     flag: Flag | null;
     error: string | null;
   };
+
+  const { setCurrentFlag } = useContext(CurrentFlagContext);
+
+  useEffect(() => {
+    if (flag) {
+      setCurrentFlag(`flagcard_${flag.id}`);
+    }
+  }, [flag?.id]);
 
   if (error || !flag) {
     return (

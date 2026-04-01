@@ -3,6 +3,7 @@ import { Link, useRevalidator } from "react-router";
 import type { Constraint } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { CurrentConstraintContext } from "~/context/currentConstraintContext";
+import { CurrentFlagContext } from "~/context/currentFlagContext";
 import { ToastContext } from "~/context/toastContext";
 import { extractErrorMessage } from "~/utils/errorMessage";
 import { scrollToElement } from "~/utils/scrollTo";
@@ -23,6 +24,7 @@ export default function ConstraintCard({
   const { currentConstraint, setCurrentConstraint } = useContext(
     CurrentConstraintContext,
   );
+  const { setCurrentFlag } = useContext(CurrentFlagContext);
   const { queueToast } = useContext(ToastContext);
   const revalidator = useRevalidator();
 
@@ -271,7 +273,7 @@ export default function ConstraintCard({
                 <Link
                   className="relative group inline-flex flex-wrap items-center gap-1 hover:text-green-600"
                   to={`/flags/${f.id}`}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={() => setCurrentFlag(`flagcard_${f.id}`)}
                 >
                   <LinkIcon />
                   <div className="break-all group-hover:underline">

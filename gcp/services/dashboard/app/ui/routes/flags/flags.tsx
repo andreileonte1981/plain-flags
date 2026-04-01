@@ -94,11 +94,13 @@ export default function Flags({ loaderData }: Route.ComponentProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ul className="pt-2">
             {flags.map((flag) => (
-              <FlagCard key={flag.id} flag={flag} />
+              <li key={flag.id} className="mb-4">
+                <FlagCard flag={flag} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </main>
     </div>

@@ -1,9 +1,12 @@
 import { useContext, useState } from "react";
-import { useNavigate, useRevalidator } from "react-router";
+import { Link, useRevalidator } from "react-router";
 import type { Flag } from "~/client/api-client";
 import { getApiClient } from "~/client/api-client";
 import { CurrentFlagContext } from "~/context/currentFlagContext";
+import { CurrentConstraintContext } from "~/context/currentConstraintContext";
 import { ToastContext } from "~/context/toastContext";
+import HandIcon from "~/ui/icons/handIcon";
+import LinkIcon from "~/ui/icons/linkIcon";
 
 interface FlagCardProps {
   flag: Flag;
@@ -12,8 +15,8 @@ interface FlagCardProps {
 export default function FlagCard({ flag }: FlagCardProps) {
   const flagCardId = `flagcard_${flag.id}`;
   const { currentFlag, setCurrentFlag } = useContext(CurrentFlagContext);
+  const { setCurrentConstraint } = useContext(CurrentConstraintContext);
   const { queueToast } = useContext(ToastContext);
-  const navigate = useNavigate();
   const revalidator = useRevalidator();
   const isCurrent = currentFlag === flagCardId;
 
@@ -28,11 +31,6 @@ export default function FlagCard({ flag }: FlagCardProps) {
   const borderClassName = isCurrent
     ? "border-4 border-green-600 shadow-lg"
     : "border border-gray-200 shadow hover:shadow-md";
-
-  function handleCardClick() {
-    setCurrentFlag(flagCardId);
-    navigate(`/flags/${flag.id}`);
-  }
 
   async function archive(e: React.MouseEvent) {
     e.stopPropagation();
@@ -119,12 +117,21 @@ export default function FlagCard({ flag }: FlagCardProps) {
   return (
     <div
       id={flagCardId}
-      onClick={handleCardClick}
-      className={`bg-white rounded-lg border-l-4 border-l-green-500 scroll-mt-32 transition-shadow cursor-pointer ${borderClassName}`}
+      onClick={() => setCurrentFlag(flagCardId)}
+      className={`bg-white rounded-lg border-l-4 border-l-green-500 scroll-mt-32 transition-shadow ${borderClassName}`}
     >
       <div className="p-6">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">{flag.name}</h3>
+          <Link
+            to={`/flags/${flag.id}`}
+            onClick={() => setCurrentFlag(flagCardId)}
+            className="group inline-flex items-center gap-1 text-lg font-medium text-gray-900 hover:underline"
+          >
+            {flag.name}
+            <span className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              <LinkIcon />
+            </span>
+          </Link>
           <div className="flex gap-1.5 items-center">
             {flag.stale && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -151,6 +158,43 @@ export default function FlagCard({ flag }: FlagCardProps) {
       >
         {renderArchiveSection()}
       </div>
+
+      {flag.constraints && flag.constraints.length > 0 && (
+        <div className="px-6 pb-4" onClick={(e) => e.stopPropagation()}>
+          <ul className="border-2 rounded border-magenta/15 p-2 space-y-2">
+            {flag.constraints.map((constraint, index) => (
+              <li
+                key={constraint.id}
+                className="first:border-none border-t-2 border-magenta/15 pt-1 first:pt-0"
+              >
+                <Link
+                  to="/constraints"
+                  onClick={() => {
+                    setCurrentFlag(flagCardId);
+                    setCurrentConstraint(constraint.id);
+                  }}
+                  className="break-all inline-flex items-center gap-1 mb-1 text-purple-700 hover:underline font-semibold"
+                >
+                  <HandIcon />
+                  <span>{constraint.description}</span>
+                </Link>
+                <p className="text-sm text-gray-600">
+                  For:{" "}
+                  <span className="font-bold text-gray-700">
+                    {constraint.key}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  Named:{" "}
+                  <span className="font-bold text-gray-700">
+                    {constraint.values.join(", ")}
+                  </span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
