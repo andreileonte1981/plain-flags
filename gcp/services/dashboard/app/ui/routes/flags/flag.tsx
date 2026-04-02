@@ -1,8 +1,10 @@
 import { redirect, useRevalidator } from "react-router";
 import { Link } from "react-router";
 import { useContext, useEffect, useState } from "react";
-import type { Constraint, Flag } from "~/client/api-client";
+import type { Constraint, Flag, HistoryEntry } from "~/client/api-client";
 import ConstraintSection from "./components/constraintSection";
+import HistoryItem from "./components/historyItem";
+import ClockIcon from "~/ui/icons/clockIcon";
 import { getApiClient } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
 import { ToastContext } from "~/context/toastContext";
@@ -26,15 +28,17 @@ export async function clientLoader({
   }
 
   try {
-    const [flag, allConstraints] = await Promise.all([
+    const [flag, allConstraints, history] = await Promise.all([
       getApiClient().getFlag(params.flagId as string),
       getApiClient().listConstraints(),
+      getApiClient().getHistory(params.flagId as string),
     ]);
-    return { flag, allConstraints, error: null };
+    return { flag, allConstraints, history, error: null };
   } catch (error) {
     return {
       flag: null,
       allConstraints: [],
+      history: [],
       error: error instanceof Error ? error.message : "Failed to load flag",
     };
   }
@@ -126,9 +130,10 @@ function TurnOnOffButton({ flag }: { flag: Flag }) {
 }
 
 export default function FlagDetail({ loaderData }: { loaderData: any }) {
-  const { flag, allConstraints, error } = loaderData as {
+  const { flag, allConstraints, history, error } = loaderData as {
     flag: Flag | null;
     allConstraints: Constraint[];
+    history: HistoryEntry[];
     error: string | null;
   };
 
@@ -222,6 +227,24 @@ export default function FlagDetail({ loaderData }: { loaderData: any }) {
             <div className="text-orange-600 font-medium pt-1">Archived</div>
           )}
         </div>
+      </div>
+
+      {/* History */}
+      <div className="max-w-2xl mx-auto px-4 pb-8">
+        <div className="flex gap-1 items-center font-bold border-b-2 pb-1 mb-2 text-gray-600">
+          <ClockIcon />
+          Feature History
+        </div>
+        <ul>
+          {history.map((h, i) => (
+            <li key={i} className="border-b-2 my-1 text-sm">
+              <HistoryItem {...h} />
+            </li>
+          ))}
+          {history.length === 0 && (
+            <li className="text-gray-400 text-sm">No history yet.</li>
+          )}
+        </ul>
       </div>
     </div>
   );

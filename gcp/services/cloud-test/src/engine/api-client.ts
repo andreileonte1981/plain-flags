@@ -30,6 +30,13 @@ export interface CreateConstraintRequest {
     commaSeparatedValues: string;
 }
 
+export interface HistoryEntry {
+    userEmail: string;
+    what: string;
+    when: string;
+    constraintInfo?: string;
+}
+
 /**
  * Sign in to Firebase with email/password to get an ID token.
  * Firebase ID tokens are accepted by the management service's requireAuth middleware.
@@ -138,6 +145,16 @@ export class ManagementApiClient {
 
     async deleteConstraint(id: string): Promise<void> {
         await this.buildClient().post('/api/constraints/delete', { id });
+    }
+
+    async updateConstraintValues(id: string, values: string): Promise<Constraint> {
+        const response = await this.buildClient().post('/api/constraints/values', { id, values });
+        return response.data;
+    }
+
+    async getHistory(flagId: string): Promise<HistoryEntry[]> {
+        const response = await this.buildClient().post('/api/history', { flagId });
+        return response.data;
     }
 
     async setDaysOffset(days: number): Promise<void> {

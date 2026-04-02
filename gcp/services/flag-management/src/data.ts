@@ -5,9 +5,10 @@ import Flag, { FlagSubscriber } from "./entities/Flag";
 import User from "./entities/User";
 import Settings from "./entities/Settings";
 import Constraint from "./entities/Constraint";
+import History from "./entities/History";
 import { FastifyBaseLogger } from "fastify";
 
-const entities = [Flag, User, Settings, Constraint];
+const entities = [Flag, User, Settings, Constraint, History];
 const subscribers = [FlagSubscriber];
 
 let AppDataSource: DataSource;

@@ -1,7 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import Constraint from '../entities/Constraint';
 import Flag from '../entities/Flag';
+import User from '../entities/User';
 import { requireAuth } from '../middleware/firebaseAuth';
+import { Data } from '../data';
+import Recorder from '../logic/flag-history/recorder';
 
 function constraintResponse(constraint: Constraint) {
     return {
@@ -52,14 +55,26 @@ export default async function constraintRoutes(fastify: FastifyInstance) {
         '/api/constraints/values',
         { preHandler: requireAuth },
         async (request, reply) => {
+            const user = (request as any).user as User;
             const constraint = await Constraint.findOne({ where: { id: request.body.id }, relations: ['flags'] });
             if (!constraint) {
                 reply.code(404).send({ message: `Constraint ${request.body.id} not found` });
                 return;
             }
 
+            const oldValues = [...constraint.values];
             constraint.values = request.body.values.split(',').map((s) => s.trim());
-            await constraint.save();
+
+            const historyEntries = (constraint.flags ?? []).map((f) =>
+                Recorder.recordConstraintEdit(user, f, constraint, oldValues)
+            );
+
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(constraint);
+                for (const h of historyEntries) {
+                    await em.save(h);
+                }
+            });
 
             reply.send(constraintResponse(constraint));
         }
@@ -76,6 +91,7 @@ export default async function constraintRoutes(fastify: FastifyInstance) {
         '/api/constraints/link',
         { preHandler: requireAuth },
         async (request, reply) => {
+            const user = (request as any).user as User;
             const { constraintId, flagId } = request.body;
 
             const constraint = await Constraint.findOne({ where: { id: constraintId }, relations: ['flags'] });
@@ -92,7 +108,12 @@ export default async function constraintRoutes(fastify: FastifyInstance) {
 
             if (!flag.constraints) { flag.constraints = []; }
             flag.constraints.push(constraint);
-            await flag.save();
+
+            const h = Recorder.recordLink(user, flag, constraint);
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(flag);
+                await em.save(h);
+            });
 
             reply.code(200).send({ constraintId, flagId });
         }
@@ -103,6 +124,7 @@ export default async function constraintRoutes(fastify: FastifyInstance) {
         '/api/constraints/unlink',
         { preHandler: requireAuth },
         async (request, reply) => {
+            const user = (request as any).user as User;
             const { constraintId, flagId } = request.body;
 
             const constraint = await Constraint.findOne({ where: { id: constraintId }, relations: ['flags'] });
@@ -119,7 +141,12 @@ export default async function constraintRoutes(fastify: FastifyInstance) {
 
             flag.unlinkConstraint(constraintId);
             constraint.unlinkFlag(flagId);
-            await flag.save();
+
+            const h = Recorder.recordUnlink(user, flag, constraint);
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(flag);
+                await em.save(h);
+            });
 
             reply.code(200).send({ constraintId, flagId });
         }

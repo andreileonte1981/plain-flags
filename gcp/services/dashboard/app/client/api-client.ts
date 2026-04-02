@@ -27,6 +27,13 @@ export interface CreateConstraintRequest {
     commaSeparatedValues: string;
 }
 
+export interface HistoryEntry {
+    userEmail: string;
+    what: string;
+    when: string;
+    constraintInfo?: string;
+}
+
 export interface CreateFlagRequest {
     name: string;
 }
@@ -135,6 +142,12 @@ export class ManagementApiClient {
     async unlinkConstraint(flagId: string, constraintId: string): Promise<void> {
         const client = await this.buildClient();
         await client.post('/api/constraints/unlink', { flagId, constraintId });
+    }
+
+    async getHistory(flagId: string): Promise<HistoryEntry[]> {
+        const client = await this.buildClient();
+        const response = await client.post('/api/history', { flagId });
+        return response.data;
     }
 
     async getMe(): Promise<{ id: string; email: string; role: string }> {

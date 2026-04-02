@@ -2,6 +2,8 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import Flag from '../entities/Flag';
 import User, { Role } from '../entities/User';
 import { requireAuth } from '../middleware/firebaseAuth';
+import { Data } from '../data';
+import Recorder from '../logic/flag-history/recorder';
 
 // Request/Response interfaces
 interface CreateFlagBody {
@@ -38,6 +40,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
     }, async (request: FastifyRequest<{ Body: CreateFlagBody }>, reply: FastifyReply) => {
         const { name } = request.body;
+        const user = (request as any).user as User;
 
         try {
             // Check if flag already exists (including archived — names are reserved)
@@ -60,7 +63,11 @@ export default async function flagRoutes(fastify: FastifyInstance) {
                 isArchived: false
             });
 
-            await newFlag.save();
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(newFlag);
+                const h = Recorder.recordCreation(user, newFlag);
+                await em.save(h);
+            });
 
             fastify.log.info(`Created flag: ${newFlag.name}`);
 
@@ -117,6 +124,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
 
     // Archive a flag (must be off; names stay reserved; unlinks all constraints)
     fastify.post<{ Body: { id: string } }>('/api/flags/archive', { preHandler: requireAuth }, async (request, reply) => {
+        const user = (request as any).user as User;
         const flag = await Flag.findOne({ where: { id: request.body.id }, relations: ['constraints'] });
         if (!flag) {
             reply.code(404).send({ message: 'Flag not found' });
@@ -132,7 +140,11 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
         flag.unlinkAllConstraints();
         flag.isArchived = true;
-        await flag.save();
+        const h = Recorder.recordArchive(user, flag);
+        await Data.getDataSource().transaction(async (em) => {
+            await em.save(h);
+            await em.save(flag);
+        });
         reply.send(flagResponse(flag));
     });
 
@@ -149,6 +161,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
 
     // Turn a flag on
     fastify.post<{ Body: { id: string } }>('/api/flags/turnon', { preHandler: requireAuth }, async (request, reply) => {
+        const user = (request as any).user as User;
         const flag = await Flag.findOneBy({ id: request.body.id });
         if (!flag) {
             reply.code(404).send({ message: 'Flag not found' });
@@ -156,13 +169,18 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
         if (!flag.isOn) {
             flag.isOn = true;
-            await flag.save();
+            const h = Recorder.recordActivation(user, flag);
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(h);
+                await em.save(flag);
+            });
         }
         reply.send(flagResponse(flag));
     });
 
     // Turn a flag off
     fastify.post<{ Body: { id: string } }>('/api/flags/turnoff', { preHandler: requireAuth }, async (request, reply) => {
+        const user = (request as any).user as User;
         const flag = await Flag.findOneBy({ id: request.body.id });
         if (!flag) {
             reply.code(404).send({ message: 'Flag not found' });
@@ -170,7 +188,11 @@ export default async function flagRoutes(fastify: FastifyInstance) {
         }
         if (flag.isOn) {
             flag.isOn = false;
-            await flag.save();
+            const h = Recorder.recordDeactivation(user, flag);
+            await Data.getDataSource().transaction(async (em) => {
+                await em.save(h);
+                await em.save(flag);
+            });
         }
         reply.send(flagResponse(flag));
     });
