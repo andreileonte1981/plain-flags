@@ -36,6 +36,10 @@ else
     echo "Warning: Management service not found. Please deploy it first or set MANAGEMENT_SERVICE_URL manually."
 fi
 
+# Get states function URL (1st gen CF — URL is deterministic)
+STATES_SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/plainflags-states"
+echo "States service URL: $STATES_SERVICE_URL"
+
 echo "Deploying cloud test service..."
 echo "Project: $PROJECT_ID"
 echo "Service: $SERVICE_NAME"
@@ -58,6 +62,8 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars="FIREBASE_API_KEY=${FIREBASE_API_KEY}" \
     --set-env-vars="TEST_USER_EMAIL=${TEST_USER_EMAIL}" \
     --set-env-vars="TEST_USER_PASSWORD=${TEST_USER_PASSWORD}" \
+    --set-env-vars="STATES_SERVICE_URL=${STATES_SERVICE_URL}" \
+    --set-secrets="STATES_APIKEY=plainflags-states-apikey:latest" \
     --memory=512Mi \
     --cpu=1 \
     --max-instances=5 \
