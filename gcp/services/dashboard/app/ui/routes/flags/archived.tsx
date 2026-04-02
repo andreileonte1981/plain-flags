@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getApiClient } from "~/client/api-client";
 import type { Flag } from "~/client/api-client";
 import { getFirebaseAuth } from "~/firebase";
+import ArchivedFlagItem from "./components/archivedFlagItem";
 
 export function meta() {
   return [
@@ -122,16 +123,8 @@ export default function ArchivedFlags() {
         ) : (
           <div className="bg-white shadow rounded-lg divide-y divide-gray-100">
             {flags.map((flag) => (
-              <div
-                key={flag.id}
-                className="px-5 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1"
-              >
-                <span className="font-bold text-gray-800 break-all">
-                  {flag.name}
-                </span>
-                <span className="font-mono text-xs text-gray-400 text-right break-all">
-                  {flag.id}
-                </span>
+              <div key={flag.id} className="px-5">
+                <ArchivedFlagItem id={flag.id} name={flag.name} />
               </div>
             ))}
           </div>
