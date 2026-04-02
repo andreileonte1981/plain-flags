@@ -1,0 +1,14 @@
+{
+  "name": "plainflags-states-gcp",
+  "version": "1.0.0",
+  "description": "Plain Flags state service for Google Cloud (1st gen HTTP Cloud Function)",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "pg": "^8.14.1"
+  },
+  "author": "Andrei Leonte",
+  "license": "ISC"
+}

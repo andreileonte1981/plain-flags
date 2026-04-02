@@ -33,7 +33,7 @@ fi
 gcloud config set project $PROJECT_ID
 
 # Delete credit-consuming resources using dedicated script
-    ./cleanup-billing-resources.sh
+    ./down.sh
 
 # Delete secrets
 if gcloud secrets describe plainflags-db-password >/dev/null 2>&1; then

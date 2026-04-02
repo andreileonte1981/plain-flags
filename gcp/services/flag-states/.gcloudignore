@@ -1,0 +1,3 @@
+# Exclude local development files from the function deployment bundle
+node_modules/
+.env

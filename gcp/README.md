@@ -123,7 +123,7 @@ If you prefer to deploy components individually:
 ### Cleanup Scripts
 
 - `cleanup.sh` - Remove all resources (includes non-billing resources)
-- `cleanup-billing-resources.sh` - Remove only billing resources (recommended)
+- `down.sh` - Remove only billing resources (recommended)
 - `delete-dashboard.sh` - Remove only dashboard
 - `delete-cloud-test.sh` - Remove only test service
 
@@ -197,7 +197,7 @@ To avoid ongoing charges when not actively developing:
 
 ```bash
 # Delete all billing resources (recommended)
-./cleanup-billing-resources.sh
+./down.sh
 
 # Or delete everything including IAM policies
 ./cleanup.sh

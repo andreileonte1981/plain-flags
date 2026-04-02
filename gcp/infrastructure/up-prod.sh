@@ -1,6 +1,5 @@
 #!/bin/bash
 # Deploy all Plain Flags services to GCP
-# This script deploys database, management service, dashboard and test service in order
 
 set -e
 
@@ -28,28 +27,28 @@ echo ""
 gcloud config set project $PROJECT_ID
 
 echo "===================="
-echo "1. Deploying Database..."
+echo "Deploying Database..."
 echo "===================="
 ./deploy-database.sh
 echo "✓ Database deployed successfully"
 echo ""
 
 echo "===================="
-echo "2. Deploying Management Service..."
+echo "Deploying Management Service..."
 echo "===================="
 ./deploy-flag-management.sh
 echo "✓ Management service deployed successfully"
 echo ""
 
 echo "===================="
-echo "4. Deploying Test Service..."
+echo "Deploying States Service..."
 echo "===================="
-./deploy-cloud-test.sh
-echo "✓ Test service deployed successfully"
+./deploy-flag-states.sh
+echo "✓ States service deployed successfully"
 echo ""
 
 echo "===================="
-echo "3. Deploying Dashboard..."
+echo "Deploying Dashboard..."
 echo "===================="
 ./deploy-dashboard.sh
 echo "✓ Dashboard deployed successfully"
@@ -58,7 +57,6 @@ echo ""
 # Get service URLs
 MANAGEMENT_URL=$(gcloud run services describe plainflags-management --region=$REGION --format="value(status.url)")
 DASHBOARD_URL=$(gcloud run services describe plainflags-dashboard --region=$REGION --format="value(status.url)")
-TEST_URL=$(gcloud run services describe plainflags-cloud-test --region=$REGION --format="value(status.url)")
 
 echo "===================="
 echo "🎉 Deployment Complete!"
@@ -67,13 +65,5 @@ echo ""
 echo "Service URLs:"
 echo "  Management API: $MANAGEMENT_URL"
 echo "  Dashboard:      $DASHBOARD_URL"
-echo "  Test Service:   $TEST_URL"
-echo ""
-echo "Quick Test Commands:"
-echo "  curl $MANAGEMENT_URL/health"
-echo "  curl $TEST_URL/health"
-echo ""
-echo "To delete all services when done:"
-echo "  ./cleanup-billing-resources.sh"
 echo ""
 echo "Dashboard should be opening in your browser shortly..."
