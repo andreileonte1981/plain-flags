@@ -1,6 +1,6 @@
 #!/bin/bash
 # Deploy all Plain Flags services to GCP
-# This script deploys database, management service, dashboard and test service in order
+# This script deploys database, management service, states function, dashboard and test service
 
 set -e
 

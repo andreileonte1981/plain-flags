@@ -78,15 +78,13 @@ gcloud secrets add-iam-policy-binding "$SECRET_NAME" \
 
 # ── Deploy the function ───────────────────────────────────────────────────────
 gcloud functions deploy "$FUNCTION_NAME" \
-    --gen1 \
-    --runtime nodejs20 \
+    --runtime nodejs22 \
     --trigger-http \
     --allow-unauthenticated \
     --region "$REGION" \
     --source "$SOURCE_DIR" \
     --entry-point flagStates \
     --service-account "$SA_EMAIL" \
-    --set-cloudsql-instances "$CONNECTION_NAME" \
     --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags" \
     --set-secrets "DB_PASSWORD=plainflags-db-password:latest,APIKEY=${SECRET_NAME}:latest" \
     --memory 256MB \
@@ -94,9 +92,7 @@ gcloud functions deploy "$FUNCTION_NAME" \
     --max-instances 10
 
 # ── Print usage info ──────────────────────────────────────────────────────────
-FUNCTION_URL=$(gcloud functions describe "$FUNCTION_NAME" \
-    --region "$REGION" \
-    --format "value(httpsTrigger.url)")
+FUNCTION_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${FUNCTION_NAME}"
 
 echo ""
 echo "Deployment complete!"
@@ -105,7 +101,7 @@ echo "Function URL: $FUNCTION_URL"
 echo ""
 echo "SDK configuration:"
 echo "  serviceUrl: $FUNCTION_URL"
-echo "  apiKey:     (contents of .secrets/apikey.states.txt)"
+echo "  apiKey:     $APIKEY"
 echo ""
 echo "Test:"
-echo "  curl -H \"x-api-key: \$(cat .secrets/apikey.states.txt)\" ${FUNCTION_URL}/api/sdk"
+echo "  curl -H \"x-api-key: ${APIKEY}\" ${FUNCTION_URL}/api/sdk"

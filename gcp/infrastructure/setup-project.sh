@@ -43,7 +43,7 @@ echo "Enabling required APIs..."
 
 # Enable basic APIs first
 echo "Enabling basic APIs..."
-for service in serviceusage.googleapis.com run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com identitytoolkit.googleapis.com firebase.googleapis.com; do
+for service in serviceusage.googleapis.com run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com identitytoolkit.googleapis.com firebase.googleapis.com cloudfunctions.googleapis.com; do
     if gcloud services list --enabled --filter="name:$service" --format="value(name)" | grep -q "$service"; then
         echo "✓ $service already enabled"
     else

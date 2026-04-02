@@ -21,12 +21,14 @@
  */
 
 const { Pool } = require('pg');
+const { Connector } = require('@google-cloud/cloud-sql-connector');
 
 // Pool is initialised once per container instance and reused across warm invocations.
 // Keeping `pool` in module scope is the recommended pattern for Cloud Functions.
 let pool = null;
+let connector = null;
 
-function getPool() {
+async function getPool() {
     if (pool) return pool;
 
     const connectionName = process.env.CLOUD_SQL_CONNECTION_NAME;
@@ -43,8 +45,14 @@ function getPool() {
     };
 
     if (connectionName) {
-        // Cloud SQL IAM / Unix socket (Cloud Functions runtime)
-        pool = new Pool({ ...base, host: `/cloudsql/${connectionName}` });
+        // Cloud SQL connector — connects via the Cloud SQL Admin API over TLS.
+        // Works in 1st gen Cloud Functions without needing the Auth Proxy socket.
+        connector = new Connector();
+        const clientOpts = await connector.getOptions({
+            instanceConnectionName: connectionName,
+            authType: 'PASSWORD',
+        });
+        pool = new Pool({ ...base, ...clientOpts });
     } else {
         // Local / integration testing via TCP
         pool = new Pool({
@@ -94,7 +102,7 @@ exports.flagStates = async (req, res) => {
 
     // ── Query ─────────────────────────────────────────────────────────────────
     try {
-        const db = getPool();
+        const db = await getPool();
 
         // Single round-trip: fetch all active flags with their constraints.
         //

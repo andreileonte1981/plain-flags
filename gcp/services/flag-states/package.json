@@ -4,9 +4,10 @@
   "description": "Plain Flags state service for Google Cloud (1st gen HTTP Cloud Function)",
   "main": "index.js",
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "dependencies": {
+    "@google-cloud/cloud-sql-connector": "^1.4.2",
     "pg": "^8.14.1"
   },
   "author": "Andrei Leonte",
