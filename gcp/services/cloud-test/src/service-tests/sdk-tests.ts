@@ -197,6 +197,60 @@ export async function runSdkTests(managementServiceUrl: string, pattern?: string
                 }
             },
         },
+
+        {
+            name: 'Unauthenticated SDK users configured to throw on errors throw an exception.',
+            skip: skipReason,
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('sdk-err');
+                const flag = await client.createFlag({ name: flagName });
+                await client.turnOnFlag(flag.id);
+
+                const sdk = new PlainFlags(
+                    { policy: 'manual', serviceUrl: statesServiceUrl, timeout: 20000, apiKey: "fake" },
+                    null, null
+                );
+
+                await sleep(1200);
+                let err;
+
+                try {
+                    await sdk.init(true);
+
+                    sdk.isOn(flagName);
+                } catch (e) {
+                    err = e;
+                }
+
+                if (!err) {
+                    throw new Error('Expected an error to be thrown for unauthenticated SDK user');
+                }
+            },
+        },
+
+        {
+            name: 'Unauthenticated SDK users configured to ignore errors get default flag state.',
+            skip: skipReason,
+            test: async () => {
+                const flagName = ManagementApiClient.generateUniqueName('sdk-ign');
+                const flag = await client.createFlag({ name: flagName });
+                await client.turnOnFlag(flag.id);
+
+                const sdk = new PlainFlags(
+                    { policy: 'manual', serviceUrl: statesServiceUrl, timeout: 20000, apiKey: "fake" },
+                    null, null
+                );
+
+                await sleep(1200);
+                await sdk.init();
+
+                const ison = sdk.isOn(flagName);
+
+                if (ison !== false) {
+                    throw new Error(`Expected default flag state to be false for unauthenticated SDK user, got ${ison}`);
+                }
+            },
+        },
     ];
 
     return runner.run(testCases, pattern);
