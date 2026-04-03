@@ -89,6 +89,15 @@ export default function Dashboard() {
                   <FlagIcon />
                 </div>
               </NavItem>
+              <NavItem
+                to="/constraints"
+                title="Constraints"
+                tooltip="Manage access constraints"
+              >
+                <div className="text-purple-700">
+                  <ConstraintIcon />
+                </div>
+              </NavItem>
               {isAdmin && (
                 <NavItem
                   to="/users"
@@ -111,15 +120,6 @@ export default function Dashboard() {
                   </div>
                 </NavItem>
               )}
-              <NavItem
-                to="/constraints"
-                title="Constraints"
-                tooltip="Manage access constraints"
-              >
-                <div className="text-purple-700">
-                  <ConstraintIcon />
-                </div>
-              </NavItem>
             </div>
 
             {/* User section */}
