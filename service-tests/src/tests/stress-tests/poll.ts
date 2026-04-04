@@ -139,10 +139,9 @@ async function main() {
     }
     catch (e) {
         console.error(`Check failed at client no. ${i}`, e)
-        return
     }
 
-    console.log("All good")
+    console.log("All done")
 }
 
 main()
