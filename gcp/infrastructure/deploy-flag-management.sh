@@ -66,7 +66,7 @@ gcloud run deploy $SERVICE_NAME \
     --add-cloudsql-instances=$CONNECTION_NAME \
     --memory=512Mi \
     --cpu=1 \
-    --max-instances=10 \
+    --max-instances=1 \
     --port=8080
 
 # Get service URL

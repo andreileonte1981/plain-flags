@@ -12,7 +12,7 @@ SUPERADMIN_EMAIL=superadmin@yourdomain.com
 # Run './setup-firebase.sh' to generate that file automatically.
 
 # Stale flag detection: a flag is stale if it hasn't been updated in this many days
-STALE_FLAG_DAYS=2
+STALE_FLAG_DAYS=14
 
 # Email of the test service account allowed to set the time offset (non-production only)
 TEST_SERVICE_EMAIL=test-runner@yourdomain.com
