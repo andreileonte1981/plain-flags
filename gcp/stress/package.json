@@ -1,0 +1,29 @@
+{
+  "name": "plainflags-gcp-stress",
+  "version": "1.0.0",
+  "description": "Stress tests for the Plain Flags GCP states service",
+  "main": "dist/stress-test.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "compile": "rm -rf dist && tsc",
+    "clear": "npm run compile && node dist/clear-data.js",
+    "seed": "npm run compile && node dist/seed-data.js",
+    "stress": "npm run compile && node dist/stress-test.js"
+  },
+  "dependencies": {
+    "@google-cloud/cloud-sql-connector": "^1.4.2",
+    "axios": "^1.8.3",
+    "pg": "^8.14.1",
+    "plain-flags-node-sdk": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.0",
+    "typescript": "^5.3.0"
+  },
+  "author": "Andrei Leonte",
+  "license": "ISC"
+}
