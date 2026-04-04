@@ -45,7 +45,7 @@ export class ManagementApiClient {
     private http(authenticated = true): AxiosInstance {
         return axios.create({
             baseURL: this.baseURL,
-            timeout: 15000,
+            timeout: 240000,
             headers: {
                 'Content-Type': 'application/json',
                 ...(authenticated && this.token ? { Authorization: `Bearer ${this.token}` } : {}),

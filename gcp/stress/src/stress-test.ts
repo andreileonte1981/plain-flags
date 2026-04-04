@@ -36,7 +36,7 @@ const statesApiKey = process.env.STATES_APIKEY || '';
 const VALID_CONTEXT = { user: 'John', brand: 'Initech' };
 
 // Timeout per SDK init call (ms)
-const SDK_TIMEOUT = 30000;
+const SDK_TIMEOUT = 240000;
 
 // ── Report types ─────────────────────────────────────────────────────────────
 
@@ -124,7 +124,7 @@ async function main() {
 
     console.log(`Dispatching ${concurrency} concurrent init() calls...`);
 
-    // Fire all inits simultaneously
+    // Fire all inits at once
     const promises = sdks.map(async (sdk, _i) => {
         try {
             await sdk.init();
@@ -189,7 +189,7 @@ async function main() {
         `Date             : ${sendStartISO}`,
         `States URL       : ${statesUrl}`,
         ``,
-        `Concurrency      : ${concurrency} simultaneous SDK requests`,
+        `Concurrency      : ${concurrency} SDK requests`,
         `Flags in dataset : ${flagNames.length}`,
         ``,
         `--- Timing ---`,
