@@ -1,5 +1,5 @@
 #!/bin/bash
-# Delete the flag-states Cloud Function and optionally its Secret Manager secret
+# Delete the flag-states Cloud Function and Cloud Run service (tries both).
 
 set -e
 
@@ -15,11 +15,12 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-gcp-project-id-here" ]; then
     exit 1
 fi
 
-FUNCTION_NAME="plainflags-states"
+NAME="plainflags-states"
 SECRET_NAME="plainflags-states-apikey"
 
-echo "This will delete:"
-echo "  - Cloud Function: $FUNCTION_NAME (region: $REGION)"
+echo "This will delete (if present):"
+echo "  - Cloud Function: $NAME (region: $REGION)"
+echo "  - Cloud Run service: $NAME (region: $REGION)"
 echo ""
 read -r -p "Are you sure? (y/N): " confirmation
 
@@ -30,13 +31,22 @@ fi
 
 gcloud config set project "$PROJECT_ID"
 
-# ── Delete the function ───────────────────────────────────────────────────────
-if gcloud functions describe "$FUNCTION_NAME" --region "$REGION" >/dev/null 2>&1; then
-    echo "Deleting function $FUNCTION_NAME..."
-    gcloud functions delete "$FUNCTION_NAME" --region "$REGION" --quiet
+# ── Delete the Cloud Function ─────────────────────────────────────────────────
+if gcloud functions describe "$NAME" --region "$REGION" >/dev/null 2>&1; then
+    echo "Deleting Cloud Function $NAME..."
+    gcloud functions delete "$NAME" --region "$REGION" --quiet
     echo "  Function deleted."
 else
-    echo "  Function $FUNCTION_NAME not found — skipping."
+    echo "  Cloud Function $NAME not found — skipping."
+fi
+
+# ── Delete the Cloud Run service ──────────────────────────────────────────────
+if gcloud run services describe "$NAME" --region "$REGION" >/dev/null 2>&1; then
+    echo "Deleting Cloud Run service $NAME..."
+    gcloud run services delete "$NAME" --region "$REGION" --quiet
+    echo "  Service deleted."
+else
+    echo "  Cloud Run service $NAME not found — skipping."
 fi
 
 # ── Optionally delete the API key secret ─────────────────────────────────────

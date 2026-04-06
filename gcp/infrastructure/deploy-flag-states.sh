@@ -1,5 +1,8 @@
 #!/bin/bash
-# Deploy flag-states as a 1st gen HTTP Cloud Function
+# Deploy flag-states as a 1st gen HTTP Cloud Function or a Cloud Run service.
+# Set STATES_VARIANT in config/instance-config:
+#   function  — 1st gen Cloud Function (scales to zero, cold starts possible)
+#   service   — Cloud Run service with min-instances=1 (always on, no cold starts)
 
 set -e
 
@@ -46,13 +49,20 @@ if [ -z "$APIKEY" ]; then
     exit 1
 fi
 
-FUNCTION_NAME="plainflags-states"
-SECRET_NAME="plainflags-states-apikey"
-SOURCE_DIR="../services/flag-states"
+VARIANT="${STATES_VARIANT:-function}"
 
-echo "Deploying flag-states Cloud Function..."
+if [[ "$VARIANT" != "function" && "$VARIANT" != "service" ]]; then
+    echo "Error: STATES_VARIANT must be 'function' or 'service' (got: '$VARIANT')"
+    exit 1
+fi
+
+NAME="plainflags-states"
+SECRET_NAME="plainflags-states-apikey"
+SA_EMAIL="plainflags-runner@${PROJECT_ID}.iam.gserviceaccount.com"
+
+echo "Deploying flag-states ($VARIANT)..."
 echo "Project:     $PROJECT_ID"
-echo "Function:    $FUNCTION_NAME"
+echo "Name:        $NAME"
 echo "Region:      $REGION"
 echo "DB instance: $CONNECTION_NAME"
 
@@ -69,39 +79,56 @@ else
         --replication-policy=automatic
 fi
 
-# Grant the Cloud Functions service account access to the secret
-SA_EMAIL="plainflags-runner@${PROJECT_ID}.iam.gserviceaccount.com"
+# Grant the service account access to the secret
 gcloud secrets add-iam-policy-binding "$SECRET_NAME" \
     --member="serviceAccount:${SA_EMAIL}" \
     --role="roles/secretmanager.secretAccessor" \
     --quiet
 
-# ── Deploy the function ───────────────────────────────────────────────────────
-gcloud functions deploy "$FUNCTION_NAME" \
-    --runtime nodejs22 \
-    --trigger-http \
-    --allow-unauthenticated \
-    --region "$REGION" \
-    --source "$SOURCE_DIR" \
-    --entry-point flagStates \
-    --service-account "$SA_EMAIL" \
-    --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags" \
-    --set-secrets "DB_PASSWORD=plainflags-db-password:latest,APIKEY=${SECRET_NAME}:latest" \
-    --memory 256MB \
-    --timeout 10s \
-    --max-instances 10
+# ── Deploy ────────────────────────────────────────────────────────────────────
+if [[ "$VARIANT" == "function" ]]; then
+    gcloud functions deploy "$NAME" \
+        --runtime nodejs22 \
+        --trigger-http \
+        --allow-unauthenticated \
+        --region "$REGION" \
+        --source "../services/flag-states" \
+        --entry-point flagStates \
+        --service-account "$SA_EMAIL" \
+        --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags" \
+        --set-secrets "DB_PASSWORD=plainflags-db-password:latest,APIKEY=${SECRET_NAME}:latest" \
+        --memory 256MB \
+        --timeout 10s \
+        --max-instances 10
+
+    SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${NAME}"
+else
+    gcloud run deploy "$NAME" \
+        --source "../services/flag-states-run" \
+        --platform managed \
+        --region "$REGION" \
+        --allow-unauthenticated \
+        --service-account "$SA_EMAIL" \
+        --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags" \
+        --set-secrets "DB_PASSWORD=plainflags-db-password:latest,APIKEY=${SECRET_NAME}:latest" \
+        --memory 512Mi \
+        --cpu 1 \
+        --min-instances 1 \
+        --max-instances 10 \
+        --port 8080
+
+    SERVICE_URL=$(gcloud run services describe "$NAME" --region "$REGION" --format="value(status.url)")
+fi
 
 # ── Print usage info ──────────────────────────────────────────────────────────
-FUNCTION_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${FUNCTION_NAME}"
-
 echo ""
 echo "Deployment complete!"
 echo ""
-echo "Function URL: $FUNCTION_URL"
+echo "URL: $SERVICE_URL"
 echo ""
 echo "SDK configuration:"
-echo "  serviceUrl: $FUNCTION_URL"
+echo "  serviceUrl: $SERVICE_URL"
 echo "  apiKey:     $APIKEY"
 echo ""
 echo "Test:"
-echo "  curl -H \"x-api-key: ${APIKEY}\" ${FUNCTION_URL}/api/sdk"
+echo "  curl -H \"x-api-key: ${APIKEY}\" ${SERVICE_URL}/api/sdk"

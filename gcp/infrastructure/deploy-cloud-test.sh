@@ -36,8 +36,17 @@ else
     echo "Warning: Management service not found. Please deploy it first or set MANAGEMENT_SERVICE_URL manually."
 fi
 
-# Get states function URL (1st gen CF — URL is deterministic)
-STATES_SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/plainflags-states"
+# Get states service URL (variant-aware)
+STATES_VARIANT="${STATES_VARIANT:-function}"
+if [[ "$STATES_VARIANT" == "service" ]]; then
+    STATES_SERVICE_URL=$(gcloud run services describe plainflags-states --region="$REGION" --format="value(status.url)" 2>/dev/null || true)
+    if [ -z "$STATES_SERVICE_URL" ]; then
+        echo "Warning: Could not resolve states Cloud Run service URL. Run deploy-flag-states.sh first."
+        STATES_SERVICE_URL=""
+    fi
+else
+    STATES_SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/plainflags-states"
+fi
 echo "States service URL: $STATES_SERVICE_URL"
 
 echo "Deploying cloud test service..."

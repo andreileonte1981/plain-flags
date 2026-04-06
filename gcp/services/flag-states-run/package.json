@@ -1,0 +1,18 @@
+{
+  "name": "plainflags-states-run",
+  "version": "1.0.0",
+  "description": "Plain Flags state service for Cloud Run (always-on, permanent service variant)",
+  "main": "server.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@google-cloud/cloud-sql-connector": "^1.4.2",
+    "pg": "^8.14.1"
+  },
+  "author": "Andrei Leonte",
+  "license": "ISC"
+}

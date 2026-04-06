@@ -80,7 +80,19 @@ if [ -z "$MANAGEMENT_SERVICE_URL" ]; then
     exit 1
 fi
 
-STATES_SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/plainflags-states"
+STATES_VARIANT="${STATES_VARIANT:-function}"
+if [[ "$STATES_VARIANT" == "service" ]]; then
+    STATES_SERVICE_URL=$(gcloud run services describe plainflags-states \
+        --region="$REGION" --project="$PROJECT_ID" \
+        --format="value(status.url)" 2>/dev/null || true)
+    if [ -z "$STATES_SERVICE_URL" ]; then
+        echo "Error: Could not resolve states Cloud Run service URL."
+        echo "Make sure the service is deployed: ./deploy-flag-states.sh"
+        exit 1
+    fi
+else
+    STATES_SERVICE_URL="https://${REGION}-${PROJECT_ID}.cloudfunctions.net/plainflags-states"
+fi
 CONCURRENCY=${1:-200}
 
 # ── Export env for Node processes ─────────────────────────────────────────────
@@ -101,7 +113,7 @@ export STRESS_CONCURRENCY="$CONCURRENCY"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════════╗"
-echo "║              PLAIN FLAGS GCP STRESS TEST                        ║"
+echo "║              PLAIN FLAGS GCP STRESS TEST                         ║"
 echo "╠══════════════════════════════════════════════════════════════════╣"
 echo "║  WARNING: This will DELETE PLAIN FLAGS DATA from the cloud       ║"
 echo "║  database (flags, constraints, history)                          ║"
@@ -123,11 +135,17 @@ if [ "$confirmation" != "YES" ]; then
     exit 0
 fi
 
-# ── Open Cloud Run logs for states service ────────────────────────────────────
+# ── Open logs for states service ──────────────────────────────────────────────────────
 
-LOGS_URL="https://console.cloud.google.com/run/detail/${REGION}/plainflags-states/observability/logs?project=${PROJECT_ID}&supportedpurview=project"
-echo ""
-echo "Opening Cloud Run logs for states service..."
+if [[ "${STATES_VARIANT:-function}" == "service" ]]; then
+    LOGS_URL="https://console.cloud.google.com/run/detail/${REGION}/plainflags-states/observability/logs?project=${PROJECT_ID}&supportedpurview=project"
+    echo ""
+    echo "Opening Cloud Run logs for states service..."
+else
+    LOGS_URL="https://console.cloud.google.com/functions/details/${REGION}/plainflags-states?project=${PROJECT_ID}&tab=logs"
+    echo ""
+    echo "Opening Cloud Functions logs for states function..."
+fi
 if command -v xdg-open >/dev/null 2>&1; then
     xdg-open "$LOGS_URL" >/dev/null 2>&1 &
 elif command -v open >/dev/null 2>&1; then
