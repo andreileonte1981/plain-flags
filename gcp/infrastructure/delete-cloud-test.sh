@@ -1,7 +1,15 @@
 #!/bin/bash
 # Delete cloud test service from Cloud Run
+#
+# Usage: ./delete-cloud-test.sh [--yes]
+#   --yes  Skip the confirmation prompt (used when called from down.sh)
 
 set -e
+
+YES=false
+for arg in "$@"; do
+    [[ "$arg" == "--yes" ]] && YES=true
+done
 
 # Check for config file
 if [ ! -f "config/instance-config" ]; then
@@ -20,12 +28,13 @@ fi
 
 SERVICE_NAME="plainflags-cloud-test"
 
-echo "Deleting cloud test service from project: $PROJECT_ID"
-read -p "Continue? (y/N): " confirmation
-
-if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
-    echo "Cancelled"
-    exit 0
+if [[ "$YES" != true ]]; then
+    echo "Deleting cloud test service from project: $PROJECT_ID"
+    read -p "Continue? (y/N): " confirmation
+    if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
+        echo "Cancelled"
+        exit 0
+    fi
 fi
 
 # Set project

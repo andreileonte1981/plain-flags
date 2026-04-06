@@ -1,6 +1,6 @@
 #!/bin/bash
-# Cleanup script to remove only the credit-consuming GCP resources
-# This script deletes only the Cloud Run service and Cloud SQL database
+# Tear down all credit-consuming GCP resources by delegating to the individual
+# delete scripts. Each script skips its own confirmation when passed --yes.
 
 set -e
 
@@ -19,12 +19,9 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
     exit 1
 fi
 
-SERVICE_NAME="plainflags-management"
-DASHBOARD_SERVICE_NAME="plainflags-dashboard"
-TEST_SERVICE_NAME="plainflags-cloud-test"
 INSTANCE_NAME="plainflags-db"
 
-echo "Deleting credit-consuming resources from project: $PROJECT_ID"
+echo "Deleting all credit-consuming resources from project: $PROJECT_ID"
 read -p "Continue? (y/N): " confirmation
 
 if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
@@ -34,38 +31,24 @@ fi
 
 gcloud config set project $PROJECT_ID
 
-# Delete Cloud Functions
-STATES_FUNCTION_NAME="plainflags-states"
-if gcloud functions describe "$STATES_FUNCTION_NAME" --region="$REGION" >/dev/null 2>&1; then
-    gcloud functions delete "$STATES_FUNCTION_NAME" --region="$REGION" --quiet
-    echo "✓ Flag states function deleted"
-else
-    echo "- Flag states function not found"
-fi
+# ── Flag-states (function + service, whichever is present) ────────────────────
+./delete-flag-states.sh --yes
 
-# Delete Cloud Run services
-if gcloud run services describe $SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
-    gcloud run services delete $SERVICE_NAME --region=$REGION --quiet
+# ── Management service ────────────────────────────────────────────────────────
+if gcloud run services describe plainflags-management --region=$REGION >/dev/null 2>&1; then
+    gcloud run services delete plainflags-management --region=$REGION --quiet
     echo "✓ Management service deleted"
 else
     echo "- Management service not found"
 fi
 
-if gcloud run services describe $DASHBOARD_SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
-    gcloud run services delete $DASHBOARD_SERVICE_NAME --region=$REGION --quiet
-    echo "✓ Dashboard service deleted"
-else
-    echo "- Dashboard service not found"
-fi
+# ── Dashboard service ─────────────────────────────────────────────────────────
+./delete-dashboard.sh
 
-if gcloud run services describe $TEST_SERVICE_NAME --region=$REGION >/dev/null 2>&1; then
-    gcloud run services delete $TEST_SERVICE_NAME --region=$REGION --quiet
-    echo "✓ Cloud test service deleted"
-else
-    echo "- Cloud test service not found"
-fi
+# ── Cloud test service ────────────────────────────────────────────────────────
+./delete-cloud-test.sh --yes
 
-# Delete Cloud SQL instance
+# ── Cloud SQL instance ────────────────────────────────────────────────────────
 if gcloud sql instances describe $INSTANCE_NAME >/dev/null 2>&1; then
     echo "WARNING: Database deletion will remove ALL DATA!"
     read -p "Type DELETE to confirm: " db_confirmation

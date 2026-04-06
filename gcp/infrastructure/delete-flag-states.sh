@@ -1,7 +1,15 @@
 #!/bin/bash
 # Delete the flag-states Cloud Function and Cloud Run service (tries both).
+#
+# Usage: ./delete-flag-states.sh [--yes]
+#   --yes  Skip the confirmation prompt (used when called from down.sh)
 
 set -e
+
+YES=false
+for arg in "$@"; do
+    [[ "$arg" == "--yes" ]] && YES=true
+done
 
 if [ ! -f "config/instance-config" ]; then
     echo "Error: config/instance-config file not found"
@@ -18,15 +26,16 @@ fi
 NAME="plainflags-states"
 SECRET_NAME="plainflags-states-apikey"
 
-echo "This will delete (if present):"
-echo "  - Cloud Function: $NAME (region: $REGION)"
-echo "  - Cloud Run service: $NAME (region: $REGION)"
-echo ""
-read -r -p "Are you sure? (y/N): " confirmation
-
-if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
-    echo "Cancelled."
-    exit 0
+if [[ "$YES" != true ]]; then
+    echo "This will delete (if present):"
+    echo "  - Cloud Function: $NAME (region: $REGION)"
+    echo "  - Cloud Run service: $NAME (region: $REGION)"
+    echo ""
+    read -r -p "Are you sure? (y/N): " confirmation
+    if [[ ! "$confirmation" =~ ^[Yy]$ ]]; then
+        echo "Cancelled."
+        exit 0
+    fi
 fi
 
 gcloud config set project "$PROJECT_ID"
@@ -49,16 +58,18 @@ else
     echo "  Cloud Run service $NAME not found — skipping."
 fi
 
-# ── Optionally delete the API key secret ─────────────────────────────────────
-echo ""
-read -r -p "Also delete Secret Manager secret '$SECRET_NAME'? (y/N): " del_secret
+# ── Optionally delete the API key secret (skipped when --yes) ────────────────
+if [[ "$YES" != true ]]; then
+    echo ""
+    read -r -p "Also delete Secret Manager secret '$SECRET_NAME'? (y/N): " del_secret
 
-if [[ "$del_secret" =~ ^[Yy]$ ]]; then
-    if gcloud secrets describe "$SECRET_NAME" --project="$PROJECT_ID" >/dev/null 2>&1; then
-        gcloud secrets delete "$SECRET_NAME" --project="$PROJECT_ID" --quiet
-        echo "  Secret $SECRET_NAME deleted."
-    else
-        echo "  Secret $SECRET_NAME not found — skipping."
+    if [[ "$del_secret" =~ ^[Yy]$ ]]; then
+        if gcloud secrets describe "$SECRET_NAME" --project="$PROJECT_ID" >/dev/null 2>&1; then
+            gcloud secrets delete "$SECRET_NAME" --project="$PROJECT_ID" --quiet
+            echo "  Secret $SECRET_NAME deleted."
+        else
+            echo "  Secret $SECRET_NAME not found — skipping."
+        fi
     fi
 fi
 
