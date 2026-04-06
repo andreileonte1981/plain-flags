@@ -109,7 +109,7 @@ else
         --region "$REGION" \
         --allow-unauthenticated \
         --service-account "$SA_EMAIL" \
-        --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags" \
+        --set-env-vars "CLOUD_SQL_CONNECTION_NAME=${CONNECTION_NAME},DB_NAME=plainflags,DB_USER=plainflags,CACHE_TTL=${STATES_CACHE_TTL:-0}" \
         --set-secrets "DB_PASSWORD=plainflags-db-password:latest,APIKEY=${SECRET_NAME}:latest" \
         --memory 512Mi \
         --cpu 1 \

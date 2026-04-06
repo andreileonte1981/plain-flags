@@ -21,3 +21,12 @@ TEST_SERVICE_EMAIL=test-runner@yourdomain.com
 #   function  — 1st gen HTTP Cloud Function (scales to zero, cold starts possible)
 #   service   — Cloud Run service with min-instances=1 (always on, no cold starts)
 STATES_VARIANT=function
+
+# In-memory cache TTL for the flag-states service variant (seconds).
+# The full flag state payload is cached for this duration; DB is queried at most
+# once per TTL window regardless of concurrent request count.
+# Only applies when STATES_VARIANT=service.
+
+# Set to 0 to disable caching.
+# Set to 1 if you run the cloud tests or other positive values for production
+STATES_CACHE_TTL=0

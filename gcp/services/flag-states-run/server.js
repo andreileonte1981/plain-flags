@@ -23,6 +23,7 @@
  *   DB_HOST                   — Host for local/dev use when no Cloud SQL socket is set
  *   DB_PORT                   — Port for local/dev use (default: 5432)
  *   PORT                      — HTTP port to listen on (injected by Cloud Run, default: 8080)
+ *   CACHE_TTL                 — In-memory cache TTL in seconds (0 = disabled)
  */
 
 const http = require('http');
@@ -42,11 +43,10 @@ async function getPool() {
         database: process.env.DB_NAME || 'plainflags',
         user: process.env.DB_USER || 'plainflags',
         password: process.env.DB_PASSWORD || '',
-        // Larger pool than the Cloud Function variant — this is a persistent
-        // process so connections can be held without impacting other instances.
-        max: 10,
+        min: 2,
+        max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
+        connectionTimeoutMillis: 50000,
     };
 
     if (connectionName) {
@@ -67,6 +67,88 @@ async function getPool() {
     }
 
     return pool;
+}
+
+// ── In-memory cache ───────────────────────────────────────────────────────────
+// Caches the full flag state payload for CACHE_TTL seconds.
+// Uses single-flight coalescing: if the cache is stale and many requests arrive
+// simultaneously, only one DB query is fired; all others await that same promise.
+let cacheData = null;
+let cacheUpdatedAt = 0;
+let cacheRefreshPromise = null;
+
+async function queryDb() {
+    const db = await getPool();
+
+    // Single round-trip: fetch all active flags with their constraints.
+    //
+    // Join table name: TypeORM SnakeNamingStrategy produces
+    //   flags_constraints_constraints
+    // from (owning entity table: flags, property: constraints, related: constraints).
+    // Column names follow the same strategy: flags_id, constraints_id.
+    //
+    // The `values` column is stored by TypeORM simple-array as a plain
+    // comma-separated TEXT string, e.g. "John001,Steve002".
+    const { rows } = await db.query(`
+        SELECT
+            f.name      AS flag_name,
+            f.is_on,
+            c.key       AS c_key,
+            c.values    AS c_values
+        FROM flags f
+        LEFT JOIN flags_constraints_constraints fcc ON fcc.flags_id    = f.id
+        LEFT JOIN constraints                   c   ON c.id             = fcc.constraints_id
+        WHERE f.is_archived = false
+        ORDER BY f.name
+    `);
+
+    // Reduce rows into { [flagName]: { isOn, constraints: [...] } }
+    const result = {};
+    for (const row of rows) {
+        if (!result[row.flag_name]) {
+            result[row.flag_name] = { isOn: row.is_on, constraints: [] };
+        }
+        if (row.c_key) {
+            // TypeORM simple-array: stored as comma-separated text
+            const values = typeof row.c_values === 'string'
+                ? row.c_values.split(',').map(v => v.trim()).filter(Boolean)
+                : (Array.isArray(row.c_values) ? row.c_values : []);
+
+            result[row.flag_name].constraints.push({ key: row.c_key, values });
+        }
+    }
+
+    return result;
+}
+
+async function getFlagStates() {
+    const ttlMs = parseInt(process.env.CACHE_TTL || '0', 10) * 1000;
+
+    // Cache hit
+    if (ttlMs > 0 && cacheData !== null && (Date.now() - cacheUpdatedAt) < ttlMs) {
+        return cacheData;
+    }
+
+    // Single-flight: coalesce concurrent cache misses into one DB query
+    if (cacheRefreshPromise) {
+        return cacheRefreshPromise;
+    }
+
+    cacheRefreshPromise = queryDb()
+        .then(data => {
+            if (ttlMs > 0) {
+                cacheData = data;
+                cacheUpdatedAt = Date.now();
+            }
+            cacheRefreshPromise = null;
+            return data;
+        })
+        .catch(err => {
+            cacheRefreshPromise = null;
+            throw err;
+        });
+
+    return cacheRefreshPromise;
 }
 
 function jsonResponse(res, status, body) {
@@ -107,50 +189,10 @@ async function handleRequest(req, res) {
         return jsonResponse(res, 401, { error: 'Unauthorized' });
     }
 
-    // ── Query ─────────────────────────────────────────────────────────────────
+    // ── Query (or cache) ──────────────────────────────────────────────────────
     try {
-        const db = await getPool();
-
-        // Single round-trip: fetch all active flags with their constraints.
-        //
-        // Join table name: TypeORM SnakeNamingStrategy produces
-        //   flags_constraints_constraints
-        // from (owning entity table: flags, property: constraints, related: constraints).
-        // Column names follow the same strategy: flags_id, constraints_id.
-        //
-        // The `values` column is stored by TypeORM simple-array as a plain
-        // comma-separated TEXT string, e.g. "John001,Steve002".
-        const { rows } = await db.query(`
-            SELECT
-                f.name      AS flag_name,
-                f.is_on,
-                c.key       AS c_key,
-                c.values    AS c_values
-            FROM flags f
-            LEFT JOIN flags_constraints_constraints fcc ON fcc.flags_id    = f.id
-            LEFT JOIN constraints                   c   ON c.id             = fcc.constraints_id
-            WHERE f.is_archived = false
-            ORDER BY f.name
-        `);
-
-        // Reduce rows into { [flagName]: { isOn, constraints: [...] } }
-        const result = {};
-        for (const row of rows) {
-            if (!result[row.flag_name]) {
-                result[row.flag_name] = { isOn: row.is_on, constraints: [] };
-            }
-            if (row.c_key) {
-                // TypeORM simple-array: stored as comma-separated text
-                const values = typeof row.c_values === 'string'
-                    ? row.c_values.split(',').map(v => v.trim()).filter(Boolean)
-                    : (Array.isArray(row.c_values) ? row.c_values : []);
-
-                result[row.flag_name].constraints.push({ key: row.c_key, values });
-            }
-        }
-
+        const result = await getFlagStates();
         return jsonResponse(res, 200, result);
-
     } catch (err) {
         console.error('Error querying flag states:', err);
         return jsonResponse(res, 500, { error: 'Internal Server Error' });
@@ -170,3 +212,4 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`plainflags-states service listening on port ${PORT}`);
 });
+
