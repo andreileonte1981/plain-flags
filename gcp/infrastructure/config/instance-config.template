@@ -23,6 +23,7 @@ TEST_SERVICE_EMAIL=test-runner@yourdomain.com
 STATES_VARIANT=function
 
 # In-memory cache TTL for the flag-states service variant (seconds).
+# Has no effect on function variant (see variable above).
 # The full flag state payload is cached for this duration; DB is queried at most
 # once per TTL window regardless of concurrent request count.
 # Only applies when STATES_VARIANT=service.
