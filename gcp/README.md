@@ -15,6 +15,7 @@ Complete Google Cloud Platform deployment for Plain Flags with Cloud SQL Postgre
 
 - apikey.states.txt > the value of your API key - your controlled software initializes the SDK library with this value.
 - password.pg.txt > the database password for Plain Flags data PostgreSQL instance
+- dashboard.passkey.txt > the passkey used by dashboard clients to authenticate against the `/api/dashauth` endpoint
 
 All the scripts below run from the gcp/infrastructure directory
 

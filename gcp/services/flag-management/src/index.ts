@@ -6,6 +6,7 @@ import userRoutes from './routes/user.route';
 import settingsRoutes from './routes/settings.route';
 import constraintRoutes from './routes/constraint.route';
 import historyRoutes from './routes/history.route';
+import dashauthRoutes from './routes/dashauth.route';
 import Users from './logic/users';
 // Import to ensure Firebase Admin is initialized before routes use it
 import './middleware/firebaseAuth';
@@ -37,6 +38,7 @@ fastify.register(userRoutes);
 fastify.register(constraintRoutes);
 fastify.register(settingsRoutes);
 fastify.register(historyRoutes);
+fastify.register(dashauthRoutes);
 
 // Start server
 async function start() {

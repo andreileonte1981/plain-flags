@@ -43,6 +43,13 @@ else
     echo "- Secret not found"
 fi
 
+if gcloud secrets describe plainflags-dashboard-passkey >/dev/null 2>&1; then
+    gcloud secrets delete plainflags-dashboard-passkey --quiet
+    echo "✓ Dashboard passkey secret deleted"
+else
+    echo "- Dashboard passkey secret not found"
+fi
+
 # Delete service account
 if gcloud iam service-accounts describe $SA_EMAIL >/dev/null 2>&1; then
     gcloud iam service-accounts delete $SA_EMAIL --quiet

@@ -46,6 +46,23 @@ echo "DB Connection: $CONNECTION_NAME"
 # Set project
 gcloud config set project $PROJECT_ID
 
+# Provision dashboard passkey secret
+if [ ! -f ".secrets/dashboard.passkey.txt" ]; then
+    echo "Error: .secrets/dashboard.passkey.txt not found"
+    echo "  Example: openssl rand -hex 32 > .secrets/dashboard.passkey.txt"
+    exit 1
+fi
+DASHBOARD_PASSKEY=$(cat .secrets/dashboard.passkey.txt | tr -d '[:space:]')
+if [ -z "$DASHBOARD_PASSKEY" ]; then
+    echo "Error: .secrets/dashboard.passkey.txt is empty"
+    exit 1
+fi
+if gcloud secrets describe plainflags-dashboard-passkey >/dev/null 2>&1; then
+    echo -n "$DASHBOARD_PASSKEY" | gcloud secrets versions add plainflags-dashboard-passkey --data-file=-
+else
+    echo -n "$DASHBOARD_PASSKEY" | gcloud secrets create plainflags-dashboard-passkey --data-file=-
+fi
+
 # Deploy to Cloud Run
 echo "Deploying to Cloud Run..."
 gcloud run deploy $SERVICE_NAME \
@@ -63,6 +80,7 @@ gcloud run deploy $SERVICE_NAME \
     --set-env-vars="STALE_FLAG_DAYS=${STALE_FLAG_DAYS:-2}" \
     --set-env-vars="TEST_SERVICE_EMAIL=${TEST_SERVICE_EMAIL}" \
     --set-secrets=DB_PASSWORD=plainflags-db-password:latest \
+    --set-secrets=DASHBOARD_PASSKEY=plainflags-dashboard-passkey:latest \
     --add-cloudsql-instances=$CONNECTION_NAME \
     --memory=512Mi \
     --cpu=1 \
