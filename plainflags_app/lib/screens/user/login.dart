@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:plainflags_app/globals/client.dart';
 import 'package:plainflags_app/globals/connections.dart';
 import 'package:plainflags_app/globals/user_storage.dart';
@@ -91,6 +92,89 @@ class _LoginState extends ConsumerState<Login> {
           (e as dynamic).message ?? 'An error occurred during login.';
 
       showConnectionError(message);
+    }
+  }
+
+  Future<void> _signInWithFirebase() async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      final idToken = await credential.user!.getIdToken();
+      if (idToken == null) {
+        showConnectionError('Could not retrieve Firebase token.');
+        return;
+      }
+
+      final meResponse = await Client.get('users/me', idToken);
+
+      if (meResponse.statusCode == 200) {
+        final data = meResponse.body as Map<String, dynamic>;
+        final email = data['email'] ?? '';
+        final role = data['role'] ?? '';
+
+        ref
+            .read(userStatusNotifierProvider.notifier)
+            .setLoggedIn(email, idToken, role);
+
+        ref.read(navigationProvider.notifier).updateToRole(role);
+
+        final connectionKey = Connections.currentConnectionKey;
+        UserStorage.addCredentialsForConnection(
+          connectionKey,
+          email,
+          _passwordController.text.trim(),
+        );
+        await UserStorage.save();
+
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Welcome!')));
+          Navigator.pop(context, email);
+        }
+      } else {
+        final errorData = meResponse.body as Map<String, dynamic>;
+        final errorMessage =
+            errorData['message'] ?? 'Failed to fetch user info';
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(errorMessage)));
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      showConnectionError(e.message ?? 'Firebase authentication failed');
+    } catch (e) {
+      showConnectionError('An error occurred during login.');
+    }
+  }
+
+  Future<void> _sendPasswordReset() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter your email first')),
+        );
+      }
+      return;
+    }
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password reset email sent')),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Failed to send reset email')),
+        );
+      }
     }
   }
 
@@ -247,12 +331,22 @@ class _LoginState extends ConsumerState<Login> {
                         onPressed: () {
                           if (_formGlobalKey.currentState!.validate()) {
                             _formGlobalKey.currentState!.save();
-
-                            _signIn();
+                            if (Connections.useFirebaseLogin()) {
+                              _signInWithFirebase();
+                            } else {
+                              _signIn();
+                            }
                           }
                         },
                         child: const Text('Log In'),
                       ),
+                      if (Connections.canResetPassword()) ...[
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: _sendPasswordReset,
+                          child: const Text('Reset password'),
+                        ),
+                      ],
                     ],
                   ),
                 ),

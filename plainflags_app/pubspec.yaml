@@ -21,6 +21,7 @@ dependencies:
   event_bus: ^2.0.1
   url_launcher: ^6.3.2
   firebase_core: ^4.6.0
+  firebase_auth: ^6.3.0
 
 dev_dependencies:
   flutter_test:

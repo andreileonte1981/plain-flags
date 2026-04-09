@@ -28,6 +28,18 @@ class Connections {
     return caps['changepassword'] != false;
   }
 
+  static bool useFirebaseLogin() {
+    final caps = capabilities[currentConnectionKey];
+    if (caps == null) return false;
+    return caps['firebase'] == true;
+  }
+
+  static bool canResetPassword() {
+    final caps = capabilities[currentConnectionKey];
+    if (caps == null) return false;
+    return caps['resetpassword'] == true;
+  }
+
   static void forget(String url) {
     connections.remove(url);
     capabilities.remove(url);

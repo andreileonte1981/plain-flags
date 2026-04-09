@@ -3,6 +3,7 @@ import { FastifyInstance } from 'fastify';
 const capabilities = {
     changepassword: false,
     resetpassword: true,
+    firebase: true,
 };
 
 export default async function dashauthRoutes(fastify: FastifyInstance) {
