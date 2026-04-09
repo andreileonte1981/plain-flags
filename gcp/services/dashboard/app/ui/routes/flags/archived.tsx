@@ -84,8 +84,7 @@ export default function ArchivedFlags() {
   return (
     <div className="text-gray-600 font-semibold">
       {/* Header bar */}
-      <div className="sticky md:top-0 top-12 z-10 bg-white flex flex-wrap gap-2 justify-between items-center border-b-4 border-gray-200 px-4 py-3">
-        <span className="text-lg font-bold text-gray-900">Archived Flags</span>
+      <div className="sticky md:top-0 top-12 z-10 bg-white flex flex-wrap justify-start gap-4 items-center border-b-4 border-gray-200 px-4 py-3">
         <div className="flex gap-2 items-center">
           <input
             type="text"
@@ -110,29 +109,8 @@ export default function ArchivedFlags() {
             </button>
           )}
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-
-        {loading ? (
-          <p className="text-gray-400 text-sm">Loading…</p>
-        ) : flags.length === 0 ? (
-          <p className="text-gray-400 text-sm">No archived flags found.</p>
-        ) : (
-          <div className="bg-white shadow rounded-lg divide-y divide-gray-100">
-            {flags.map((flag) => (
-              <div key={flag.id} className="px-5">
-                <ArchivedFlagItem id={flag.id} name={flag.name} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Pagination */}
-        {!loading && count > 0 && (
-          <div className="flex items-center justify-between pt-2">
+        {count > 0 && (
+          <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">
               {from}–{to} of {count}
             </span>
@@ -166,6 +144,25 @@ export default function ArchivedFlags() {
                 »
               </button>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+
+        {loading ? (
+          <p className="text-gray-400 text-sm">Loading…</p>
+        ) : flags.length === 0 ? (
+          <p className="text-gray-400 text-sm">No archived flags found.</p>
+        ) : (
+          <div className="bg-white shadow rounded-lg divide-y divide-gray-100">
+            {flags.map((flag) => (
+              <div key={flag.id} className="px-5">
+                <ArchivedFlagItem id={flag.id} name={flag.name} />
+              </div>
+            ))}
           </div>
         )}
       </div>
