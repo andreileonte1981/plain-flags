@@ -98,6 +98,8 @@ class _MeState extends ConsumerState<Me> {
       Role.superadmin,
     ].contains(ref.watch(userStatusNotifierProvider).role);
 
+    final bool showChangePassword = Connections.canChangePassword();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -119,68 +121,69 @@ class _MeState extends ConsumerState<Me> {
           child: Column(
             children: [
               // Change password form
-              Form(
-                key: _formGlobalKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Current Password',
+              if (showChangePassword)
+                Form(
+                  key: _formGlobalKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Current Password',
+                        ),
+                        obscureText: true,
+                        onChanged: (value) {
+                          _currentPassword = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your current password';
+                          }
+                          return null;
+                        },
                       ),
-                      obscureText: true,
-                      onChanged: (value) {
-                        _currentPassword = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your current password';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'New Password',
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'New Password',
+                        ),
+                        obscureText: true,
+                        onChanged: (value) {
+                          _newPassword = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a new password';
+                          }
+                          return null;
+                        },
                       ),
-                      obscureText: true,
-                      onChanged: (value) {
-                        _newPassword = value;
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a new password';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Confirm New Password',
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Confirm New Password',
+                        ),
+                        obscureText: true,
+                        onChanged: (value) {},
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your new password';
+                          }
+                          if (value != _newPassword) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
                       ),
-                      obscureText: true,
-                      onChanged: (value) {},
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please confirm your new password';
-                        }
-                        if (value != _newPassword) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formGlobalKey.currentState?.validate() == true) {
-                          _changePassword();
-                        }
-                      },
-                      child: const Text('Change Password'),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formGlobalKey.currentState?.validate() == true) {
+                            _changePassword();
+                          }
+                        },
+                        child: const Text('Change Password'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               Divider(height: 40, color: Theme.of(context).colorScheme.primary),
               ElevatedButton(
                 onPressed: () {

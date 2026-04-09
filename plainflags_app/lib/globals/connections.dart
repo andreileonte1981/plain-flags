@@ -1,31 +1,44 @@
+import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:plainflags_app/utils/dlog.dart';
 
 class Connections {
   static String currentConnectionKey = '';
   static Map<String, String> connections = {};
+  static Map<String, Map<String, dynamic>> capabilities = {};
 
   static String demoConnection = 'https://demoservice.plainflags.dev';
   // static String demoConnection = 'http://192.168.0.60:5000';
 
-  static void add(String name, String url) {
-    if (name == demoConnection) {
+  static void add(String url, String passkey) {
+    if (url == demoConnection) {
       return;
     }
 
-    connections[name] = url;
+    connections[url] = passkey;
   }
 
-  static void forget(String name) {
-    connections.remove(name);
-    if (currentConnectionKey == name) {
+  static void setCapabilities(String url, Map<String, dynamic> caps) {
+    capabilities[url] = caps;
+  }
+
+  static bool canChangePassword() {
+    final caps = capabilities[currentConnectionKey];
+    if (caps == null) return true;
+    return caps['changepassword'] != false;
+  }
+
+  static void forget(String url) {
+    connections.remove(url);
+    capabilities.remove(url);
+    if (currentConnectionKey == url) {
       currentConnectionKey = '';
     }
   }
 
-  static void select(String name) {
-    if (connections.containsKey(name) || name == demoConnection) {
-      currentConnectionKey = name;
+  static void select(String url) {
+    if (connections.containsKey(url) || url == demoConnection) {
+      currentConnectionKey = url;
     }
   }
 
@@ -47,6 +60,7 @@ class Connections {
 
     await storage.write(key: 'currentConnection', value: currentConnectionKey);
     await storage.write(key: 'connections', value: connectionsJson);
+    await storage.write(key: 'capabilities', value: jsonEncode(capabilities));
   }
 
   static Future<void> init() async {
@@ -66,6 +80,20 @@ class Connections {
           connections[key] = value;
         }
       }
+    }
+
+    final capabilitiesJson = await storage.read(key: 'capabilities');
+    if (capabilitiesJson != null) {
+      try {
+        final decoded = jsonDecode(capabilitiesJson) as Map<String, dynamic>;
+        for (final entry in decoded.entries) {
+          if (entry.value is Map) {
+            capabilities[entry.key] = Map<String, dynamic>.from(
+              entry.value as Map,
+            );
+          }
+        }
+      } catch (_) {}
     }
 
     final currentKey = await storage.read(key: 'currentConnection');

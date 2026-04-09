@@ -14,7 +14,7 @@ export default async function dashauthRoutes(fastify: FastifyInstance) {
         }
         reply.send({
             success: true,
-            disableUserRegistration: !!process.env.DISABLE_USER_REGISTRATION,
+            disableUserRegistration: true,
             capabilities,
         });
     });

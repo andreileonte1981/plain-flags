@@ -42,8 +42,13 @@ class _ConnectState extends ConsumerState<Connect> {
         'passkey': passkey,
       }, null);
       if (authResponse.statusCode == 200) {
-        Connections.add(Client.apiUrlBase(), passkey);
-        Connections.select(Client.apiUrlBase());
+        final url = Client.apiUrlBase();
+        Connections.add(url, passkey);
+        Connections.select(url);
+        final caps = authResponse.body['capabilities'];
+        if (caps is Map<String, dynamic>) {
+          Connections.setCapabilities(url, caps);
+        }
         Connections.save();
 
         if (mounted) Navigator.pop(context, true);

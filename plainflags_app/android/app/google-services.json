@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "577416358442",
+    "project_id": "plain-flags",
+    "storage_bucket": "plain-flags.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577416358442:android:4ce1523407651ecd4df153",
+        "android_client_info": {
+          "package_name": "dev.plainflags.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBOi-upEgc5S1eO0gTlYBlZkQUz5pPhts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
