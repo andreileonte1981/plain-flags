@@ -36,17 +36,11 @@ export default function CreateUsersPanel({
     setError("");
     try {
       const result = await getApiClient().createUsers(emails, "user");
-      if (result.errors.length) {
-        setError(result.errors.join("; "));
-      } else {
-        setEmails("");
-        await Promise.allSettled(
-          result.created.map((e) =>
-            sendPasswordResetEmail(getFirebaseAuth(), e),
-          ),
-        );
-        setCreatedEmails(result.created);
-      }
+      setEmails("");
+      await Promise.allSettled(
+        result.map((e) => sendPasswordResetEmail(getFirebaseAuth(), e)),
+      );
+      setCreatedEmails(result);
     } catch (err: any) {
       setError(
         err?.response?.data?.message || err.message || "Error creating users",

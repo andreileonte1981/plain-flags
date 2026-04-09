@@ -100,7 +100,7 @@ export default async function flagRoutes(fastify: FastifyInstance) {
 
     // Paginated list of archived flags — admin/superadmin only
     fastify.get<{ Querystring: { page?: string; pageSize?: string; filter?: string } }>(
-        '/api/flags/archived',
+        '/api/flags/archivedpage',
         { preHandler: requireAuth },
         async (request, reply) => {
             const requester = (request as any).user as User;

@@ -31,18 +31,14 @@ export default function CreateAdminPanel({
     setError("");
     try {
       const result = await getApiClient().createUsers(email.trim(), "admin");
-      if (result.errors.length) {
-        setError(result.errors.join("; "));
-      } else {
-        const created = email.trim();
-        setEmail("");
-        try {
-          await sendPasswordResetEmail(getFirebaseAuth(), created);
-        } catch {
-          // best-effort; user is still created
-        }
-        setCreatedEmail(created);
+      const created = email.trim();
+      setEmail("");
+      try {
+        await sendPasswordResetEmail(getFirebaseAuth(), created);
+      } catch {
+        // best-effort; user is still created
       }
+      setCreatedEmail(created);
     } catch (err: any) {
       setError(
         err?.response?.data?.message || err.message || "Error creating admin",

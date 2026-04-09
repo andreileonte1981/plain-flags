@@ -107,7 +107,7 @@ export class ManagementApiClient {
 
     async listArchivedFlags(page: number = 1, pageSize: number = 20, filter: string = ''): Promise<{ count: number; flags: Flag[] }> {
         const client = await this.buildClient();
-        const response = await client.get(`/api/flags/archived?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
+        const response = await client.get(`/api/flags/archivedpage?page=${page}&pageSize=${pageSize}&filter=${encodeURIComponent(filter)}`);
         return response.data;
     }
 
@@ -162,7 +162,7 @@ export class ManagementApiClient {
         return response.data;
     }
 
-    async createUsers(emails: string, role?: string): Promise<{ created: string[]; errors: string[] }> {
+    async createUsers(emails: string, role?: string): Promise<string[]> {
         const client = await this.buildClient();
         const response = await client.post('/api/users/bulk', { emails, role });
         return response.data;
@@ -170,7 +170,7 @@ export class ManagementApiClient {
 
     async deleteUser(id: string): Promise<void> {
         const client = await this.buildClient();
-        await client.delete(`/api/users/${id}`);
+        await client.post('/api/users/delete', { id });
     }
 }
 

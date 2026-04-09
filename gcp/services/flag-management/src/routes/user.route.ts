@@ -92,7 +92,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
                 }
             }
 
-            reply.code(201).send({ created, errors });
+            reply.code(201).send(created);
         }
     );
 
@@ -100,17 +100,17 @@ export default async function userRoutes(fastify: FastifyInstance) {
      * DELETE /api/users/:id — delete a user (admin/superadmin only).
      * Superadmin cannot be deleted.
      */
-    fastify.delete<{ Params: { id: string } }>(
-        "/api/users/:id",
+    fastify.post<{ Body: { id: string } }>(
+        "/api/users/delete",
         { preHandler: requireAuth },
-        async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+        async (request: FastifyRequest<{ Body: { id: string } }>, reply: FastifyReply) => {
             const requester = (request as any).user as User;
             if (requester.role !== Role.ADMIN && requester.role !== Role.SUPERADMIN) {
                 reply.code(403).send({ message: "Forbidden" });
                 return;
             }
 
-            const { id } = request.params;
+            const { id } = request.body;
             const target = await User.findOneBy({ id });
 
             if (!target) {
