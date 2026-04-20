@@ -1,0 +1,14 @@
+project_id        = "your-project-id"
+region            = "us-central1"
+superadmin_email  = "superadmin@yourdomain.com"
+
+# Firebase values are used by dashboard.
+firebase_project_id  = "your-project-id"
+firebase_auth_domain = "your-project-id.firebaseapp.com"
+firebase_api_key     = "replace-me"
+firebase_app_id      = "replace-me"
+
+# Optional: set image tags published via gcp/infrastructure/docker scripts.
+# management_image_version = "1.0.0"
+# states_image_version     = "1.0.0"
+# dashboard_image_version  = "1.0.0"

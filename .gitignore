@@ -139,6 +139,10 @@ deploy.sh
 deploy_mgt.sh
 deploy_dash.sh
 deploy_states.sh
+gcp/infrastructure/docker/deploy_gcp.sh
+gcp/infrastructure/docker/deploy_gcp_mgt.sh
+gcp/infrastructure/docker/deploy_gcp_states.sh
+gcp/infrastructure/docker/deploy_gcp_dash.sh
 
 .secrets
 

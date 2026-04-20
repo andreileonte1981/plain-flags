@@ -28,6 +28,7 @@ STATES_VARIANT=function
 # once per TTL window regardless of concurrent request count.
 # Only applies when STATES_VARIANT=service.
 
-# Set to 0 to disable caching.
-# Set to 1 if you run the cloud tests or other positive values for production
+# Set to 0 to disable caching. Be advised this may overwhelm the database connection pool.
+# Set to 1 if you run the cloud tests
+# Set to other positive values for production
 STATES_CACHE_TTL=0
