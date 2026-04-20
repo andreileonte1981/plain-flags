@@ -66,7 +66,6 @@ terraform apply
 
 - `region` (default: `us-central1`)
 - `stale_flag_days` (default: `14`)
-- `test_service_email` (default: `test-runner@example.com`)
 - `states_cache_ttl` (default: `0`)
 - `firebase_project_id` (defaults to `project_id` when empty)
 - `management_image_version` (default: `latest`)
@@ -80,7 +79,7 @@ terraform apply
 - `service_urls`: public URLs for management, states, and dashboard
 - `generated_secrets` (sensitive):
   - `db_password`
-  - `dashboard_passkey`
+  - `dashboard_passkey` (8 characters)
   - `states_apikey`
 - `runtime_config`: project and Firebase runtime config values
 

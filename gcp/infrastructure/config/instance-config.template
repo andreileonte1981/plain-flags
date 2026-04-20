@@ -14,9 +14,6 @@ SUPERADMIN_EMAIL=superadmin@yourdomain.com
 # Stale flag detection: a flag is stale if it hasn't been updated in this many days
 STALE_FLAG_DAYS=14
 
-# Email of the test service account allowed to set the time offset (non-production only)
-TEST_SERVICE_EMAIL=test-runner@yourdomain.com
-
 # Flag-states deployment variant:
 #   function  — 1st gen HTTP Cloud Function (scales to zero, cold starts possible)
 #   service   — Cloud Run service with min-instances=1 (always on, no cold starts)

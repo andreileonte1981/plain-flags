@@ -20,12 +20,6 @@ variable "stale_flag_days" {
   default     = 14
 }
 
-variable "test_service_email" {
-  description = "Email allowed to set time offset in non-production tests."
-  type        = string
-  default     = "test-runner@example.com"
-}
-
 variable "states_cache_ttl" {
   description = "In-memory cache TTL for flag-states-run service in seconds."
   type        = number

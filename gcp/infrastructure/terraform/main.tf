@@ -45,7 +45,7 @@ resource "random_password" "db_password" {
 }
 
 resource "random_password" "dashboard_passkey" {
-  length  = 48
+  length  = 8
   special = false
 }
 
@@ -177,10 +177,6 @@ resource "google_cloud_run_v2_service" "management" {
       env {
         name  = "STALE_FLAG_DAYS"
         value = tostring(var.stale_flag_days)
-      }
-      env {
-        name  = "TEST_SERVICE_EMAIL"
-        value = var.test_service_email
       }
       env {
         name = "DB_PASSWORD"
