@@ -13,6 +13,8 @@ This directory contains Terraform configuration to deploy the GCP-native Plain F
 Cloud tests are excluded from this Terraform module.
 By default, Terraform appends the suffix `tf` to created resource names to avoid conflicts with resources created by shell scripts.
 
+Cloud SQL destroy behavior: the `google_sql_database` and `google_sql_user` resources use `deletion_policy = "ABANDON"` so `terraform destroy` can reliably delete the Cloud SQL instance without failing on Postgres object/connection constraints.
+
 ## Prerequisites
 
 - Terraform >= 1.6.0

@@ -136,12 +136,14 @@ resource "google_sql_database_instance" "plainflags" {
 resource "google_sql_database" "plainflags" {
   name     = "plainflags"
   instance = google_sql_database_instance.plainflags.name
+  deletion_policy = "ABANDON"
 }
 
 resource "google_sql_user" "plainflags" {
   name     = "plainflags"
   instance = google_sql_database_instance.plainflags.name
   password = random_password.db_password.result
+  deletion_policy = "ABANDON"
 }
 
 resource "google_cloud_run_v2_service" "management" {
