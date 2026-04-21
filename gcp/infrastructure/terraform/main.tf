@@ -3,6 +3,22 @@ locals {
   states_image     = "andreileonte011/plain-flags-gcp-states:${var.states_image_version}"
   dashboard_image  = "andreileonte011/plain-flags-gcp-dashboard:${var.dashboard_image_version}"
 
+  deployment_name_suffix = var.deployment_name_suffix
+
+  names = {
+    service_account_account_id = "plainflags-runner-${local.deployment_name_suffix}"
+    cloud_sql_instance         = "plainflags-db-${local.deployment_name_suffix}"
+    cloud_run_management       = "plainflags-management-${local.deployment_name_suffix}"
+    cloud_run_states           = "plainflags-states-${local.deployment_name_suffix}"
+    cloud_run_dashboard        = "plainflags-dashboard-${local.deployment_name_suffix}"
+  }
+
+  secret_ids = {
+    db_password       = "plainflags-db-password-${local.deployment_name_suffix}"
+    dashboard_passkey = "plainflags-dashboard-passkey-${local.deployment_name_suffix}"
+    states_apikey     = "plainflags-states-apikey-${local.deployment_name_suffix}"
+  }
+
   firebase_project_id = var.firebase_project_id != "" ? var.firebase_project_id : var.project_id
 }
 
@@ -23,7 +39,7 @@ resource "google_project_service" "required" {
 }
 
 resource "google_service_account" "runner" {
-  account_id   = "plainflags-runner"
+  account_id   = local.names.service_account_account_id
   display_name = "Plain Flags runner"
 }
 
@@ -55,7 +71,7 @@ resource "random_password" "states_apikey" {
 }
 
 resource "google_secret_manager_secret" "db_password" {
-  secret_id = "plainflags-db-password"
+  secret_id = local.secret_ids.db_password
   replication {
     auto {}
   }
@@ -67,7 +83,7 @@ resource "google_secret_manager_secret_version" "db_password" {
 }
 
 resource "google_secret_manager_secret" "dashboard_passkey" {
-  secret_id = "plainflags-dashboard-passkey"
+  secret_id = local.secret_ids.dashboard_passkey
   replication {
     auto {}
   }
@@ -79,7 +95,7 @@ resource "google_secret_manager_secret_version" "dashboard_passkey" {
 }
 
 resource "google_secret_manager_secret" "states_apikey" {
-  secret_id = "plainflags-states-apikey"
+  secret_id = local.secret_ids.states_apikey
   replication {
     auto {}
   }
@@ -91,7 +107,7 @@ resource "google_secret_manager_secret_version" "states_apikey" {
 }
 
 resource "google_sql_database_instance" "plainflags" {
-  name                = "plainflags-db"
+  name                = local.names.cloud_sql_instance
   database_version    = "POSTGRES_15"
   deletion_protection = false
 
@@ -129,7 +145,7 @@ resource "google_sql_user" "plainflags" {
 }
 
 resource "google_cloud_run_v2_service" "management" {
-  name     = "plainflags-management"
+  name     = local.names.cloud_run_management
   location = var.region
 
   template {
@@ -182,7 +198,7 @@ resource "google_cloud_run_v2_service" "management" {
         name = "DB_PASSWORD"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.db_password.secret_id
+            secret  = local.secret_ids.db_password
             version = "latest"
           }
         }
@@ -191,7 +207,7 @@ resource "google_cloud_run_v2_service" "management" {
         name = "DASHBOARD_PASSKEY"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.dashboard_passkey.secret_id
+            secret  = local.secret_ids.dashboard_passkey
             version = "latest"
           }
         }
@@ -220,7 +236,7 @@ resource "google_cloud_run_v2_service_iam_member" "management_public" {
 }
 
 resource "google_cloud_run_v2_service" "states" {
-  name     = "plainflags-states"
+  name     = local.names.cloud_run_states
   location = var.region
 
   template {
@@ -265,7 +281,7 @@ resource "google_cloud_run_v2_service" "states" {
         name = "DB_PASSWORD"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.db_password.secret_id
+            secret  = local.secret_ids.db_password
             version = "latest"
           }
         }
@@ -274,7 +290,7 @@ resource "google_cloud_run_v2_service" "states" {
         name = "APIKEY"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.states_apikey.secret_id
+            secret  = local.secret_ids.states_apikey
             version = "latest"
           }
         }
@@ -303,7 +319,7 @@ resource "google_cloud_run_v2_service_iam_member" "states_public" {
 }
 
 resource "google_cloud_run_v2_service" "dashboard" {
-  name     = "plainflags-dashboard"
+  name     = local.names.cloud_run_dashboard
   location = var.region
 
   template {

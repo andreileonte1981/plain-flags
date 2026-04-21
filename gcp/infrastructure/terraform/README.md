@@ -11,6 +11,7 @@ This directory contains Terraform configuration to deploy the GCP-native Plain F
 - Service account + IAM bindings required by runtime services
 
 Cloud tests are excluded from this Terraform module.
+By default, Terraform appends the suffix `tf` to created resource names to avoid conflicts with resources created by shell scripts.
 
 ## Prerequisites
 
@@ -65,6 +66,7 @@ terraform apply
 ### Optional
 
 - `region` (default: `us-central1`)
+- `deployment_name_suffix` (default: `tf`; must match `^[a-z0-9-]{1,12}$`)
 - `stale_flag_days` (default: `14`)
 - `states_cache_ttl` (default: `0`)
 - `firebase_project_id` (defaults to `project_id` when empty)
@@ -82,6 +84,7 @@ terraform apply
   - `dashboard_passkey` (8 characters)
   - `states_apikey`
 - `runtime_config`: project and Firebase runtime config values
+- `deployment_names`: resolved Terraform resource names and secret IDs
 
 To read sensitive outputs:
 

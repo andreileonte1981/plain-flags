@@ -43,3 +43,18 @@ output "runtime_config" {
     firebase_app_id      = var.firebase_app_id
   }
 }
+
+output "deployment_names" {
+  description = "Names generated for Terraform-managed resources."
+  value = {
+    deployment_name_suffix     = local.deployment_name_suffix
+    service_account_account_id = local.names.service_account_account_id
+    cloud_sql_instance_name    = local.names.cloud_sql_instance
+    cloud_run_service_names = {
+      management = local.names.cloud_run_management
+      states     = local.names.cloud_run_states
+      dashboard  = local.names.cloud_run_dashboard
+    }
+    secret_ids = local.secret_ids
+  }
+}

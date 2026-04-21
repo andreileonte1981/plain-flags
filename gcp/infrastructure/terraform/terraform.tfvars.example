@@ -2,6 +2,9 @@ project_id        = "your-project-id"
 region            = "us-central1"
 superadmin_email  = "superadmin@yourdomain.com"
 
+# Optional: suffix for Terraform-managed resource names (default: "tf")
+# deployment_name_suffix = "tf"
+
 # Firebase values are used by dashboard.
 firebase_project_id  = "your-project-id"
 firebase_auth_domain = "your-project-id.firebaseapp.com"

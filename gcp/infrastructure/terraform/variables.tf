@@ -9,6 +9,17 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "deployment_name_suffix" {
+  description = "Suffix appended to Terraform-created resource names to avoid naming conflicts."
+  type        = string
+  default     = "tf"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]{1,12}$", var.deployment_name_suffix))
+    error_message = "deployment_name_suffix must be 1-12 characters using lowercase letters, digits, or hyphens."
+  }
+}
+
 variable "superadmin_email" {
   description = "Email to bootstrap as superadmin in management service."
   type        = string
