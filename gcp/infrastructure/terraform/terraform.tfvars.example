@@ -12,3 +12,8 @@ firebase_app_id      = "replace-me"
 # management_image_version = "1.0.0"
 # states_image_version     = "1.0.0"
 # dashboard_image_version  = "1.0.0"
+
+# Set to 0 to disable flag state cache (this can overwhelm the DB connection pool under heavy load)
+# Set to 1 for tests
+# Set to positive value (in seconds) for production
+states_cache_ttl    = 1

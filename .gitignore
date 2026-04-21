@@ -203,3 +203,8 @@ instance-config
 .db-connection-name
 
 reports
+
+terraform.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
