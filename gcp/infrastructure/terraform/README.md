@@ -77,13 +77,21 @@ terraform apply
 ## Outputs
 
 - `service_account_email`: runtime service account
+
 - `cloud_sql`: Cloud SQL instance info (name, connection name, DB user, public IP)
+
 - `service_urls`: public URLs for management, states, and dashboard
+  - management: if you use the mobile app, pass this URL when connecting, together with the dashboard passkey (see below)
+  - states: when configuring the SDK in your software, pass this URL on initialization, together with the value of states_apikey (see below)
+  - dashboard: navigate to this URL in a browser to control your feature flags
+
 - `generated_secrets` (sensitive):
   - `db_password`
   - `dashboard_passkey` (8 characters)
   - `states_apikey`
+
 - `runtime_config`: project and Firebase runtime config values
+
 - `deployment_names`: resolved Terraform resource names and secret IDs
 
 To read sensitive outputs:
