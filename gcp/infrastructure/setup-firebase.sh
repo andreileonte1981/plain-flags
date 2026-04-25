@@ -2,7 +2,7 @@
 # Set up Firebase for the Plain Flags project:
 #   - Adds Firebase to the GCP project (idempotent)
 #   - Creates (or reuses) a Web App named "Plain Flags Dashboard"
-#   - Enables Email/Password sign-in
+#   - Enables Email/Password sign-in, disables end-user self sign-up, allows self-deletion
 #   - Writes API key, App ID and other config to .secrets/firebase.env
 
 set -e
@@ -154,37 +154,37 @@ fi
 
 echo "✓ Retrieved SDK config"
 
-# ── 4. Enable Email/Password sign-in ────────────────────────────────────────
+# ── 4. Configure Email/Password auth policy ─────────────────────────────────
 
-echo "Enabling Email/Password sign-in provider..."
+echo "Configuring Email/Password auth policy..."
 
 # The auth config endpoint may return 404 briefly while Firebase Auth initialises.
 # Retry up to 60 seconds.
 SIGNIN_ENABLED=false
 for i in $(seq 1 12); do
     SIGNIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X PATCH \
-        "https://identitytoolkit.googleapis.com/admin/v2/projects/${PROJECT_ID}/config?updateMask=signIn.email.enabled" \
+        "https://identitytoolkit.googleapis.com/admin/v2/projects/${PROJECT_ID}/config?updateMask=signIn.email.enabled,signIn.email.passwordRequired,client.permissions.disabledUserSignup,client.permissions.disabledUserDeletion" \
         "${CURL_HEADERS[@]}" \
-        -d '{"signIn":{"email":{"enabled":true}}}')
+        -d '{"signIn":{"email":{"enabled":true,"passwordRequired":true}},"client":{"permissions":{"disabledUserSignup":true,"disabledUserDeletion":false}}}')
     HTTP_CODE=$(echo "$SIGNIN_RESPONSE" | tail -1)
     if [ "$HTTP_CODE" = "200" ]; then
-        echo "✓ Email/Password sign-in enabled"
+        echo "✓ Email/Password enabled, end-user sign-up disabled, self-deletion allowed"
         SIGNIN_ENABLED=true
         break
     elif [ "$HTTP_CODE" = "404" ]; then
         echo "  Auth config not ready yet, retrying... ($((i*5))s)"
         sleep 5
     else
-        echo "Warning: Could not enable Email/Password sign-in (HTTP $HTTP_CODE)"
+        echo "Warning: Could not update auth policy (HTTP $HTTP_CODE)"
         echo "$SIGNIN_RESPONSE" | head -n -1 | jq . 2>/dev/null || true
-        echo "You may need to enable it manually in the Firebase Console:"
+        echo "You may need to configure it manually in the Firebase Console:"
         echo "  https://console.firebase.google.com/project/${PROJECT_ID}/authentication/providers"
         break
     fi
 done
 
 if [ "$SIGNIN_ENABLED" = "false" ] && [ "$HTTP_CODE" = "404" ]; then
-    echo "Warning: Auth config not ready after 60s. Enable Email/Password manually:"
+    echo "Warning: Auth config not ready after 60s. Configure Email/Password and signup policy manually:"
     echo "  https://console.firebase.google.com/project/${PROJECT_ID}/authentication/providers"
 fi
 
@@ -226,11 +226,11 @@ if [ -z "$TEST_USER_PASSWORD" ]; then
             -d "{\"localId\":\"${EXISTING_UID}\",\"password\":\"${TEST_USER_PASSWORD}\"}" > /dev/null
         echo "✓ Test runner user password reset"
     else
-        # Create new user
+        # Create new user via admin request (works even when end-user signup is disabled)
         SIGNUP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d "{\"email\":\"${TEST_USER_EMAIL}\",\"password\":\"${TEST_USER_PASSWORD}\",\"returnSecureToken\":true}")
+            "${CURL_HEADERS[@]}" \
+            -d "{\"email\":\"${TEST_USER_EMAIL}\",\"password\":\"${TEST_USER_PASSWORD}\",\"targetProjectId\":\"${PROJECT_ID}\",\"returnSecureToken\":true}")
         if [ "$SIGNUP_CODE" != "200" ]; then
             echo "Warning: Could not create test runner user (HTTP $SIGNUP_CODE). Cloud tests may not work."
             TEST_USER_EMAIL=""

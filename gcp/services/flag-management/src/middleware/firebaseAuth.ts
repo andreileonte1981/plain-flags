@@ -12,12 +12,21 @@ if (!admin.apps.length) {
 
 export const firebaseAdmin = admin;
 
+function getTestServiceEmail(): string | null {
+    const explicit = process.env.TEST_SERVICE_EMAIL?.trim();
+    if (explicit) return explicit;
+
+    const firebaseProjectId = process.env.FIREBASE_PROJECT_ID?.trim();
+    if (!firebaseProjectId) return null;
+
+    return `test-runner@${firebaseProjectId}.cloud.test`;
+}
+
 /**
  * Fastify preHandler that verifies the Authorization Bearer token.
  *
- * Accepts Firebase ID tokens issued by Firebase Auth (dashboard users and
- * cloud-test runner). Users are auto-provisioned with Role.USER on their
- * first authenticated request.
+ * Accepts Firebase ID tokens issued by Firebase Auth for users that were
+ * explicitly provisioned in Plain Flags.
  */
 export async function requireAuth(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const authHeader = request.headers.authorization;
@@ -38,20 +47,29 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
 
     let user = await User.findOneBy({ firebase_uid: decodedToken.uid });
     if (!user) {
-        try {
-            user = User.create({
-                firebase_uid: decodedToken.uid,
-                email: decodedToken.email ?? "",
-                role: Role.USER,
-            });
-            await user.save();
-        } catch {
-            // Unique constraint — concurrent first-request race; fall back to email lookup
-            user = await User.findOneBy({ email: decodedToken.email ?? "" }) ?? null;
-            if (!user) {
-                reply.code(403).send({ message: "Forbidden" });
-                return;
+        const tokenEmail = decodedToken.email ?? "";
+        const configuredTestEmail = getTestServiceEmail();
+
+        if (configuredTestEmail && tokenEmail && tokenEmail.toLowerCase() === configuredTestEmail.toLowerCase()) {
+            const existingByEmail = await User.findOneBy({ email: tokenEmail });
+
+            if (existingByEmail) {
+                if (existingByEmail.firebase_uid !== decodedToken.uid) {
+                    existingByEmail.firebase_uid = decodedToken.uid;
+                    await existingByEmail.save();
+                }
+                user = existingByEmail;
+            } else {
+                user = User.create({
+                    firebase_uid: decodedToken.uid,
+                    email: tokenEmail,
+                    role: Role.USER,
+                });
+                await user.save();
             }
+        } else {
+            reply.code(403).send({ message: "Forbidden" });
+            return;
         }
     }
 
