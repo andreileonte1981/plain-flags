@@ -108,7 +108,7 @@ This directory is designed to be consumable as a module. Example:
 
 ```hcl
 module "plainflags" {
-  source = "git::https://github.com/<org>/<repo>.git//gcp/infrastructure/terraform?ref=<tag-or-commit>"
+  source = "git::https://github.com/andreileonte1981/plain-flags.git//gcp/infrastructure/terraform?ref=<tag-or-commit>"
 
   project_id         = var.project_id
   superadmin_email   = var.superadmin_email

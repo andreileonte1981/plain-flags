@@ -6,6 +6,7 @@ superadmin_email  = "superadmin@yourdomain.com"
 # deployment_name_suffix = "tf"
 
 # Firebase values are used by dashboard.
+# Plain Flags for GCP requires a Firebase app for user authentication.
 firebase_project_id  = "your-project-id"
 firebase_auth_domain = "your-project-id.firebaseapp.com"
 firebase_api_key     = "replace-me"
