@@ -33,10 +33,12 @@ You can control the image tags (versions) via Terraform variables.
 If you need Firebase values for dashboard authentication, generate them first:
 
 ```bash
-./setup-firebase.sh --project <gcp-project-id> --region <gcp-region>
+./setup-firebase-app.sh --project <gcp-project-id> --region <gcp-region>
+./setup-firebase-auth.sh --project <gcp-project-id>
 ```
 
-This prints Terraform-ready values to the terminal and writes them to `plainflags.firebase.tfvars` in this directory.
+The first script prints Terraform-ready values to the terminal and writes them to `plainflags.firebase.tfvars` in this directory.
+It also prints a Firebase Console URL where you must click `Get started` to initialise Authentication before running the second script.
 
 1. Copy the example variables file:
 
@@ -88,14 +90,20 @@ terraform apply
 
 ## Firebase Setup Utility
 
-This directory includes `setup-firebase.sh`, a CLI utility for teams consuming the Terraform module.
+This directory includes a two-step Firebase setup utility for teams consuming the Terraform module:
+
+- `setup-firebase-app.sh` (create/reuse app + generate tfvars)
+- `setup-firebase-auth.sh` (configure auth policy after manual auth initialisation)
 
 Example:
 
 ```bash
-./setup-firebase.sh \
+./setup-firebase-app.sh \
   --project my-gcp-project \
   --region us-central1
+
+# Then initialise Authentication in console and run:
+./setup-firebase-auth.sh --project my-gcp-project
 ```
 
 By default the script creates or reuses a dedicated Firebase Web App named `Plain Flags Dashboard` in the target GCP project. This keeps Plain Flags user lifecycle isolated from other products in the same Firebase project.
@@ -103,10 +111,13 @@ By default the script creates or reuses a dedicated Firebase Web App named `Plai
 If a team intentionally wants Plain Flags to share Firebase users with an existing app, they must opt into that explicitly with `--app-id`:
 
 ```bash
-./setup-firebase.sh \
+./setup-firebase-app.sh \
   --project my-gcp-project \
   --region us-central1 \
   --app-id 1:1234567890:web:abcdef123456
+
+# Then initialise Authentication in console and run:
+./setup-firebase-auth.sh --project my-gcp-project
 ```
 
 Generated output file:
@@ -122,7 +133,7 @@ Generated Terraform values:
 - `firebase_api_key`
 - `firebase_app_id`
 
-The script also configures Firebase Auth for Plain Flags by enabling email/password login, disabling end-user self-signup, and leaving end-user self-deletion enabled.
+The auth script configures Firebase Auth for Plain Flags by enabling email/password login, disabling end-user self-signup, and leaving end-user self-deletion enabled.
 
 ## Outputs
 

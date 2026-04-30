@@ -19,7 +19,7 @@ if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "your-project-id-here" ]; then
 fi
 
 if [ ! -f ".secrets/firebase.env" ]; then
-    echo "Error: .secrets/firebase.env not found. Run setup-firebase.sh first."
+    echo "Error: .secrets/firebase.env not found. Run setup-firebase-app.sh then setup-firebase-auth.sh first."
     exit 1
 fi
 source ./.secrets/firebase.env

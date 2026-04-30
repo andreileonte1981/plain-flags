@@ -106,6 +106,11 @@ echo "✓ All required APIs are enabled"
 echo "✓ Service account created with proper permissions"
 echo ""
 
-# Set up Firebase (add to project, create web app, enable email sign-in, write .secrets/firebase.env)
-echo "Setting up Firebase..."
-bash "$(dirname "$0")/setup-firebase.sh"
+# Set up Firebase app config (step 1 of 2)
+echo "Setting up Firebase app config..."
+bash "$(dirname "$0")/setup-firebase-app.sh"
+
+echo ""
+echo "Firebase setup requires one manual step before auth policy can be configured."
+echo "After enabling Authentication in the Firebase Console, run:"
+echo "  ./setup-firebase-auth.sh"

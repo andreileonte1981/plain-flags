@@ -8,9 +8,6 @@ REGION=us-central1
 # The email address of the superadmin user (created automatically on first startup)
 SUPERADMIN_EMAIL=superadmin@yourdomain.com
 
-# Firebase API key, App ID, and other SDK credentials are stored in .secrets/firebase.env
-# Run './setup-firebase.sh' to generate that file automatically.
-
 # Stale flag detection: a flag is stale if it hasn't been updated in this many days
 STALE_FLAG_DAYS=14
 

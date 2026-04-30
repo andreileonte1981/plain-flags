@@ -65,7 +65,7 @@ fi
 
 if [ ! -f "$INFRA_DIR/.secrets/firebase.env" ]; then
     echo "Error: $INFRA_DIR/.secrets/firebase.env not found"
-    echo "Run setup-firebase.sh in the infrastructure folder first."
+    echo "Run setup-firebase-app.sh and setup-firebase-auth.sh in the infrastructure folder first."
     exit 1
 fi
 source "$INFRA_DIR/.secrets/firebase.env"

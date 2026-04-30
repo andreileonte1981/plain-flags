@@ -16,7 +16,7 @@ source ./config/instance-config
 # Read Firebase secrets
 if [ ! -f ".secrets/firebase.env" ]; then
     echo "Error: .secrets/firebase.env not found"
-    echo "Please run './setup-firebase.sh' first to configure Firebase."
+    echo "Please run './setup-firebase-app.sh' and './setup-firebase-auth.sh' first to configure Firebase."
     exit 1
 fi
 source ./.secrets/firebase.env
