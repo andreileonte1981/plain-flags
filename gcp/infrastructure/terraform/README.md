@@ -30,6 +30,14 @@ You can control the image tags (versions) via Terraform variables.
 
 ## Quick Start
 
+If you need Firebase values for dashboard authentication, generate them first:
+
+```bash
+./setup-firebase.sh --project <gcp-project-id> --region <gcp-region>
+```
+
+This prints Terraform-ready values to the terminal and writes them to `plainflags.firebase.tfvars` in this directory.
+
 1. Copy the example variables file:
 
 ```bash
@@ -43,6 +51,8 @@ cp terraform.tfvars.example terraform.tfvars
 - `firebase_auth_domain`
 - `firebase_api_key`
 - `firebase_app_id`
+
+You can also merge values from the generated `plainflags.firebase.tfvars` file instead of typing them manually.
 
 3. Initialize and deploy:
 
@@ -75,6 +85,44 @@ terraform apply
 - `management_image_version` (default: `latest`)
 - `states_image_version` (default: `latest`)
 - `dashboard_image_version` (default: `latest`)
+
+## Firebase Setup Utility
+
+This directory includes `setup-firebase.sh`, a CLI utility for teams consuming the Terraform module.
+
+Example:
+
+```bash
+./setup-firebase.sh \
+  --project my-gcp-project \
+  --region us-central1
+```
+
+By default the script creates or reuses a dedicated Firebase Web App named `Plain Flags Dashboard` in the target GCP project. This keeps Plain Flags user lifecycle isolated from other products in the same Firebase project.
+
+If a team intentionally wants Plain Flags to share Firebase users with an existing app, they must opt into that explicitly with `--app-id`:
+
+```bash
+./setup-firebase.sh \
+  --project my-gcp-project \
+  --region us-central1 \
+  --app-id 1:1234567890:web:abcdef123456
+```
+
+Generated output file:
+
+- `plainflags.firebase.tfvars`
+
+Generated Terraform values:
+
+- `project_id`
+- `region`
+- `firebase_project_id`
+- `firebase_auth_domain`
+- `firebase_api_key`
+- `firebase_app_id`
+
+The script also configures Firebase Auth for Plain Flags by enabling email/password login, disabling end-user self-signup, and leaving end-user self-deletion enabled.
 
 ## Outputs
 
