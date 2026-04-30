@@ -109,6 +109,3 @@ echo ""
 # Set up Firebase (add to project, create web app, enable email sign-in, write .secrets/firebase.env)
 echo "Setting up Firebase..."
 bash "$(dirname "$0")/setup-firebase.sh"
-
-echo ""
-echo "Next step: Run './deploy-database.sh' to set up the database"
