@@ -1,12 +1,13 @@
 #!/bin/bash
-# Set up Firebase for Plain Flags Terraform consumers.
+# Set up a Firebase Web App for Plain Flags Terraform consumers.
 #
-# This script:
+# This script (step 1 of 2):
 #   - Adds Firebase to a GCP project (idempotent)
 #   - Creates or reuses a dedicated Firebase Web App for Plain Flags
 #   - Optionally reuses an explicitly selected existing Firebase Web App
-#   - Configures Firebase Auth for email/password sign-in with end-user signup disabled
 #   - Prints Terraform-ready values and writes them to a generated tfvars file
+#   - Directs you to initialise Firebase Authentication manually before running
+#     setup-firebase-auth.sh (step 2)
 
 set -euo pipefail
 
@@ -36,6 +37,12 @@ Behavior:
   - By default, this script creates or reuses a dedicated Plain Flags Firebase Web App.
   - Existing arbitrary Firebase Web Apps are never reused implicitly.
   - To intentionally share Firebase users with another app, pass --app-id explicitly.
+
+Two-step setup:
+  1. Run this script to create the app and generate Terraform values.
+  2. Visit the Firebase Console URL printed at the end and click "Get started" to
+     initialise Firebase Authentication.
+  3. Run setup-firebase-auth.sh --project <id> to configure the auth policy.
 EOF
 }
 
@@ -231,34 +238,6 @@ FIREBASE_PROJECT_ID=$(json_field "$CONFIG" '.projectId // empty')
 
 echo "✓ Retrieved Firebase Web App config"
 
-echo "Configuring Firebase Auth policy..."
-AUTH_CONFIGURED=false
-for i in $(seq 1 12); do
-    SIGNIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X PATCH \
-        "https://identitytoolkit.googleapis.com/admin/v2/projects/${PROJECT_ID}/config?updateMask=signIn.email.enabled,signIn.email.passwordRequired,client.permissions.disabledUserSignup,client.permissions.disabledUserDeletion" \
-        "${CURL_HEADERS[@]}" \
-        -d '{"signIn":{"email":{"enabled":true,"passwordRequired":true}},"client":{"permissions":{"disabledUserSignup":true,"disabledUserDeletion":false}}}')
-    HTTP_CODE=$(echo "$SIGNIN_RESPONSE" | tail -1)
-    if [[ "$HTTP_CODE" == "200" ]]; then
-        echo "✓ Email/password auth enabled"
-        echo "✓ End-user self-signup disabled"
-        echo "✓ End-user self-deletion allowed"
-        AUTH_CONFIGURED=true
-        break
-    fi
-    if [[ "$HTTP_CODE" == "404" ]]; then
-        echo "  Auth config not ready yet, retrying... ($((i * 5))s)"
-        sleep 5
-        continue
-    fi
-
-    echo "Warning: could not update Firebase Auth policy (HTTP $HTTP_CODE)"
-    echo "$SIGNIN_RESPONSE" | head -n -1 | jq . 2>/dev/null || true
-    break
-done
-
-[[ "$AUTH_CONFIGURED" == "true" ]] || echo "Warning: Auth policy may require manual verification in Firebase Console."
-
 cat > "$OUTPUT_FILE" <<EOF
 project_id           = "${PROJECT_ID}"
 region               = "${REGION}"
@@ -280,3 +259,19 @@ echo ""
 echo "Notes:"
 echo "- Default behavior creates or reuses a dedicated Plain Flags Firebase Web App."
 echo "- Reuse of an existing app is supported only via --app-id to avoid accidental user sharing."
+echo ""
+echo "┌─────────────────────────────────────────────────────────────────┐"
+echo "│  Next step: initialise Firebase Authentication (manual)         │"
+echo "└─────────────────────────────────────────────────────────────────┘"
+echo ""
+echo "  Firebase Authentication cannot be initialised programmatically."
+echo "  You must enable it once through the Firebase Console:"
+echo ""
+echo "  1. Open this URL in your browser:"
+echo "     https://console.firebase.google.com/project/${PROJECT_ID}/authentication/providers"
+echo ""
+echo "  2. Click 'Get started'."
+echo ""
+echo "  3. Then run:"
+echo "     ./setup-firebase-auth.sh --project ${PROJECT_ID}"
+echo ""
