@@ -6,7 +6,7 @@ Documentation at https://plainflags.dev
 
 ## Folder structure
 
-**gcp** - Coming soon: Plain Flags you can run in your Google Cloud (work in progress)
+**gcp** - Plain Flags you can run in your Google Cloud
 
 **services** - The back end for the feature flags logic.
 
@@ -19,6 +19,8 @@ Documentation at https://plainflags.dev
 **sdk** - Collection of SDK libraries to import in other applications for using the feature flags.
 
 **dashboard** - The frontend app where authenticated users can create and change feature flags.
+
+**plainflags_app** - Mobile app for Android and iOS written in Flutter.
 
 ## Running as developer
 
@@ -55,6 +57,10 @@ This script starts the services as containers and runs the tests successively fo
 The components have launch configurations included for **Visual Studio Code**. If you use it as your IDE, you can use those configurations. See the **launch.json** files under the respective **.vscode** folders. To debug each component, open it in a separate Visual Studio code window.
 
 By default, the dashboard web app is available at http://localhost:5173/flags when all components are running.
+
+### Google Cloud
+
+The GCP variant of Plain Flags is documented separately in the **gcp** folder.
 
 ## Contributions
 
