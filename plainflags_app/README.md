@@ -7,3 +7,9 @@ The Plain Flags dashboard as a mobile app.
 ```bash
 flutter build appbundle --release
 ```
+
+## iOS prod build
+
+```bash
+flutter build ios
+```
