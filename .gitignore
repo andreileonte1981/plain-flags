@@ -79,6 +79,15 @@ web_modules/
 .env.local
 .env.merged
 
+# Gradle (Kotlin SDK)
+sdk/kotlin/.gradle/
+sdk/kotlin/.kotlin/
+sdk/kotlin/build/
+service-tests/sdks/kotlin/.gradle/
+service-tests/sdks/kotlin/.kotlin/
+service-tests/sdks/kotlin/build/
+
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

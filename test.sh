@@ -47,6 +47,11 @@ cd dart
 echo "Running tests for dart SDK..."
 dart test --reporter=expanded --file-reporter=expanded:../../report_dart.txt --no-color
 
+cd ..
+cd kotlin
+echo "Running tests for kotlin SDK..."
+./gradlew test --console=plain > ../../report_kotlin.txt
+
 cd ../../..
 
 echo "============================"
@@ -66,5 +71,8 @@ cat "./service-tests/report_python.txt" | tail -n 1 | tr -d "="
 echo ""
 echo "dart SDK:"
 cat "./service-tests/report_dart.txt" | tail -n 1 | tr -d "="
+echo ""
+echo "kotlin SDK:"
+cat "./service-tests/report_kotlin.txt" | tail -n 3
 echo ""
 echo "Test reports are in service-tests"

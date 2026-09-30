@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "kotlin",
+            "request": "launch",
+            "name": "Run tests",
+            "projectRoot": "${workspaceFolder}",
+            "mainClass": "org.junit.platform.console.ConsoleLauncher --scan-class-path"
+        }
+    ],
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "./gradlew build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
