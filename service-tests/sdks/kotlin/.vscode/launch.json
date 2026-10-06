@@ -1,22 +1,18 @@
 {
-    "configurations": [
-        {
-            "type": "kotlin",
-            "request": "launch",
-            "name": "Run tests",
-            "projectRoot": "${workspaceFolder}",
-            "mainClass": "org.junit.platform.console.ConsoleLauncher --scan-class-path"
-        }
-    ],
-    "tasks": [
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "./gradlew build",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "kotlin",
+      "request": "launch",
+      "name": "Debug Test",
+      "command": "./gradlew test --tests \"dev.plainflagstest.KotlinSdkTest\" --debug-jvm",
+      "port": 5005,
+      "cwd": "${workspaceFolder}",
+      "sourcePaths": [
+        "${workspaceFolder}/src/test/kotlin",
+        "${workspaceFolder}/src/main/kotlin"
+      ],
+      "preLaunchTask": "build"
+    }
+  ]
 }

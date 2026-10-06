@@ -17,13 +17,15 @@ suspend fun userToken(client: Client): String {
         },
     )
 
-    val loginResponse = client.post(
-        "/api/users/login",
-        buildJsonObject {
-            put("email", JsonPrimitive(userEmail))
-            put("password", JsonPrimitive(password))
-        },
-    )
+    val loginResponse =
+        client.post(
+            "/api/users/login",
+            buildJsonObject {
+                put("email", JsonPrimitive(userEmail))
+                put("password", JsonPrimitive(password))
+            },
+        )
 
-    return loginResponse.body.jsonObject["token"]!!.jsonPrimitive.content
+    return loginResponse.body.jsonObject["token"]!!
+        .jsonPrimitive.content
 }

@@ -1,3 +1,5 @@
+set -x
+
 echo "Taking down containers"
 
 docker rm -f $(docker ps -a -q) &&

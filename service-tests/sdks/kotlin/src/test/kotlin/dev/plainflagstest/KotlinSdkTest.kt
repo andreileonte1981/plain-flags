@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 class KotlinSdkTest {
-
     companion object {
         @JvmStatic
         @BeforeAll
@@ -24,78 +23,96 @@ class KotlinSdkTest {
     }
 
     @Test
-    fun `turning on a flag shows it as on in the SDK after initialization`() = runBlocking {
-        val client = Client()
-        val token = userToken(client)
-        val flagName = saltUniqued("tkt-o")
+    fun `turning on a flag shows it as on in the SDK after initialization`() =
+        runBlocking {
+            val client = Client()
+            val token = userToken(client)
+            val flagName = saltUniqued("tkt-o")
 
-        val createResponse = client.post(
-            "/api/flags",
-            buildJsonObject { put("name", JsonPrimitive(flagName)) },
-            token,
-        )
-        assertEquals(201, createResponse.statusCode)
-        val flagId = createResponse.body.jsonObject["id"]!!.jsonPrimitive.content
+            val createResponse =
+                client.post(
+                    "/api/flags",
+                    buildJsonObject { put("name", JsonPrimitive(flagName)) },
+                    token,
+                )
+            assertEquals(201, createResponse.statusCode)
+            val flagId =
+                createResponse.body.jsonObject["id"]!!
+                    .jsonPrimitive.content
 
-        val turnOnResponse = client.post(
-            "/api/flags/turnon",
-            buildJsonObject { put("id", JsonPrimitive(flagId)) },
-            token,
-        )
-        assertEquals(200, turnOnResponse.statusCode)
+            val turnOnResponse =
+                client.post(
+                    "/api/flags/turnon",
+                    buildJsonObject { put("id", JsonPrimitive(flagId)) },
+                    token,
+                )
+            assertEquals(200, turnOnResponse.statusCode)
 
-        val featureFlags = PlainFlags(
-            config = PlainFlagsConfig(
-                serviceUrl = DotEnv.get("API_URL_STATES") ?: "http://localhost:5001",
-                apiKey = DotEnv.get("API_KEY") ?: "",
-            ),
-            infoCallback = null,
-            errorCallback = null,
-        )
+            val featureFlags =
+                PlainFlags(
+                    config =
+                        PlainFlagsConfig(
+                            serviceUrl =
+                                DotEnv.get("API_URL_STATES")
+                                    ?: "http://localhost:5001",
+                            apiKey = DotEnv.get("API_KEY") ?: "",
+                        ),
+                    infoCallback = null,
+                    errorCallback = null,
+                )
 
-        delay(1200) // allow the states service cache to refresh
+            delay(1200) // allow the states service cache to refresh
 
-        featureFlags.init()
+            featureFlags.init()
 
-        assertTrue(featureFlags.isOn(flagName, false))
-    }
+            assertTrue(featureFlags.isOn(flagName, false))
+        }
 
     @Test
-    fun `turning on a flag shows it as on in the SDK after a manual state update`() = runBlocking {
-        val client = Client()
-        val token = userToken(client)
-        val flagName = saltUniqued("tkt-m")
+    fun `turning on a flag shows it as on in the SDK after a manual state update`() =
+        runBlocking {
+            val client = Client()
+            val token = userToken(client)
+            val flagName = saltUniqued("tkt-m")
 
-        val createResponse = client.post(
-            "/api/flags",
-            buildJsonObject { put("name", JsonPrimitive(flagName)) },
-            token,
-        )
-        assertEquals(201, createResponse.statusCode)
-        val flagId = createResponse.body.jsonObject["id"]!!.jsonPrimitive.content
+            val createResponse =
+                client.post(
+                    "/api/flags",
+                    buildJsonObject { put("name", JsonPrimitive(flagName)) },
+                    token,
+                )
+            assertEquals(201, createResponse.statusCode)
+            val flagId =
+                createResponse.body.jsonObject["id"]!!
+                    .jsonPrimitive.content
 
-        val featureFlags = PlainFlags(
-            config = PlainFlagsConfig(
-                serviceUrl = DotEnv.get("API_URL_STATES") ?: "http://localhost:5001",
-                apiKey = DotEnv.get("API_KEY") ?: "",
-            ),
-            infoCallback = null,
-            errorCallback = null,
-        )
+            val featureFlags =
+                PlainFlags(
+                    config =
+                        PlainFlagsConfig(
+                            serviceUrl =
+                                DotEnv.get("API_URL_STATES")
+                                    ?: "http://localhost:5001",
+                            apiKey = DotEnv.get("API_KEY") ?: "",
+                        ),
+                    infoCallback = null,
+                    errorCallback = null,
+                )
 
-        featureFlags.init()
+            featureFlags.init()
 
-        val turnOnResponse = client.post(
-            "/api/flags/turnon",
-            buildJsonObject { put("id", JsonPrimitive(flagId)) },
-            token,
-        )
-        assertEquals(200, turnOnResponse.statusCode)
+            val turnOnResponse =
+                client.post(
+                    "/api/flags/turnon",
+                    buildJsonObject { put("id", JsonPrimitive(flagId)) },
+                    token,
+                )
+            assertEquals(200, turnOnResponse.statusCode)
 
-        delay(1200) // allow the states service cache to refresh
+            delay(1200) // allow the states service cache to refresh
 
-        featureFlags.updateState()
+            featureFlags.updateState()
 
-        assertTrue(featureFlags.isOn(flagName, false))
-    }
+            assertTrue(featureFlags.isOn(flagName, false))
+        }
 }
