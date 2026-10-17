@@ -13,9 +13,6 @@ import kotlinx.coroutines.launch
  * call [updateState] whenever you want the latest flag states. With a non-zero poll interval,
  * [init] starts polling the states service at that interval; call [stopUpdates] to stop polling.
  *
- * Constraint evaluation is not supported yet: [isOn] simply reflects the flag's on/off state
- * as returned by the service.
- *
  * @param config configuration for the PlainFlags instance.
  * @param infoCallback callback for regular logs (default: println). Pass null to mute.
  * @param errorCallback callback for error logs (default: println). Pass null to mute.
@@ -75,7 +72,6 @@ class PlainFlags(
      * @param flagName the name of the feature flag.
      * @param defaultValue the default value to return if the flag is not found.
      * @param context what and who this is, as defined in the Constraints page in the dashboard.
-     * Currently ignored: constraint evaluation is not implemented yet.
      */
     fun isOn(
         flagName: String,
@@ -90,7 +86,7 @@ class PlainFlags(
                 return defaultValue
             }
 
-            flag.isOn
+            Constrainer.isTurnedOn(flag, context)
         } catch (e: Exception) {
             error("Flag name $flagName state query failed: ${e.message}")
             defaultValue

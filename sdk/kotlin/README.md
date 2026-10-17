@@ -10,12 +10,6 @@ More about Plain Flags at [plainflags.dev](https://plainflags.dev)
 
 The Plain Flags back end must run in an environment where your software can make http requests.
 
-## Status
-
-Early release: manual and polling state updates are supported. Constraint evaluation is
-not supported yet; `isOn` reflects the flag's plain on/off state. Constraint support will
-be added in a later release.
-
 ## Installation
 
 Add to your Gradle build (`build.gradle.kts`):
@@ -63,6 +57,20 @@ if (featureFlags.isOn("My feature name", false)) {
     // Code for your feature here
 }
 ```
+
+If your features are constrained to subsets of your users, you must specify which user is
+currently using the software.
+
+```kotlin
+if (featureFlags.isOn("My feature name", false, mapOf(
+    "userId" to UserService.currentUser().id,
+    "countryCode" to RegionService.countryCode(),
+))) {
+    // Code for your feature here
+}
+```
+
+The keys **userId** and **countryCode** must match the constraint keys you created in the dashboard
 
 ### Manually refresh flag state
 
