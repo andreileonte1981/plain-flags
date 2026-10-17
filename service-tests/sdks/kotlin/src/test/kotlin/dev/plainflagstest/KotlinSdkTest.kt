@@ -171,5 +171,105 @@ class KotlinSdkTest {
 
         featureFlags.stopUpdates()
     }
+
+    @Test
+    fun `a constrained activated flag is on only for the constrained context`() = runBlocking {
+        val client = Client()
+        val token = userToken(client)
+        val flagName = saltUniqued("tkt-c")
+
+        val createResponse = client.post(
+            "/api/flags",
+            buildJsonObject { put("name", JsonPrimitive(flagName)) },
+            token,
+        )
+        assertEquals(201, createResponse.statusCode)
+        val flagId = createResponse.body.jsonObject["id"]!!.jsonPrimitive.content
+
+        val turnOnResponse = client.post(
+            "/api/flags/turnon",
+            buildJsonObject { put("id", JsonPrimitive(flagId)) },
+            token,
+        )
+        assertEquals(200, turnOnResponse.statusCode)
+
+        val userConstraintResponse = client.post(
+            "/api/constraints",
+            buildJsonObject {
+                put("description", JsonPrimitive(saltUniqued("tkt-cu")))
+                put("key", JsonPrimitive("user"))
+                put("commaSeparatedValues", JsonPrimitive("John, Steve"))
+            },
+            token,
+        )
+        assertEquals(201, userConstraintResponse.statusCode)
+        val userConstraintId = userConstraintResponse.body.jsonObject["id"]!!.jsonPrimitive.content
+
+        val brandConstraintResponse = client.post(
+            "/api/constraints",
+            buildJsonObject {
+                put("description", JsonPrimitive(saltUniqued("tkt-cb")))
+                put("key", JsonPrimitive("brand"))
+                put("commaSeparatedValues", JsonPrimitive("Initech, Acme"))
+            },
+            token,
+        )
+        assertEquals(201, brandConstraintResponse.statusCode)
+        val brandConstraintId = brandConstraintResponse.body.jsonObject["id"]!!.jsonPrimitive.content
+
+        client.post(
+            "/api/constraints/link",
+            buildJsonObject {
+                put("flagId", JsonPrimitive(flagId))
+                put("constraintId", JsonPrimitive(userConstraintId))
+            },
+            token,
+        )
+
+        client.post(
+            "/api/constraints/link",
+            buildJsonObject {
+                put("flagId", JsonPrimitive(flagId))
+                put("constraintId", JsonPrimitive(brandConstraintId))
+            },
+            token,
+        )
+
+        val featureFlags = PlainFlags(
+            config = PlainFlagsConfig(
+                serviceUrl = DotEnv.get("API_URL_STATES") ?: "http://localhost:5001",
+                apiKey = DotEnv.get("API_KEY") ?: "",
+                pollIntervalMs = 1000,
+            ),
+            infoCallback = null,
+            errorCallback = null,
+        )
+
+        featureFlags.init()
+
+        delay(1200) // allow a poll cycle and the states service cache to refresh
+
+        assertTrue(
+            featureFlags.isOn(flagName, false, mapOf("user" to "John", "brand" to "Initech")),
+            "Expected true for matching context",
+        )
+
+        assertFalse(
+            featureFlags.isOn(flagName, false, mapOf("user" to "Dave", "brand" to "Initech")),
+            "Expected false for partial context match",
+        )
+
+        assertFalse(
+            featureFlags.isOn(flagName, false, mapOf("user" to "John", "brand" to "TBC")),
+            "Expected false for partial context match",
+        )
+
+        assertTrue(
+            featureFlags.isOn(flagName, false, mapOf("region" to "Elbonia")),
+            "Expected true for irrelevant context",
+        )
+
+        featureFlags.stopUpdates()
+    }
 }
 

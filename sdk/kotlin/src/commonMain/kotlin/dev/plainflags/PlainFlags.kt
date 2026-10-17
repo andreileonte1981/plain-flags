@@ -74,8 +74,14 @@ class PlainFlags(
      *
      * @param flagName the name of the feature flag.
      * @param defaultValue the default value to return if the flag is not found.
+     * @param context what and who this is, as defined in the Constraints page in the dashboard.
+     * Currently ignored: constraint evaluation is not implemented yet.
      */
-    fun isOn(flagName: String, defaultValue: Boolean = false): Boolean {
+    fun isOn(
+        flagName: String,
+        defaultValue: Boolean = false,
+        context: Map<String, String> = emptyMap(),
+    ): Boolean {
         return try {
             val flag = flags[flagName]
 
