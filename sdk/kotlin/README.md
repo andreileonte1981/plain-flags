@@ -12,8 +12,9 @@ The Plain Flags back end must run in an environment where your software can make
 
 ## Status
 
-This is a first, minimal release. It only supports manually fetching flag state (no
-constraint evaluation, no polling). Those will be added in a later release.
+Early release: manual and polling state updates are supported. Constraint evaluation is
+not supported yet; `isOn` reflects the flag's plain on/off state. Constraint support will
+be added in a later release.
 
 ## Installation
 
@@ -67,6 +68,23 @@ if (featureFlags.isOn("My feature name", false)) {
 
 ```kotlin
 featureFlags.updateState()
+```
+
+### Poll for updates automatically
+
+```kotlin
+val featureFlags = PlainFlags(
+    config = PlainFlagsConfig(
+        serviceUrl = "https://flags.mydomain.com",
+        apiKey = "my_shared_secret",
+        pollIntervalMs = 60_000, // poll every minute; 0 (default) disables polling
+    ),
+)
+
+featureFlags.init() // fetches state immediately, then starts polling
+
+// when shutting down:
+featureFlags.stopUpdates()
 ```
 
 ### Set your log callbacks separately

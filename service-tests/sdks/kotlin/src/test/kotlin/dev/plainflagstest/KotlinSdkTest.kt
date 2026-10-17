@@ -168,6 +168,8 @@ class KotlinSdkTest {
         delay(1200)
 
         assertFalse(featureFlags.isOn(flagName, false))
+
+        featureFlags.stopUpdates()
     }
 }
 

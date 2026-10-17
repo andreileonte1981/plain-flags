@@ -1,11 +1,20 @@
 package dev.plainflags
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
 /**
- * PlainFlags client for the manual update policy: call [updateState] whenever you
- * want the latest flag states. [init] performs one initial fetch.
+ * PlainFlags client. With the default manual update policy ([PlainFlagsConfig.pollIntervalMs] = 0),
+ * call [updateState] whenever you want the latest flag states. With a non-zero poll interval,
+ * [init] starts polling the states service at that interval; call [stopUpdates] to stop polling.
  *
- * This first draft does not support constraint evaluation or polling: [isOn]
- * simply reflects the flag's on/off state as returned by the service.
+ * Constraint evaluation is not supported yet: [isOn] simply reflects the flag's on/off state
+ * as returned by the service.
  *
  * @param config configuration for the PlainFlags instance.
  * @param infoCallback callback for regular logs (default: println). Pass null to mute.
@@ -18,12 +27,35 @@ class PlainFlags(
 ) {
     private var flags: FlagStates = emptyMap()
     private val client = Client(config)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private var pollingJob: Job? = null
 
     suspend fun init() {
-        if (updateState()) {
-            info("Flags state initialized")
-            info(flags.toString())
+        if (config.pollIntervalMs == 0L) {
+            if (updateState()) {
+                info("Flags state initialized")
+                info(flags.toString())
+            }
+            return
         }
+
+        startPolling()
+    }
+
+    private suspend fun startPolling() {
+        updateState()
+
+        pollingJob = scope.launch {
+            while (isActive) {
+                delay(config.pollIntervalMs)
+                updateState()
+            }
+        }
+    }
+
+    /** Stops polling for updates. Has no effect with the manual update policy. */
+    fun stopUpdates() {
+        pollingJob?.cancel()
     }
 
     /** Updates the flag states from the plain flags states service. Returns true on success. */
