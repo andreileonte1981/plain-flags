@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 cd sdk/kotlin
 
@@ -11,9 +12,7 @@ fi
 
 echo "Deploying version $VERSION of Kotlin SDK"
 
-# Requires Sonatype Central Portal credentials and a GPG signing key configured,
-# see https://vanniktech.github.io/gradle-maven-publish-plugin/central/
-./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+./gradlew publishToMavenCentral --no-configuration-cache
 
 cd ../..
 

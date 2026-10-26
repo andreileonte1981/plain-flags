@@ -1,11 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "2.0.21"
-    kotlin("plugin.serialization") version "2.0.21"
-    id("com.vanniktech.maven.publish") version "0.29.0"
+    kotlin("multiplatform") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
+    id("com.vanniktech.maven.publish") version "0.37.0"
+    signing
 }
 
-group = "io.github.andreileonte1981"
-version = "1.0.0"
+group = "dev.plainflags"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -43,8 +44,16 @@ kotlin {
     }
 }
 
+signing {
+    useGpgCmd()
+    sign(publishing.publications)
+}
+
 mavenPublishing {
-    coordinates("io.github.andreileonte1981", "plain-flags-kotlin-sdk", version.toString())
+    coordinates("dev.plainflags", "plain-flags-kotlin-sdk", version.toString())
+    
+    publishToMavenCentral()
+    signAllPublications()
 
     pom {
         name.set("Plain Flags Kotlin SDK")
@@ -66,6 +75,8 @@ mavenPublishing {
 
         scm {
             url.set("https://github.com/andreileonte1981/plain-flags")
+            connection.set("scm:git:git://github.com/andreileonte1981/plain-flags.git")
+            developerConnection.set("scm:git:ssh://github.com/andreileonte1981/plain-flags.git")
         }
     }
 }

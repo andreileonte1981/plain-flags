@@ -239,7 +239,7 @@ class KotlinSdkTest {
             config = PlainFlagsConfig(
                 serviceUrl = DotEnv.get("API_URL_STATES") ?: "http://localhost:5001",
                 apiKey = DotEnv.get("API_KEY") ?: "",
-                pollIntervalMs = 1000,
+                pollIntervalMs = 1000
             ),
             infoCallback = null,
             errorCallback = null,
@@ -247,7 +247,7 @@ class KotlinSdkTest {
 
         featureFlags.init()
 
-        delay(1200) // allow a poll cycle and the states service cache to refresh
+        delay(1200) // allow the states service cache to refresh
 
         assertTrue(
             featureFlags.isOn(flagName, false, mapOf("user" to "John", "brand" to "Initech")),
