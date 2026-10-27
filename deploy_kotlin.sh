@@ -12,6 +12,7 @@ fi
 
 echo "Deploying version $VERSION of Kotlin SDK"
 
+# ./gradlew publishToMavenLocal --no-configuration-cache
 ./gradlew publishToMavenCentral --no-configuration-cache
 
 cd ../..

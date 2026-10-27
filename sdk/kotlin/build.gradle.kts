@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     kotlin("multiplatform") version "2.4.21"
     kotlin("plugin.serialization") version "2.4.21"
@@ -6,13 +8,18 @@ plugins {
 }
 
 group = "dev.plainflags"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
 }
 
 kotlin {
+    compilerOptions {
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        apiVersion.set(KotlinVersion.KOTLIN_2_1)
+    }
+
     jvm {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)

@@ -16,7 +16,7 @@ Add to your Gradle build (`build.gradle.kts`):
 
 ```kotlin
 dependencies {
-    implementation("dev.plainflags:plain-flags-kotlin-sdk-jvm:1.0.0")
+    implementation("dev.plainflags:plain-flags-kotlin-sdk-jvm:1.0.3")
 }
 ```
 

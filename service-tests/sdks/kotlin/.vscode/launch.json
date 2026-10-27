@@ -9,8 +9,7 @@
       "port": 5005,
       "cwd": "${workspaceFolder}",
       "sourcePaths": [
-        "${workspaceFolder}/src/test/kotlin",
-        "${workspaceFolder}/src/main/kotlin"
+        "${workspaceFolder}/src/test/kotlin"
       ],
       "preLaunchTask": "build"
     }
