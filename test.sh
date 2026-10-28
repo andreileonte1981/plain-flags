@@ -50,7 +50,7 @@ dart test --reporter=expanded --file-reporter=expanded:../../report_dart.txt --n
 cd ..
 cd kotlin
 echo "Running tests for kotlin SDK..."
-./gradlew test --console=plain > ../../report_kotlin.txt
+./gradlew cleanTest test --console=plain > ../../report_kotlin.txt
 
 cd ../../..
 
